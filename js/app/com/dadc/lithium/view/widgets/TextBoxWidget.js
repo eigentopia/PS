@@ -72,37 +72,82 @@ var TextBoxWidget = function( caption, default_active, size) {
     }
     
     function getCellSelectionContainer( ){
-        var tmp_container = engine.createContainer();
-        var button_slate = engine.createSlate();
-        button_slate.shader =  ShaderCreatorInstance.createBoxShader( 1, 13, RGBLibraryInstance.getDARKGRAY(1), 
-            0, RGBLibraryInstance.getWHITE(1), 
-            12, RGBLibraryInstance.getORANGE(1), 
-            RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), 
-            RGBLibraryInstance.getDARKGRAY(1));
-        
-        button_slate.width = size;
-        button_slate.height = 62;
-        
-        tmp_container.addChild( button_slate );
-        
-        return tmp_container;
+        //Right now this is weird
+        //TODO:understand the shader problem.
+        if(ApplicationController.PLATFORM !== 'ps4'){
+            var tmp_container = engine.createContainer();
+            var button_slate = engine.createSlate();
+            button_slate.shader =  ShaderCreatorInstance.createBoxShader( 1, 13, RGBLibraryInstance.getDARKGRAY(1), 
+                0, RGBLibraryInstance.getWHITE(1), 
+                12, RGBLibraryInstance.getORANGE(1), 
+                RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), 
+                RGBLibraryInstance.getDARKGRAY(1));
+            
+            button_slate.width = size;
+            button_slate.height = 62;
+            
+            tmp_container.addChild( button_slate );
+            
+            return tmp_container;
+        }
+        else{
+            var padding = 10;
+            var main = engine.createContainer();
+            var inner_slate = engine.createSlate();
+            var outer_slate = engine.createSlate();
+
+            outer_slate.shader = ShaderCreatorInstance.createSolidColorShader( RGBLibraryInstance.getORANGE(1) );
+            
+            outer_slate.width = size + (padding*2);
+            outer_slate.height = 62 + (padding*2);
+            outer_slate.x = -padding;
+            outer_slate.y = -padding
+
+            main.addChild( outer_slate );
+
+            inner_slate.shader = ShaderCreatorInstance.createSolidColorShader( RGBLibraryInstance.getDARKGRAY(1) );
+
+            inner_slate.width = size;
+            inner_slate.height = 62;
+
+            
+            main.addChild( inner_slate );
+            
+            return main;
+        }
     }
 
     function getCellInactiveContainer(){
-        var tmp_container = engine.createContainer();
-        var button_slate = engine.createSlate();
-        button_slate.shader =  ShaderCreatorInstance.createBoxShader( 1, 10, RGBLibraryInstance.getDARKGRAY(1), 
-            0, RGBLibraryInstance.getWHITE(1), 
-            0, RGBLibraryInstance.getORANGE(1), 
-            RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), 
-            RGBLibraryInstance.getDARKGRAY(1));
-        
-        button_slate.width = size;
-        button_slate.height = 62;
-        
-        tmp_container.addChild( button_slate );
-        
-        return tmp_container;
+        if(ApplicationController.PLATFORM !== 'ps4'){
+            var tmp_container = engine.createContainer();
+            var button_slate = engine.createSlate();
+            button_slate.shader =  ShaderCreatorInstance.createBoxShader( 1, 10, RGBLibraryInstance.getDARKGRAY(1), 
+                0, RGBLibraryInstance.getWHITE(1), 
+                0, RGBLibraryInstance.getORANGE(1), 
+                RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), RGBLibraryInstance.getDARKGRAY(1), 
+                RGBLibraryInstance.getDARKGRAY(1));
+            
+            button_slate.width = size;
+            button_slate.height = 62;
+            
+            tmp_container.addChild( button_slate );
+            
+            return tmp_container;
+        }
+        else{
+
+            var tmp_container = engine.createContainer();
+            var button_slate = engine.createSlate();
+            button_slate.shader = ShaderCreatorInstance.createSolidColorShader( RGBLibraryInstance.getDARKGRAY(1) );
+
+            
+            button_slate.width = size;
+            button_slate.height = 62;
+            
+            tmp_container.addChild( button_slate );
+            
+            return tmp_container;
+        }
     }
 
     m_selected_container = getCellSelectionContainer();
