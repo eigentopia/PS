@@ -65,7 +65,7 @@ var FreewheelVideo = function( adHeaderObj, FreewheelEventCallbackHelperObj, Fre
             FreewheelEventCallbackHelperObj.postSlotImpressionUrls();
             adHeaderObj.postImpressionUrls();
             FreewheelEventCallbackHelperObj.postImpressionUrls();
-            Comscore.sendClip(adBreak);
+            //Comscore.sendClip(adBreak);
             return true;
         }
         else return false;

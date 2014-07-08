@@ -90,7 +90,7 @@ var Comscore = function(){
             ns_st_ep : seFinder(), // Episode title
             // This is part number not set here- set in startPlaylist
             //ns_st_pn : "1", 
-            ns_st_tp : mediaDetails.Chapters.length.toString(), // ... of 3 parts in total
+            ns_st_tp : (mediaDetails.Chapters)?mediaDetails.Chapters.length.toString():"0", // ... of 3 parts in total
             ns_st_cl : (parseInt(mediaDetails.DurationInSeconds)*1000).toString(), // Length of the stream (milliseconds) not here
             ns_st_cu : mediaDetails.PermaLink, // The clip URL
             ns_st_ct : (mediaDetails.Duration > 3600)?'vc12':'vc11', // Classification type
