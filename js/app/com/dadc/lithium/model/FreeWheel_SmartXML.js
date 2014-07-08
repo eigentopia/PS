@@ -268,8 +268,8 @@ FreeWheelModel.TemporalAdSlotList = function( data )
 
 FreeWheelModel.TemporalAdSlot = function( data )
 {
-    var m_selectedAds = data.selectedAds ? new FreeWheelModel.SelectedAds( data.selectedAds ) : null;
-    var m_eventCallbacks = data.eventCallbacks ? new FreeWheelModel.EventCallbackList( data.eventCallbacks ) : null;
+    var m_selectedAds = (data && data.selectedAds) ? new FreeWheelModel.SelectedAds( data.selectedAds ) : null;
+    var m_eventCallbacks = (data && data.eventCallbacks) ? new FreeWheelModel.EventCallbackList( data.eventCallbacks ) : null;
 
     this.getSelectedAds     = function() { return m_selectedAds; };
     this.getEventCallbacks  = function() { return m_eventCallbacks; };
