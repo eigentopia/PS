@@ -192,40 +192,6 @@ VideoManager = function(){
         m_core_video_obj = null;
         UtilLibraryInstance.garbageCollect();
     }
-    function reacquireCoreVideo(cb){
-        // remove the video from the screen
-        while( m_root_node.numChildren > 0 )
-            m_root_node.removeChildAt( 0 );
-        
-        m_core_video_obj = null;     
-        
-        // get the proper video based on what the current JS video is
-        var video_config = m_current_jsvideo.getVideoConfig();
-        Logger.log( video_config["content-type"] );
-        
-        switch( video_config["content-type"] ){
-            case "video/mp4":
-                m_core_video_obj = getMP4Video();
-                Logger.log( 'mp4' );
-                break;
-            default:
-                m_core_video_obj = getM3U8Video();
-                Logger.log( 'm3u8' );
-                break;
-        }
-        
-        // assign listeners
-        m_core_video_obj.onEnded = onEnded;
-        m_core_video_obj.onError = onError;
-        m_core_video_obj.onPlaying = onPlaying;
-        m_core_video_obj.onStalled = onStalled;
-        m_core_video_obj.onTimeUpdate = onTimeUpdate;
-       
-        // add the video to the screen
-        m_root_node.addChild( m_core_video_obj );
-
-        cb()
-    }
     
     function getMP4Video(){
         UtilLibraryInstance.garbageCollect();
@@ -248,6 +214,10 @@ VideoManager = function(){
                 m_m3u8_video_obj.y = 0;
         }
         return m_m3u8_video_obj;
+    }
+
+    this.getCoreVideo = function(){
+        return m_core_video_obj;
     }
     
     this.getPlaybackTimePTS = function(){

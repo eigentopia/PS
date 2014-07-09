@@ -88,7 +88,6 @@ var MediaDetails = function( json_data ){
     this.m_data = json_data;
     this.data = json_data;
     var self = this;
-    console.log(json_data)
     //CREATING OBJECTS
     var statusObj                                       = new MediaDetailsStatus( this.m_data.status );
     //var mediaDetailsParentChannelDetailsSummaryObj;
