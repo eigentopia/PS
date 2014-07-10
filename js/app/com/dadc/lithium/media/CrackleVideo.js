@@ -182,7 +182,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     function playCrackleVideo()
     {
         Logger.log("CrackleVideo.playCrackleVideo()");
-        try
+        VideoManagerInstance.play( This )
+        /*try
         {
             if ( VideoManagerInstance.play( This ) === false )
             {
@@ -203,7 +204,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             m_disposed = true;
             VideoManagerInstance.stop();
             VideoManagerInstance.close();
-        }
+        }*/
     };
 
     // onResolved
@@ -353,10 +354,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         notifyListeners( new PlaybackError( VideoManagerInstance.getPlaybackTimePTS() ) );
     };
 
-    //DAN: added this API so async video open errors differently then engine.video.onError callback
-    this.onOpenError = function(){
-        PlaybackErrorListener.notifyPlaybackError( new PlaybackError( VideoManagerInstance.getPlaybackTimePTS() ), This );
-    };
+    this.onOpened = function(){
+        //Comscore.sendClip(m_current_time)
+    }
 
     this.onPlaying = function(){
     // DAN: instead of beginning the timer at the end of an ad, begin it when we actually start watching a video,
@@ -374,21 +374,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
     this.notifyPlaybackEvent = function( playbackEventObj, VideoObj ){
         Logger.log("notify playback event");
-           // if ( m_ad_videos.indexOf( VideoObj ) ){
-           //     // AD Video Playback Event
-
-           // } else if ( VideoObj == This ){
-           //     // Main Video playback Event
-           //     if ( playbackEventObj.getEventType() == PlaybackEvent.TYPE.MARKREACHED ){
-           //         var mark_number = playbackEventObj.getMarkNumber();
-           //         var time_pos = playbackEventObj.getTime();
-
-           //         if ( m_ad_marks.indexOf( mark_number ) ){
-           //             var adToPlay = m_ad_marks[ mark_number ];
-           //             adToPlay.play();
-           //         }
-           //     }
-           // }
     }
     
     this.checkIsPlaybackReady = function(){
