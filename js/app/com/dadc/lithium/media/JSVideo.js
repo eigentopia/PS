@@ -77,6 +77,10 @@ var JSVideo = function( video_url, videoManagerObj ){
     }
     
     
+    this.onOpened = function(){
+        
+    }
+    
     this.onEnded = function(){
         notifyListeners( new EndOfMediaEvent( ) );
     }

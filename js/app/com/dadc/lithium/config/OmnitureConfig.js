@@ -8,6 +8,7 @@ var OmnitureConfig = function(){
 		switch(geo){
 			case 'US':
 			case 'CA':
+			case 'AU':
 				profile = 'crackleprod'
 				break;
 			default:

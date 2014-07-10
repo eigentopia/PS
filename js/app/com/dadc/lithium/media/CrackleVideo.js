@@ -351,6 +351,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
 
     this.onError = function(){
+        m_disposed = true;
+        VideoManagerInstance.stop();
+        VideoManagerInstance.close();
         notifyListeners( new PlaybackError( VideoManagerInstance.getPlaybackTimePTS() ) );
     };
 
