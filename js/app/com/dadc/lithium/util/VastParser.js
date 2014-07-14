@@ -210,7 +210,7 @@ var VastParser = function( ADHeaderObj, wrapper_url )
 
             if ( is_wrapper === true )
             {
-                process_vast_response( vastObj, recursive_counter + 1 );
+                processVastUrl( vastObj, recursive_counter + 1 );
             }
         }
 

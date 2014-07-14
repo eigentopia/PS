@@ -1,25 +1,20 @@
-/**
- * PSN.js - Crackle
- * @author unknown
- *  - modified and optimized by Daniel cuccia
- * 
+/** 
  * This file is the interaction point for engine's 'np' object,
  * which has been replaced with the LithiumNetworkPlatform.sprx plugin
  */
-
+include( "js/app/com/dadc/lithium/config/LoggerConfig.js" );
 var PSN = function( )
 {
     var k_npVersionString = "3.0";
     var k_npServiceID;
-    console.dir(engine)
     var platform = engine.stats.device.platform;
     if(platform === 'ps4'){
         //ps4
-        k_npServiceID = "US0007-CUSA00059_00";
+        k_npServiceID = LoggerConfig.PSN.PS4;
     }
     else{
         //ps3
-        k_npServiceID = "US0007-NPUP00074_00";
+        k_npServiceID = LoggerConfig.PSN.PS3;
         
     }
     
