@@ -1764,12 +1764,13 @@ var ApplicationController = function( screenObj ){
 
         if( myWatchlistController &&
             InputManager.getLastPressedKey() != engine.keymap.controllerPS3.CROSS &&
-            InputManager.getLastPressedKey() != "ENTER")
+            InputManager.getLastPressedKey() != "ENTER" &&
+            InputManager.getLastPressedKey() != engine.keymap.controllerPS3.RIGHT)
         {
             UtilLibraryInstance.garbageCollect();
 
             m_pending_focused_controller = null;
-            Logger.log( 'myWatchlistController' );
+            Logger.log( 'myWatchlistController because it exists.' );
             if( !m_content_container.contains( myWatchlistController.getDisplayNode() ) ){
                 m_content_container.addChild( myWatchlistController.getDisplayNode() );
             }
@@ -1780,21 +1781,19 @@ var ApplicationController = function( screenObj ){
 
             m_focused_controller = myWatchlistController;
         }else{
-            //destroyMyWatchlistController();
+            Logger.log( 'myWatchlistController because it does not.' );
+
             UtilLibraryInstance.garbageCollect();
 
             myWatchlistController = new MyWatchlistController( This );
-            myWatchlistController.prepareToOpen( );
             m_pending_focused_controller = myWatchlistController;
+            myWatchlistController.prepareToOpen( );
+            myWatchlistController.open();
+            myWatchlistController.setFocus();
+            m_focused_controller = myWatchlistController;
             
             if(crackleUser.id != null){
                 openLoadingScreen( myWatchlistController );
-            }
-            else{
-                
-                myWatchlistController.open();
-                myWatchlistController.setFocus();
-                m_focused_controller = myWatchlistController;
             }
 
         }
@@ -2423,17 +2422,18 @@ var ApplicationController = function( screenObj ){
             var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
             var url = ModelConfig.getServerURLRoot() + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json"+ord;
             Http.request(url, "GET", null, null, function(data, status){
-                    if(data != null && status == 200){
-                        crackleUser.watchlist = [];
-                        var items = data.Items;
-                        crackleUser.watchlist = items.slice(0);
+                if(data != null && status == 200){
+                    var watchListData = JSON.parse(data)
+                    crackleUser.watchlist = [];
+                    var items = watchListData.Items;
+                    crackleUser.watchlist = items.slice(0);
 
-                        callback && callback(data, status)
-                    }
-                    else{
-                        callback && callback(null, status)
-                    }
-                })
+                    callback && callback(watchListData, status)
+                }
+                else{
+                    callback && callback(null, status)
+                }
+            })
             //HttpRequest.startRequest()
         }
     }
@@ -2481,12 +2481,19 @@ var ApplicationController = function( screenObj ){
             var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
             var url =  ModelConfig.getServerURLRoot() + "pauseresume/list/member/"+ crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json"+ord;
             Http.request(url, "GET", null, null, function(data, status){
-                if(data != null && status ==200 && data.Progress && data.Progress.length>0){
-                    for(var i=0; i<data.Progress.length; ++i){
-                        var item = data.Progress[i];
-                        StorageManagerInstance.set( 'video_progress_' + item.MediaId, item.DurationInSeconds );
+                var pauseResumeData = JSON.parse(data)
+                if(data != null && status ==200){
+                    var pauseResumeData = JSON.parse(data)
+                    if(pauseResumeData.Progress && pauseResumeData.Progress.length>0){
+                        for(var i=0; i<pauseResumeData.Progress.length; ++i){
+                            var item = pauseResumeData.Progress[i];
+                            StorageManagerInstance.set( 'video_progress_' + item.MediaId, item.DurationInSeconds );
+                        }
+                        callback&&callback(true)
                     }
-                    callback&&callback(true)
+                    else{
+                        callback&&callback(false, status)    
+                    }
                 }
                 else{
                     callback&&callback(false, status)

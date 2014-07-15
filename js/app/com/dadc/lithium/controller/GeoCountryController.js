@@ -1,6 +1,5 @@
-include( "js/app/com/dadc/lithium/config/GeocodeConfig.js" );
-
 include( "js/app/com/dadc/lithium/model/AppConfig.js" );
+include( "js/app/com/dadc/lithium/config/LoggerConfig.js" );
 include( "js/app/com/dadc/lithium/model/GeoCountry.js" );
 
 var GeoCountryController = function( ParentControllerObj ){
@@ -36,7 +35,7 @@ var GeoCountryController = function( ParentControllerObj ){
     function onGeoCountryResponse( GeoCountryObj, status ){
         if ( status != 200 ){
             
-            if( GeocodeConfig.CONFIG.ALLOWED_COUNTRIES.length > 0 ){
+            if( LoggerConfig.GeocodeConfig.ALLOWED_COUNTRIES.length > 0 ){
                 m_is_invalid_region = true;
                 ParentControllerObj.requestingParentAction( {action: ApplicationController.OPERATIONS.INVALID_REGION, calling_controller: this} );
                 ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );
@@ -54,37 +53,15 @@ var GeoCountryController = function( ParentControllerObj ){
             //StorageManagerInstance.set( 'IPADDRESS', GeoCountryObj.getIPAddress() );
             StorageManagerInstance.set( StorageManager.STORAGE_KEYS.IPADDRESS, GeoCountryObj.getIPAddress() );
             
-//            var lang = '';
-//            // SET LANGUAGE
-//            if( GeocodeConfig.CONFIG.hasOwnProperty( 'FAKE_COUNTRY' ) && GeocodeConfig.CONFIG.FAKE_COUNTRY ){
-//                lang = getLanguageByCountry( GeocodeConfig.CONFIG.FAKE_COUNTRY );
-//                if( !lang ){
-//                    StorageManagerInstance.set( 'lang', 'en' );
-//                    ParentControllerObj.requestingParentAction( {action: ApplicationController.OPERATIONS.INVALID_REGION, calling_controller: this} );
-//                    return;
-//                }else{
-//                    StorageManagerInstance.set( 'lang', lang );
-//                }
-//            }else{
-//                lang = getLanguageByCountry( GeoCountryObj.getCountryCode() );
-//                if( !lang ){
-//                    StorageManagerInstance.set( 'lang', 'en' );
-//                    ParentControllerObj.requestingParentAction( {action: ApplicationController.OPERATIONS.INVALID_REGION, calling_controller: this} );
-//                    return;
-//                }else{
-//                    StorageManagerInstance.set( 'lang', getLanguageByCountry( GeoCountryObj.getCountryCode() ) );
-//                }
-//            }
-            
-            if( GeocodeConfig.CONFIG.hasOwnProperty( 'FAKE_COUNTRY' ) && GeocodeConfig.CONFIG.FAKE_COUNTRY ){
-                StorageManagerInstance.set( 'geocode', GeocodeConfig.CONFIG.FAKE_COUNTRY );
+            if( LoggerConfig.GeocodeConfig.hasOwnProperty( 'FAKE_COUNTRY' ) && LoggerConfig.GeocodeConfig.FAKE_COUNTRY ){
+                StorageManagerInstance.set( 'geocode', LoggerConfig.GeocodeConfig.CONFIG.FAKE_COUNTRY );
                 m_is_invalid_region = false;
                 var app_config_request = new AppConfigRequest( onAppConfigResponse );
 
                 app_config_request.startRequest();
             }else{
-                if( GeocodeConfig.CONFIG.ALLOWED_COUNTRIES.length > 0 &&
-                    GeocodeConfig.CONFIG.ALLOWED_COUNTRIES.indexOf( GeoCountryObj.getCountryCode() ) < 0  ){
+                if( LoggerConfig.GeocodeConfig.ALLOWED_COUNTRIES.length > 0 &&
+                    LoggerConfig.GeocodeConfig.ALLOWED_COUNTRIES.indexOf( GeoCountryObj.getCountryCode() ) < 0  ){
                     m_is_invalid_region = true;
                     ParentControllerObj.requestingParentAction( {action: ApplicationController.OPERATIONS.INVALID_REGION, calling_controller: this} );
                     ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_READY );

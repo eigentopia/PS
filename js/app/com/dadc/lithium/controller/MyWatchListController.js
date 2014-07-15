@@ -11,7 +11,7 @@ var MyWatchlistController = function( ParentControllerObj ){
     var m_is_focussed               = false;
     var m_category;
     var m_data_ready                = false;
-    
+    var self = this
     var MOVIE_LIST_WIDGET_Y         = 64;
     var ROW_SPACING                 = 80;
 
@@ -21,16 +21,16 @@ var MyWatchlistController = function( ParentControllerObj ){
     this.open = function( ){
         Logger.log( 'MyWatchlistController ' + m_unique_id + ' open()' );
 
-        //if( m_is_focussed ){
-          //   m_movie_list_widget.setActive( 0, 0 );
-        //}
+        if( !m_is_focussed ){
+            self.setFocus()
+        }
         if ( m_movie_list_widget ) {
             var last_active = m_movie_list_widget.getLastActive();
             //var user = ApplicationController.getUserInfo();
-            if(m_movie_data_obj.length && m_movie_data_obj.length>0){
-                m_movie_list_widget.refreshWidget(m_movie_data_obj, MovieListWidget.STYLE.MOVIES);
+            /*if(m_movie_data_obj.length && m_movie_data_obj.length>0){
+               // m_movie_list_widget.refreshWidget(m_movie_data_obj, MovieListWidget.STYLE.MOVIES);
                 m_movie_list_widget.setFocus();
-            }
+            }*/
             if( last_active ){
                 m_movie_list_widget.setActive( last_active[ 0 ], last_active[ 1 ] );
             }else{
@@ -51,24 +51,24 @@ var MyWatchlistController = function( ParentControllerObj ){
     this.setFocus = function(){
         m_is_focussed = true;
         Logger.log( 'MyWatchlistController setFocus()' );
-        if ( m_movie_list_widget ) {
-            var last_active = m_movie_list_widget.getLastActive();
-            //var user = ApplicationController.getUserInfo();
-            if(m_movie_data_obj.length && m_movie_data_obj.length>0){
-                m_movie_list_widget.refreshWidget(m_movie_data_obj, MovieListWidget.STYLE.MOVIES);
-                m_movie_list_widget.setFocus();
-            }
-            if( last_active ){
-                m_movie_list_widget.setActive( last_active[ 0 ], last_active[ 1 ] );
-            }else{
-                if( m_data_ready ){
-                    m_movie_list_widget.setActive( 0, 0 );
-                }
-            }
-        }
-        else{
-            this.prepareToOpen();
-        }
+        // if ( m_movie_list_widget ) {
+        //     var last_active = m_movie_list_widget.getLastActive();
+        //     //var user = ApplicationController.getUserInfo();
+        //     if(m_movie_data_obj.length && m_movie_data_obj.length>0){
+        //         m_movie_list_widget.refreshWidget(m_movie_data_obj, MovieListWidget.STYLE.MOVIES);
+        //         m_movie_list_widget.setFocus();
+        //     }
+        //     if( last_active ){
+        //         m_movie_list_widget.setActive( last_active[ 0 ], last_active[ 1 ] );
+        //     }else{
+        //         if( m_data_ready ){
+        //             m_movie_list_widget.setActive( 0, 0 );
+        //         }
+        //     }
+        // }
+        // else{
+        //     this.prepareToOpen();
+        // }
     }
     this.cancel = function(){
 
