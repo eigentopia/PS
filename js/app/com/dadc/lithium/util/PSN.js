@@ -8,6 +8,7 @@ var PSN = function( )
     var k_npVersionString = "3.0";
     var k_npServiceID;
     var platform = engine.stats.device.platform;
+    console.dir(engine)
     if(platform === 'ps4'){
         //ps4
         k_npServiceID = LoggerConfig.PSN.PS4;
