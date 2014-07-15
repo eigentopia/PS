@@ -47,6 +47,7 @@ var LoginController = function( ParentControllerObj ){
     }
     this.unsetFocus = function(){
         Logger.log("UNSETTING")
+        //m_login_widget.setInactive();
         m_is_focused = false;
     }     
     this.update = function( engine_timer ){
@@ -177,9 +178,10 @@ var LoginController = function( ParentControllerObj ){
             Logger.log(status)
 
             if(status == 200 && data != null){
-                if(data.status.messageCode == 0){
+                var userData = JSON.parse(data)
+                if(userData.status.messageCode == 0){
 
-                    var userId = data.userID;
+                    var userId = userData.userID;
                     ApplicationController.setUserInfo(userId, emailField, passwordField);
 
                     if(previousScreen){
@@ -195,7 +197,7 @@ var LoginController = function( ParentControllerObj ){
                     }
                     AnalyticsManagerInstance.loginEvent(  );
                 }
-                else if(data.status.messageCode == 105 || data.status.messageCode == 110){
+                else if(userData.status.messageCode == 105 || userData.status.messageCode == 110){
                     m_parent_controller_obj.requestingParentAction(
                         {action: ApplicationController.OPERATIONS.LOGIN_ERROR, calling_controller: self, message: Dictionary.getText( Dictionary.TEXT.LOGIN_ERROR_BAD_CREDENTIALS)}
                     );

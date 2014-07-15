@@ -1,10 +1,7 @@
-/**
- * FreewheelConfig.js
- */
+include( "js/app/com/dadc/lithium/config/LoggerConfig.js" );
 var FreewheelConfig = function()
 {
     var m_geoLocation = MRMLocation.Null;
-    var platform = engine.stats.device.platform;
     /**
      * get the Geo Location
      * @returns {MRMLocation}
@@ -52,11 +49,11 @@ var FreewheelConfig = function()
 	   Logger.log("getFreeWheelURL() | CSID: " + csid);
 
     	// build the url
-    	var output =	    this.CONFIG.FREEWHEEL_URL +
-    	    "?nw=" +	    this.CONFIG.FREEWHEEL_NETWORK_ID +
-    	    "&prof=" +	    this.CONFIG.FREEWHEEL_NETWORK_ID + "%3a" + this.CONFIG.FREEWHEEL_PROFILE +
-    	    "&asnw=" +	    this.CONFIG.FREEWHEEL_NETWORK_ID +
-    	    "&ssnw=" +	    this.CONFIG.FREEWHEEL_NETWORK_ID +
+    	var output =	    LoggerConfig.FREEWHEEL.FREEWHEEL_URL +
+    	    "?nw=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID +
+    	    "&prof=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID + "%3a" + LoggerConfig.FREEWHEEL.FREEWHEEL_PROFILE +
+    	    "&asnw=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID +
+    	    "&ssnw=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID +
     	    "&resp=" +	    "smrx" +
     	    "&csid=" +	    csid +
     	    "&caid=" +	    media_id +
@@ -67,19 +64,6 @@ var FreewheelConfig = function()
 	   Logger.log("FreewheelConfig.getFreeWheelURL() - url: " + output);
 
 	   return output;
-    };
-
-    this.CONFIG =
-    {
-	       // TEST
-	    // FREEWHEEL_URL: "http://23adc.v.fwmrm.net/ad/g/1",
-	    // FREEWHEEL_NETWORK_ID: 146140,
-	    // FREEWHEEL_PROFILE: "crackle_"+ApplicationController.PLATFORM+"_test"
-
-    	   // PRODUCTION
-    	FREEWHEEL_URL: "http://2517d.v.fwmrm.net/ad/g/1",
-    	FREEWHEEL_NETWORK_ID: 151933,
-    	FREEWHEEL_PROFILE: "crackle_"+platform+"_live"
     };
 };
 
@@ -94,29 +78,30 @@ var FreewheelMediaType =
 // DAN: MRM site sections update
 var MRMLocation =
 {
-    Null:		{countryName: "",		    countryCode: "",	value: ""},
-    UnitedStates:	{countryName: "United States",	    countryCode: "US",	value: ""},
-    Canada:		{countryName: "Canada",		    countryCode: "CA",	value: "ca"},
-    Australia:		{countryName: "Australia",	    countryCode: "AU",	value: "au"},
-    UnitedKindom:	{countryName: "United Kingdom",	    countryCode: "UK",	value: "uk"},
-    Brazil:		{countryName: "Brazil",		    countryCode: "BR",	value: "br"},
-    Mexico:		{countryName: "Mexico",		    countryCode: "MX",	value: "mx"},
-    Argentina:		{countryName: "Argentina",	    countryCode: "AR",	value: "ar"},
-    Chile:		{countryName: "Chile",		    countryCode: "CL",	value: "cl"},
-    Columbia:		{countryName: "Columbia",	    countryCode: "CO",	value: "co"},
+    Null:		        {countryName: "",		        countryCode: "",	value: ""},
+    UnitedStates:       {countryName: "United States",	countryCode: "US",	value: ""},
+    Canada:             {countryName: "Canada",		    countryCode: "CA",	value: "ca"},
+    Australia:		    {countryName: "Australia",	    countryCode: "AU",	value: "au"},
+    UnitedKindom:	    {countryName: "United Kingdom",	countryCode: "UK",	value: "uk"},
+    Brazil:		        {countryName: "Brazil",		    countryCode: "BR",	value: "br"},
+    Mexico:		        {countryName: "Mexico",		    countryCode: "MX",	value: "mx"},
+    Argentina:		    {countryName: "Argentina",	    countryCode: "AR",	value: "ar"},
+    Chile:		        {countryName: "Chile",		    countryCode: "CL",	value: "cl"},
+    Columbia:		    {countryName: "Columbia",	    countryCode: "CO",	value: "co"},
     DominicanRepublic:	{countryName: "Dominican Republic", countryCode: "DO",	value: "do"},
-    Peru:		{countryName: "Peru",		    countryCode: "PE",	value: "pe"},
-    Venezuela:		{countryName: "Venezuela",	    countryCode: "VE",	value: "ve"},
-    Bolivia:		{countryName: "Bolivia",	    countryCode: "BO",	value: "bo"},
-    CostaRica:		{countryName: "Costa Rica",	    countryCode: "CR",	value: "cr"},
-    Ecuador:		{countryName: "Ecuador",	    countryCode: "EC",	value: "ec"},
-    ElSalvador:		{countryName: "El Salvador",	    countryCode: "SV",	value: "sv"},
-    Guatemala:		{countryName: "Guatemala",	    countryCode: "GT",	value: "gt"},
-    Honduras:		{countryName: "Honduras",	    countryCode: "HN",	value: "hn"},
-    Nicaragua:		{countryName: "Nicaragua",	    countryCode: "NI",	value: "ni"},
-    Panama:		{countryName: "Panama",		    countryCode: "PA",	value: "pa"},
-    Paraguay:		{countryName: "Paraguay",	    countryCode: "PY",	value: "py"},
-    Uruguay:		{countryName: "Uruguay",	    countryCode: "UY",	value: "uy"},
+    Peru:		        {countryName: "Peru",		    countryCode: "PE",	value: "pe"},
+    Venezuela:		    {countryName: "Venezuela",	    countryCode: "VE",	value: "ve"},
+    Bolivia:		    {countryName: "Bolivia",	    countryCode: "BO",	value: "bo"},
+    CostaRica:		    {countryName: "Costa Rica",	    countryCode: "CR",	value: "cr"},
+    Ecuador:		    {countryName: "Ecuador",	    countryCode: "EC",	value: "ec"},
+    ElSalvador:		    {countryName: "El Salvador",	countryCode: "SV",	value: "sv"},
+    Guatemala:		    {countryName: "Guatemala",	    countryCode: "GT",	value: "gt"},
+    Honduras:		    {countryName: "Honduras",	    countryCode: "HN",	value: "hn"},
+    Nicaragua:		    {countryName: "Nicaragua",	    countryCode: "NI",	value: "ni"},
+    Panama:		        {countryName: "Panama",		    countryCode: "PA",	value: "pa"},
+    Paraguay:		    {countryName: "Paraguay",	    countryCode: "PY",	value: "py"},
+    Uruguay:		    {countryName: "Uruguay",	    countryCode: "UY",	value: "uy"},
+
     getLocation:	function( countryCode )
     {
     	switch( countryCode )

@@ -208,9 +208,9 @@ var VastParser = function( ADHeaderObj, wrapper_url )
                 }
             } // if creatives
 
-            if ( is_wrapper === true )
-            {
-                process( vastObj, recursive_counter + 1 );
+            if ( is_wrapper === true ){
+                processVastUrl( vastObj, recursive_counter + 1 );
+
             }
         }
 
