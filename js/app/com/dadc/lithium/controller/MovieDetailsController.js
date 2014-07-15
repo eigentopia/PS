@@ -341,7 +341,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
     this.doWatchlist = function(id, type, callback){
         var user = ApplicationController.getUserInfo()
         var itemId = parseInt(id)
-        if (user.id != ""){
+        if (user.id != null){
             if(ApplicationController.isInUserWatchlist(id)){
                 ApplicationController.removeFromUserWatchlist(itemId, type, function(success){
                     if(success){

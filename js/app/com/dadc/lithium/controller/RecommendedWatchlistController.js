@@ -283,7 +283,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
     this.doWatchlist = function(id, type, callback){
         var user = ApplicationController.getUserInfo()
         //console.log("DO WATCH id type "+id, type)
-        if (user.id !== ""){
+        if (user.id !== null){
             if(ApplicationController.isInUserWatchlist(id)){
                 ApplicationController.removeFromUserWatchlist(id, type, function(success){
                     if(success){
