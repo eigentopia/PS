@@ -166,6 +166,11 @@ VideoManager = function(){
         Logger.log("core onOpened called");
         m_video_time_on_play_before_timeupdate = engine.getTimer();
         m_core_video_obj.play();
+
+        var CCSettings = m_core_video_obj.getCCSystemSettings();
+        console.log("CCSETTINGS")
+        console.dir(CCSettings)
+
         if( m_current_jsvideo != null ){
             m_current_jsvideo.onOpened();  
         }
