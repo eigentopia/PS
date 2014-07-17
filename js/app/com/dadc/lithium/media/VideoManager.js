@@ -171,6 +171,8 @@ VideoManager = function(){
         console.log("CCSETTINGS")
         console.dir(CCSettings)
 
+        engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
+
         if( m_current_jsvideo != null ){
             m_current_jsvideo.onOpened();  
         }
