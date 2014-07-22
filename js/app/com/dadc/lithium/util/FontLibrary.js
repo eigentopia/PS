@@ -118,10 +118,10 @@ var FontLibrary = function(){
                     case "proportional": 
                         systemFont = FontLibrary.FONT.proportional
                         break
-                    case 'monospace_serif':
+                    case 'monospaceserif':
                         systemFont = FontLibrary.FONT.monospace_serif
                         break;
-                    case "proportional_serif": 
+                    case "proportionalserif": 
                         systemFont = FontLibrary.FONT.proportional_serif
                         break
                     case 'casual':
@@ -130,7 +130,7 @@ var FontLibrary = function(){
                     case "cursive": 
                         systemFont = FontLibrary.FONT.cursive
                         break
-                    case 'small_caps':
+                    case 'smallcaps':
                         systemFont = FontLibrary.FONT.small_caps
                         break;
                 }
@@ -224,11 +224,11 @@ if( engine.stats.device.platform == 'html' ){
         BOLD: "Fonts/arialbd.ttf",
         monospace:"Fonts/monospace.ttf",
         proportional:"Fonts/proportional.ttf",
-        monospace_serif: "Fonts/monospace_serif.ttf",
-        proportional_serif:"Fonts/proportional_serif.ttf",
+        monospace_serif: "Fonts/monospaceserif.ttf",
+        proportional_serif:"Fonts/proportionalserif.ttf",
         casual:"Fonts/casual.ttf",
         cursive:"Fonts/cursive.ttf",
-        small_caps:"Fonts/small_caps.ttf"
+        small_caps:"Fonts/smallcaps.ttf"
 
     };
 }
