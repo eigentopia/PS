@@ -243,7 +243,15 @@ var MovieDetailTextWidget = function( ChannelDetailsObj ) {
                 } else if ( days_diff >= 90 ){
                     exp_date_text = '';
                 } else{
-                    exp_date_text = Dictionary.getText( Dictionary.TEXT.EXPIRES ) + ': ' + exp_date.getDate() + "/" + ( exp_date.getMonth() + 1 ) + "/" + exp_date.getFullYear();
+
+                    //format for country mm/ddyy for us
+                    //the right way for everyone else
+                    if(StorageManagerInstance.get( 'geocode' ).toUpperCase() == 'US'){
+                        exp_date_text = Dictionary.getText( Dictionary.TEXT.EXPIRES ) + ': ' + ( exp_date.getMonth() + 1 ) + "/" + exp_date.getDate() + "/" + exp_date.getFullYear();
+                    }
+                    else{   
+                        exp_date_text = Dictionary.getText( Dictionary.TEXT.EXPIRES ) + ': ' + exp_date.getDate() + "/" + ( exp_date.getMonth() + 1 ) + "/" + exp_date.getFullYear();
+                    }
                 }
 
                 if(exp_date_text != ''){
