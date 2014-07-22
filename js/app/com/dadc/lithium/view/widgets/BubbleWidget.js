@@ -117,11 +117,11 @@ var BubbleWidget = function( DataObj, tile_col, BubbleWidget_STYLE ) {
                 length_text = " | " + length_in_minutes + " " + Dictionary.getText( Dictionary.TEXT.MIN );
             }
 
-            // if( m_data_obj.getRating && m_data_obj.getGenre ){
-            //     var genre_text = strPad( m_data_obj.getGenre(), 27 );
-            //     rating_genre_length_container = engine.createTextBlock( m_data_obj.getRating() + " | " + genre_text + length_text, FontLibraryInstance.getFont_BUBBLELENGTH(), 1100 );
-            //     rating_genre_container = engine.createTextBlock( m_data_obj.getRating() + " | " + genre_text, FontLibraryInstance.getFont_BUBBLELENGTH(), 1100 );
-            // }
+            if( m_data_obj.getRating && m_data_obj.getGenre ){
+                var genre_text = strPad( m_data_obj.getGenre(), 27 );
+                rating_genre_length_container = engine.createTextBlock( m_data_obj.getRating() + " | " + genre_text + length_text, FontLibraryInstance.getFont_BUBBLELENGTH(), 1100 );
+                rating_genre_container = engine.createTextBlock( m_data_obj.getRating() + " | " + genre_text, FontLibraryInstance.getFont_BUBBLELENGTH(), 1100 );
+            }
 
             // Static Why It Crackles
             why_it_crackles_static_container = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.WHY_IT_CRACKLES ), FontLibraryInstance.getFont_BUBBLEWHYITCRACKLES(), 1100 );
@@ -182,24 +182,24 @@ var BubbleWidget = function( DataObj, tile_col, BubbleWidget_STYLE ) {
                         why_it_crackles_container.x = positions[ i ].x;
                         why_it_crackles_container.y = positions[ i ].y;
                         break;
-                    // case 'rating_genre_length':
-                    //     m_content_container.addChild( rating_genre_length_container );
-                    //     if ( positions[ i ].reverse ){
-                    //         rating_genre_length_container.x = m_root_node.width - rating_genre_length_container.width -  positions[ i ].x;
-                    //     }else{
-                    //         rating_genre_length_container.x = positions[ i ].x;
-                    //     }
-                    //     rating_genre_length_container.y = positions[ i ].y;
-                    //     break;
-                    // case 'rating_genre':
-                    //     m_content_container.addChild( rating_genre_container );
-                    //     if ( positions[ i ].reverse ){
-                    //         rating_genre_container.x = m_root_node.width - rating_genre_container.width -  positions[ i ].x;
-                    //     }else{
-                    //         rating_genre_container.x = positions[ i ].x;
-                    //     }
-                    //     rating_genre_container.y = positions[ i ].y;
-                    //     break;
+                    case 'rating_genre_length':
+                        m_content_container.addChild( rating_genre_length_container );
+                        if ( positions[ i ].reverse ){
+                            rating_genre_length_container.x = m_root_node.width - rating_genre_length_container.width -  positions[ i ].x;
+                        }else{
+                            rating_genre_length_container.x = positions[ i ].x;
+                        }
+                        rating_genre_length_container.y = positions[ i ].y;
+                        break;
+                    case 'rating_genre':
+                        m_content_container.addChild( rating_genre_container );
+                        if ( positions[ i ].reverse ){
+                            rating_genre_container.x = m_root_node.width - rating_genre_container.width -  positions[ i ].x;
+                        }else{
+                            rating_genre_container.x = positions[ i ].x;
+                        }
+                        rating_genre_container.y = positions[ i ].y;
+                        break;
                 }
             }
 
