@@ -2553,7 +2553,7 @@ var ApplicationController = function( screenObj ){
         complete();
     }
     //Initialize all the tracking.
-
+    Conviva.LivePass.toggleTraces(true)
     Conviva.LivePass.init( ConvivaIntegration.customerKey );
 
     Comscore.sendStartup();
