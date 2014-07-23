@@ -107,7 +107,13 @@ var FontLibrary = function(){
         else{
 
             var localStorage = engine.storage.local
-            var font = {font: FontLibrary.FONT.BOLD, size: 45, color: [255/255, 255/255, 0/255, 1.0], preserveSpaces: true};
+            var font = {font: FontLibrary.FONT.BOLD, 
+                        size: 45, 
+                        color: [255/255, 255/255, 0/255, 1.0], 
+                        preserveSpaces: true, 
+                        dynamic:true, 
+                        align:'justify',
+                        maxLines:4};
             if(localStorage["subFontConfig"]){
                 var subFontConfig = JSON.parse(localStorage["subFontConfig"])
                 var systemFont;
@@ -142,10 +148,74 @@ var FontLibrary = function(){
                 font.color[2] = subFontConfig.fontColor[2]/255 *100
                 font.color[3] = subFontConfig.fontColor[3]
                 font.preserveSpaces= true
+                font.dynamic = true
+                font.align = 'justify'
+
+                font.maxLines = 4;
             }
             currentFont = font;    
             return font
         }
+    }
+    var currentShadow=null
+    this.getFont_SUBTITLESHADOW = function(){
+        if(currentShadow !== null){
+            return currentShadow;
+        }
+        else{
+            var alpha = 1;
+            var localStorage = engine.storage.local
+            var font = {font: FontLibrary.FONT.BOLD, 
+                        size: 45, 
+                        color: [0/255, 0/255, 0/255, 1.0], 
+                        preserveSpaces: true, 
+                        dynamic:true, 
+                        align:'justify',
+                        maxLines:4};
+            if(localStorage["subFontConfig"]){
+                var subFontConfig = JSON.parse(localStorage["subFontConfig"])
+                var systemFont;
+                alpha = subFontConfig.fontColor[3]
+                switch (subFontConfig.fontType){
+                    case 'monospace':
+                        systemFont = FontLibrary.FONT.monospace
+                        break;
+                    case "proportional": 
+                        systemFont = FontLibrary.FONT.proportional
+                        break
+                    case 'monospaceserif':
+                        systemFont = FontLibrary.FONT.monospace_serif
+                        break;
+                    case "proportionalserif": 
+                        systemFont = FontLibrary.FONT.proportional_serif
+                        break
+                    case 'casual':
+                        systemFont = FontLibrary.FONT.casual
+                        break;
+                    case "cursive": 
+                        systemFont = FontLibrary.FONT.cursive
+                        break
+                    case 'smallcaps':
+                        systemFont = FontLibrary.FONT.small_caps
+                        break;
+                }
+
+                font.font = systemFont
+                font.size = 45//subFontConfig.size;
+                font.color[0] = 0/255//subFontShadowConfig.fontColor[0]/255 *100
+                font.color[1] = 0/255//subFontShadowConfig.fontColor[1]/255 *100
+                font.color[2] = 0/255//subFontShadowConfig.fontColor[2]/255 *100
+                font.color[3] = alpha
+                font.preserveSpaces= true
+                font.dynamic = true
+                font.align = 'justify'
+                font.maxLines = 4;
+
+            }
+            currentShadow = font;    
+            return font
+        }
+
     }
     this.getFont_SUBTITLECHOOSER = function(){
         return {font: FontLibrary.FONT.BOLD, size: 40, color: [255/255, 255/255, 255/255, 1.0], preserveSpaces: true};
