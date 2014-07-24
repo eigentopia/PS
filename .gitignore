@@ -224,10 +224,7 @@ sce_module/
 .DS_Store
 .DS_Store?
 ._*
-*.sprx
-*.self
 *.old
-*.conf
 .Spotlight-V100
 .Trashes
 ehthumbs.db
