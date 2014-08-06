@@ -112,7 +112,7 @@ var FontLibrary = function(){
                         color: [255/255, 255/255, 0/255, 1.0], 
                         preserveSpaces: true, 
                         dynamic:true, 
-                        align:'justify',
+                        alignment:'justify',
                         maxLines:4};
             if(localStorage["subFontConfig"]){
                 var subFontConfig = JSON.parse(localStorage["subFontConfig"])
@@ -149,7 +149,7 @@ var FontLibrary = function(){
                 font.color[3] = subFontConfig.fontColor[3]
                 font.preserveSpaces= true
                 font.dynamic = true
-                font.align = 'justify'
+                font.alignment = 'justify'
 
                 font.maxLines = 4;
             }
@@ -170,7 +170,7 @@ var FontLibrary = function(){
                         color: [0/255, 0/255, 0/255, 1.0], 
                         preserveSpaces: true, 
                         dynamic:true, 
-                        align:'justify',
+                        alignment:'justify',
                         maxLines:4};
             if(localStorage["subFontConfig"]){
                 var subFontConfig = JSON.parse(localStorage["subFontConfig"])
@@ -208,7 +208,7 @@ var FontLibrary = function(){
                 font.color[3] = alpha
                 font.preserveSpaces= true
                 font.dynamic = true
-                font.align = 'justify'
+                font.alignment = 'justify'
                 font.maxLines = 4;
 
             }

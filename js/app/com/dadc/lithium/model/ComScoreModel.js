@@ -15,7 +15,7 @@ var Comscore = function(){
     var contentPart = 0;
     var aggregatePart= 0;
     var currentTrackingObj ={};
-    var baseUrl ='http://b.scorecardresearch.com/p?c1=1&c2=' + comscoreId +'&c3=crackle.com&ns_ap_device='+platform+'&ns_ap_pn=console&c12=' + hashedDeviceID;
+    var baseUrl ='http://b.scorecardresearch.com/p2?c1=1&c2=' + comscoreId +'&c3=crackle.com&ns_ap_device='+platform+'&ns_ap_pn=console&c12=' + hashedDeviceID;
 
 
     function sendComScoreUrl( url ){
