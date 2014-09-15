@@ -172,4 +172,3 @@ AssetLoaderInstance.requireAsset( "Artwork/subtitle_checkmark.png" );
 AssetLoaderInstance.requireAsset( "Artwork/subtitle_checkmark_orange.png" );
 
 AssetLoaderInstance.requireAsset( "Artwork/pauseButton.png" )
-AssetLoaderInstance.requireAsset( "Artwork/FlickrApp-Icon.png" )
