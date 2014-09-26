@@ -145,7 +145,7 @@ var MediaDetails = function( json_data ){
     this.getMediaType                   = function(){return this.m_data.MediaType;};
     //this.getShowAdBefore                = function(){return this.m_data.ShowAdBefore;};
     //this.getShowAdAfter                 = function(){return this.m_data.ShowAdAfter;};
-    this.getScrubbingForgiveness        = function(){return this.m_data.ScrubbingForgiveness;};
+    this.getScrubbingForgiveness        = function(){return 30;}this.m_data.ScrubbingForgiveness;};
     //this.getPromotion                   = function(){return this.m_data.Promotion;};
     //this.getPromoted                    = function(){return this.m_data.Promoted;};
     //this.getEditorDescription           = function(){return this.m_data.EditorDescription;};
@@ -162,7 +162,7 @@ var MediaDetails = function( json_data ){
     //this.getCountViews                  = function(){return this.m_data.CountViews;};
     this.getDuration                    = function(){return this.m_data.Duration;};
     this.getDurationInSeconds           = function(){return this.m_data.DurationInSeconds;};
-    this.getChannelArtTileLarge     = function(){return this.m_data.Thumbnail_OneSheet185x277;};
+    this.getChannelArtTileLarge         = function(){return this.m_data.Thumbnail_OneSheet185x277;};
     //this.getDimensions                  = function(){return this.m_data.Dimensions;};
     //this.getFrameRate                   = function(){return this.m_data.FrameRate;};
     //this.getThumbnail_OneSheet          = function(){return this.m_data.Thumbnail_OneSheet;};
@@ -183,7 +183,7 @@ var MediaDetails = function( json_data ){
     this.getChapters                    = function(){return mediaDetailsChaptersListObj;};
     this.getRelatedItemsByMPM           = function(){return this.m_data.getRelatedItemsByMPM}
     this.getFeaturedMedia               = function(){return self;}
-    
+
     this.getMediaURLs = function(){
         var mediaUrls =[]
         var defaultMediaUrl = getVideoURLFromList(this.m_data.MediaURLs);
@@ -194,10 +194,10 @@ var MediaDetails = function( json_data ){
         // console.log("URLS")
         // console.dir(mediaUrls)
         // console.dir(this.m_data.MediaURLs)
-        
+
         //So this is where related things are hidden
         //m_data.RelatedItemsByMPM[ofObjects].LocalizedLanguage - for display in Row
-        //m_data.RelatedItemsByMPM[ofObjects].MediaUrls[ofObjects].Path    
+        //m_data.RelatedItemsByMPM[ofObjects].MediaUrls[ofObjects].Path
         if(this.m_data.RelatedItemsByMPM && this.m_data.RelatedItemsByMPM.length > 0){
             var relatedItems = this.m_data.RelatedItemsByMPM;
             for(var item = 0; item< relatedItems.length;item++){
@@ -205,20 +205,20 @@ var MediaDetails = function( json_data ){
                     var url = getVideoURLFromList( relatedItems[item].MediaURLs);
                     //LL must be here for text display
                     url.LocalizedLanguage = relatedItems[item].LocalizedLanguage
-                    mediaUrls.push(url); 
+                    mediaUrls.push(url);
                 }
             }
         }
 
         return mediaUrls;
     };
-    
+
     this.getClosedCaptionFiles = function(){
         var ccFiles = (this.m_data.ClosedCaptionFiles)?this.m_data.ClosedCaptionFiles:[]
         // console.log("GETCCFILES")
         // console.dir(ccFiles)
         //So this is where related things are hidden
-        //m_data.RelatedItemsByMPM[ofObjects].ClosedCaptionFiles[ofObjects].Path  
+        //m_data.RelatedItemsByMPM[ofObjects].ClosedCaptionFiles[ofObjects].Path
         if(this.m_data.RelatedItemsByMPM && this.m_data.RelatedItemsByMPM.length > 0){
             var relatedItems = this.m_data.RelatedItemsByMPM;
             for(var item =0;item<relatedItems.length;item++){
@@ -230,8 +230,8 @@ var MediaDetails = function( json_data ){
                     }
                 }
             }
-        } 
-        
+        }
+
         return ccFiles;
     };
     //this.getThumbnailScourDetails       = function(){return mediaDetailsThumbnailScourDetailsObj;};
