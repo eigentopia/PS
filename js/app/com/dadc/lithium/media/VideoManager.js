@@ -72,18 +72,25 @@ VideoManager = function(){
         var video_config = m_current_jsvideo.getVideoConfig();
         Logger.log( video_config["content-type"] );
         
+        UtilLibraryInstance.garbageCollect();
         switch( video_config["content-type"] ){
             case "video/mp4":
-                m_core_video_obj = getMP4Video();
+                m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_MP4 );
                 Logger.log( 'mp4' );
                 break;
             default:
-                m_core_video_obj = getM3U8Video();
+                m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_PROGRESSIVE );
                 Logger.log( 'm3u8' );
                 break;
         }
-        
+
+        m_core_video_obj.width = JSVideoObj.getWidth();
+        m_core_video_obj.height = JSVideoObj.getHeight();
+        m_core_video_obj.x = ( 1920 / 2 ) - ( JSVideoObj.getWidth() / 2 );
+        m_core_video_obj.y = ( 1080 / 2 ) - ( JSVideoObj.getHeight() / 2 );
+
         // assign listeners
+        m_core_video_obj.onOpened = onOpened;
         m_core_video_obj.onEnded = onEnded;
         m_core_video_obj.onError = onError;
         m_core_video_obj.onPlaying = onPlaying;
@@ -92,75 +99,13 @@ VideoManager = function(){
        
         // add the video to the screen
         m_root_node.addChild( m_core_video_obj );
-        // create a new video object based on the new jsvideo
-        // reacquireCoreVideo(function(){
-
-        m_core_video_obj.width = JSVideoObj.getWidth();
-        m_core_video_obj.height = JSVideoObj.getHeight();
-        m_core_video_obj.x = ( 1920 / 2 ) - ( JSVideoObj.getWidth() / 2 );
-        m_core_video_obj.y = ( 1080 / 2 ) - ( JSVideoObj.getHeight() / 2 );
+        m_core_video_obj.open( m_current_jsvideo.getVideoURL(), 
+            {"video-starttimeoffset": m_current_jsvideo.getResumeTime()} 
+        );
+        Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
+        Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime() );
         
-        try{
-            // open and play w/ current js video object params
-            var openok = m_core_video_obj.open( //m_current_jsvideo.getVideoURL() );
-                m_current_jsvideo.getVideoURL(), 
-                {"video-starttimeoffset": m_current_jsvideo.getResumeTime()} 
-            );
-            Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
-
-            // setting this did not work on mp4
-            Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime() );
-
-            if( openok ){
-                m_video_time_on_play_before_timeupdate = engine.getTimer();
-
-                Logger.log("open ok, will call play() on core video obj");
-                try{
-                    m_core_video_obj.play(); 
-                    return true;
-                }catch( e ){Logger.log("error with play(): " + e );return false;}
-            }else{
-                Logger.log("open not ok.");
-                
-                var openok2 = m_core_video_obj.open( //m_current_jsvideo.getVideoURL() );
-                    m_current_jsvideo.getVideoURL(), 
-                    {"video-starttimeoffset": m_current_jsvideo.getResumeTime()} 
-                );
-                    
-                if( openok2 ){
-                    m_video_time_on_play_before_timeupdate = engine.getTimer();
-
-                    Logger.log("open ok, will call play() on core video obj");
-                    try{
-                        m_core_video_obj.play(); 
-                        return true;
-                    }catch( e ){Logger.log("error with play(): " + e );return false;}
-                }else{
-                    Logger.log("open not ok.");
-                    var openok3 = m_core_video_obj.open( //m_current_jsvideo.getVideoURL() );
-                        m_current_jsvideo.getVideoURL(), 
-                        {"video-starttimeoffset": m_current_jsvideo.getResumeTime()} 
-                    );
-
-                    if( openok3 ){
-                        m_video_time_on_play_before_timeupdate = engine.getTimer();
-
-                        Logger.log("open ok, will call play() on core video obj");
-                        try{
-                            m_core_video_obj.play(); 
-                            return true;
-                        }catch( e ){Logger.log("error with play(): " + e );return false;}
-                    }else{
-                        Logger.log("open not ok.");
-                        return false;
-                    }
-                }
-            }
-        }catch( e ){
-            Logger.log("!!! open exception. !!!");
-            Logger.logObj( e );
-            return false;
-        }
+        
         Logger.log("core play called");
         
     }
@@ -185,35 +130,6 @@ VideoManager = function(){
         
         m_video_dimensions.width = width;
         m_video_dimensions.height = height;
-    }
-    this.cleanUpM3u8 = function(){
-        m_video_time_on_play_before_timeupdate = undefined;
-        m_m3u8_video_obj = null;
-        m_core_video_obj = null;
-        UtilLibraryInstance.garbageCollect();
-    }
-    
-    function getMP4Video(){
-        UtilLibraryInstance.garbageCollect();
-        var mp4vid = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_MP4 );
-            mp4vid.width = 1920;
-            mp4vid.height = 1080;
-            mp4vid.x = 0;
-            mp4vid.y = 0; 
-        return mp4vid;
-    }
-    
-    function getM3U8Video(){
-        UtilLibraryInstance.garbageCollect();
-        // if core video object is null, create all that are required.
-        if( m_m3u8_video_obj == null ){
-            m_m3u8_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_PROGRESSIVE );
-                m_m3u8_video_obj.width = 1920;
-                m_m3u8_video_obj.height = 1080;
-                m_m3u8_video_obj.x = 0;
-                m_m3u8_video_obj.y = 0;
-        }
-        return m_m3u8_video_obj;
     }
 
     this.getCoreVideo = function(){
@@ -248,18 +164,37 @@ VideoManager = function(){
     this.getCurrentJSVideo = function(){
         return m_current_jsvideo;
     }
+
+    function onOpened(){
+        Logger.log("core onOpened called");
+        m_video_time_on_play_before_timeupdate = engine.getTimer();
+        m_core_video_obj.play();
+
+        var CCSettings = m_core_video_obj.getCCSystemSettings();
+        console.log("CCSETTINGS")
+        console.dir(CCSettings)
+
+        engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
+
+        if( m_current_jsvideo != null ){
+            m_current_jsvideo.onOpened();  
+        }
+    }
     
     function onEnded(){
+        Logger.log("core onEnded called");
         if( m_current_jsvideo != null )
             m_current_jsvideo.onEnded();
     }
     
     function onError(){
+        Logger.log("core onError called");
         if( m_current_jsvideo != null )
             m_current_jsvideo.onError();
     }
     
     function onPlaying(){
+        Logger.log("core onPlaying called");
         if( m_current_jsvideo != null )
             m_current_jsvideo.onPlaying();
     }

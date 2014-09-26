@@ -58,128 +58,118 @@ var FreewheelVideo = function( adHeaderObj, FreewheelEventCallbackHelperObj, Fre
     this.play = function(adBreak)
     {
         Logger.log( 'FreewheelVideo.play()' );
-    
-        if( VideoManagerInstance.play( this ) === true )
-        {
-            AnalyticsManagerInstance.fireAdStartEvent(mediaObj);
-            FreewheelEventCallbackHelperObj.postSlotImpressionUrls();
-            adHeaderObj.postImpressionUrls();
-            FreewheelEventCallbackHelperObj.postImpressionUrls();
-            //Comscore.sendClip(adBreak);
-            return true;
-        }
-        else return false;
+        VideoManagerInstance.play( this );
+        return true;
+        // if( VideoManagerInstance.play( this ) === true )
+        // {
+        //     AnalyticsManagerInstance.fireAdStartEvent(mediaObj);
+        //     FreewheelEventCallbackHelperObj.postSlotImpressionUrls();
+        //     adHeaderObj.postImpressionUrls();
+        //     FreewheelEventCallbackHelperObj.postImpressionUrls();
+        //     //Comscore.sendClip(adBreak);
+        //     return true;
+        // }
+        // else return false;
     };
     
     /** stop ad playback */
     this.stop = function()
     {
         Logger.log("FreewheelVideo.stop()");
-        if( VideoManagerInstance.getCurrentJSVideo() === this )
-    {
+        if( VideoManagerInstance.getCurrentJSVideo() === this ){
             Logger.log("FreewheelVideo.stop() - will stop");
             VideoManagerInstance.stop();
             VideoManagerInstance.close();
         }
-    else
-    {
+        else{
             Logger.log("FreewheelVideo.stop() - will not stop");
         }
     };
     
     
     // DETECT MARK REACHED EVENTS AND DISPATCH
-    this.onTimeUpdate = function( currentTime, currentPTS )
-    {
-    var duration = adHeaderObj.getDuration();
-    
-    m_stalling_start_time = null;
-        //m_previous_time = m_current_time;
-        m_current_time = currentTime;
-    
-    if( currentTime >= 0 )
-    {
-        if( m_0hasFired === false )
-        {
-        Logger.shout("FreewheelAdVideo - FIRING START EVENTS");
-        m_0hasFired = true;
-        adHeaderObj.postPlayUrls();
-        FreewheelEventCallbackHelperObj.postPlayUrls();
+    this.onTimeUpdate = function( currentTime, currentPTS ){
+        var duration = adHeaderObj.getDuration();
+        
+        m_stalling_start_time = null;
+            //m_previous_time = m_current_time;
+            m_current_time = currentTime;
+        
+        if( currentTime >= 0 ){
+            if( m_0hasFired === false ){
+                Logger.log("FreewheelAdVideo - FIRING START EVENTS");
+                m_0hasFired = true;
+                adHeaderObj.postPlayUrls();
+                FreewheelEventCallbackHelperObj.postPlayUrls();
+            }
         }
-    }
-    if( currentTime >= duration * 0.25 )
-    {
-        if( m_25hasFired === false )
-        {
-        Logger.shout("FreewheelAdVideo - FIRING 25% QUARTILE");
-        m_25hasFired = true;
-        adHeaderObj.postFirstQuartileTrackingUrls();
-        FreewheelEventCallbackHelperObj.postFirstQuartileTrackingUrls();
+        if( currentTime >= duration * 0.25 ){
+            if( m_25hasFired === false ){
+                Logger.log("FreewheelAdVideo - FIRING 25% QUARTILE");
+                m_25hasFired = true;
+                adHeaderObj.postFirstQuartileTrackingUrls();
+                FreewheelEventCallbackHelperObj.postFirstQuartileTrackingUrls();
+            }
         }
-    }
-    if( currentTime >= duration * 0.5 )
-    {
-        if( m_50hasFired === false )
-        {
-        Logger.shout("FreewheelAdVideo - FIRING 50% QUARTILE");
-        m_50hasFired = true;
-        adHeaderObj.postMidPointTrackingUrls();
-        FreewheelEventCallbackHelperObj.postMidpointTrackingUrls();
+        if( currentTime >= duration * 0.5 ){
+            if( m_50hasFired === false ){
+                Logger.log("FreewheelAdVideo - FIRING 50% QUARTILE");
+                m_50hasFired = true;
+                adHeaderObj.postMidPointTrackingUrls();
+                FreewheelEventCallbackHelperObj.postMidpointTrackingUrls();
+            }
         }
-    }
-    if( currentTime >= duration * 0.75 )
-    {
-        if( m_75hasFired === false )
-        {
-        Logger.shout("FreewheelAdVideo - FIRING 75% QUARTILE");
-        m_75hasFired = true;
-        adHeaderObj.postThirdQuartileTrackingUrls();
-        FreewheelEventCallbackHelperObj.postThirdQuartileTrackingUrls();
+        if( currentTime >= duration * 0.75 ){
+            if( m_75hasFired === false ){
+                Logger.log("FreewheelAdVideo - FIRING 75% QUARTILE");
+                m_75hasFired = true;
+                adHeaderObj.postThirdQuartileTrackingUrls();
+                FreewheelEventCallbackHelperObj.postThirdQuartileTrackingUrls();
+            }
         }
-    }
     };
+
+    this.onOpened = function(){
+        
+    }
     
-    this.onEnded = function()
-    {
+    this.onEnded = function(){
         Logger.log( 'FreewheelAdVideo.onEnded()' );
-    Logger.shout("FreewheelAdVideo - FIRING COMPLETE");
+        Logger.shout("FreewheelAdVideo - FIRING COMPLETE");
         adHeaderObj.postCompleteTrackingUrls();
         FreewheelEventCallbackHelperObj.postCompleteTrackingUrls();
     
-    if( typeof ImpressionTracker !== "undefined" )
-        ImpressionTracker.report();
+        if( typeof ImpressionTracker !== "undefined" ){
+            ImpressionTracker.report();
+        }
     
         FreewheelPlaylistObj.onEnded( This );
     
        //notifyListeners( new EndOfMediaEvent( ) );
     };
     
-    this.onError = function()
-    {
+    this.onError = function(){
         // TODO: POST ERROR URL
         FreewheelPlaylistObj.onEnded( This );
        // notifyListeners( new PlaybackError( VideoManagerInstance.getPlaybackTimePTS() ) );
     };
     
-    this.onPlaying = function()
-    {
+    this.onPlaying = function(){
         m_stalling_start_time = null;
         //notifyListeners( new PlayingEvent( VideoManagerInstance.getPlaybackTimePTS() ) );
     };
     
-    this.onStalled = function()
-    {
+    this.onStalled = function(){
         //Logger.log('FreewheelVideo.onStalled()');
         
         // MILAN: Ad stall infinite timeout fix
-        if(m_stalling_start_time === null) 
-        m_stalling_start_time = engine.getTimer();
-        else 
-    {
+        if(m_stalling_start_time === null){ 
+            m_stalling_start_time = engine.getTimer();
+        }
+        else {
             var current_time = engine.getTimer();
             //Logger.log(current_time + " - " + m_stalling_start_time);
-            if (current_time - m_stalling_start_time > 10)
-        {
+            if (current_time - m_stalling_start_time > 10){
                 Logger.log("* GIVING UP ON AD PLAY * STALLED FOR TO LONG *");
                 m_stalling_start_time = null;
                 FreewheelPlaylistObj.onEnded(); 

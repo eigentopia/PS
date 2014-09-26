@@ -123,6 +123,9 @@ var InnovidInternalVideo = function( video_url, mediaGalleryAdViewObj )
         }
     }
     
+    this.onOpened = function(){
+        
+    }
     // on video end
     this.onEnded = function()
     {
