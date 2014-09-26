@@ -2,6 +2,7 @@ include( "js/app/com/dadc/lithium/util/SHA1.js" );
 include( "js/app/com/dadc/lithium/util/DateFormat.js" );
 //Because- come on. One request method to rule them all.
 var Http = function(){
+    var staging = false
     var httpRequestObj = null;
     var api_retries = 0;
     var http_retries = 0;
@@ -9,7 +10,8 @@ var Http = function(){
     var self = this
     var queue = [];
     var currentRequest;
-    var serverURLRoot = 'https://' + StorageManagerInstance.get( 'api_hostname' ) + '/Service.svc/';
+    var s = 'https://' + StorageManagerInstance.get( 'api_hostname' ) + '/Service.svc/';
+    var stagingURL = "https://staging-api-us.crackle.com/Service.svc/"
     var httpClientObj = engine.createHttpClient();
     httpClientObj.timeout = 15 * 1000;
 

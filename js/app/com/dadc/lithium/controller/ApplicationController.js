@@ -2520,23 +2520,13 @@ var ApplicationController = function( screenObj ){
         }
     }
 
-    ApplicationController.setPauseResumePoint = function(id, duration, callback){
+    ApplicationController.setPauseResumePoint = function(id, duration){
         if(crackleUser.id){
             var d  = parseInt(duration)
             var url =  ModelConfig.getServerURLRoot() + "pauseresume/media/"+id+"/set/"+ d+"/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json";
             Http.request(url, "GET", null, null, function(data, status){
-                if(data != null && status ==200){
-                    StorageManagerInstance.set( 'video_progress_' + id, duration)
-                    callback&&callback(true)
-                }
-                else{
-                    callback&&callback(false, status)
-                }
+                Logger.log("setPauseResumePoint returned status - " + status)
             })
-        }
-        else{
-            callback&&callback(false, null)
-        }
         //HttpRequest.startRequest()
     }
 
