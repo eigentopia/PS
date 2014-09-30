@@ -5,7 +5,7 @@ var AssetLoader = function(){
     var m_asset_load_listeners = new Array( );
     var m_images_loaded = 0;
     var m_images_obj = {};
-    var webglDev = (engine.stats.device.platform === 'html')?"file:///C:/Users/davidv/Documents/GitHub/Playstation/":"";
+    var webglDev = (engine.stats.device.platform === 'html')?"file:///C:/Users/davidv/Documents/GitHub/Playstation3/":"";
     
     this.requireAsset = function( asset_path ){
         m_required_assets[ m_required_assets.length ] = asset_path;

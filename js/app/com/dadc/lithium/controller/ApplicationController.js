@@ -2528,6 +2528,7 @@ var ApplicationController = function( screenObj ){
                 Logger.log("setPauseResumePoint returned status - " + status)
             })
         //HttpRequest.startRequest()
+        }
     }
 
 

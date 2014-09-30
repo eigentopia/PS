@@ -52,7 +52,7 @@ var ADForgiveness = function()
             return false;
         }
 
-        if( m_timer === null || current_timer > m_timer + 60 )
+        if( m_timer === null || current_timer > m_timer + forgiveness_in_seconds/*always 30*/ )
 	    {
             m_timer = null;
 	        m_adHasPlayed = true;

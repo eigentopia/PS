@@ -68,7 +68,7 @@ FreeWheelModel.FreeWheel_SmartXMLRequest = function( media_id, callback, freewhe
                     initHttpRequest();
                     httpRequestObj.start();
                 }else{
-                    callback( new FreeWheelModel.AdResponse( json_data ), status );
+                    callback( new FreeWheelModel.AdResponse( json_data.adResponse ), status );
                 }
             }catch( e ){
                 Logger.log( '!!! EXCEPTION !!!' );
