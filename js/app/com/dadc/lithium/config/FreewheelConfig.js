@@ -50,7 +50,7 @@ var FreewheelConfig = function()
 
     	// build the url
     	var output =	    LoggerConfig.FREEWHEEL.FREEWHEEL_URL +
-    	    "?nw=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID +
+    	    "?nw="   +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID +
     	    "&prof=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID + "%3a" + LoggerConfig.FREEWHEEL.FREEWHEEL_PROFILE +
     	    "&asnw=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID +
     	    "&ssnw=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID +
@@ -59,6 +59,8 @@ var FreewheelConfig = function()
     	    "&caid=" +	    media_id +
     	    "&vprn=" +	    rand(0, 9999999999) +
     	    "&pvrn=" +	    rand(0, 9999999999) +
+            "&k1="   +      localStorage.age +
+            "&k2="   +      localStorage.gender +
     	    "&flag=" +     "+vicb+qtcb+slcb+sltp;;";
 
 	   Logger.log("FreewheelConfig.getFreeWheelURL() - url: " + output);

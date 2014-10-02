@@ -53,7 +53,7 @@ FreeWheelModel.FreeWheel_SmartXMLRequest = function( media_id, callback, freewhe
         }else {
             try{
                 var json_data = XMLParser_DAC.XMLToJSON( data );
-                Logger.logObj( json_data );
+                console.log(json_data);
                 if ( !json_data ||
                     (
                         json_data.siteSection &&

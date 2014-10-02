@@ -2365,24 +2365,28 @@ var ApplicationController = function( screenObj ){
         return crackleUser;
     }
 
-    ApplicationController.setUserInfo= function(id, email, pass, cb){
-        if(!id){
+    ApplicationController.setUserInfo= function(user, cb){
+        if(user.userId == undefined){
             crackleUser.id = null
             crackleUser.email = null;
             crackleUser.watchlist = [];
+            localStorage.age = "";
+            localStorage.gender = "";
             localStorage.userPass = "";
             localStorage.userEmailAddress = "";
             localStorage.userId = ""
             return;
         }
 
-        crackleUser.id = id;
-        crackleUser.email = email;
+        crackleUser.id = user.userId;
+        crackleUser.email = user.email;
         crackleUser.watchlist = [];
 
-        localStorage.userPass = pass;
-        localStorage.userEmailAddress = email;
-        localStorage.userId = id;
+        localStorage.age = user.userAge;
+        localStorage.gender = user.userGender;
+        localStorage.userPass = user.password;
+        localStorage.userEmailAddress = user.email;
+        localStorage.userId = user.userId;
 
                     
 
