@@ -194,7 +194,9 @@ var MovieDetailsController = function ( ParentControllerObj ){
         
         mediaObj = MediaDetailsObj;
         mediaId = MediaDetailsObj.getID();
-        
+        // m_ad_manager = new ADManager( MediaDetailsObj, null );
+        // m_ad_manager.prepare();        
+        // m_ad_manager.addListener( self);
         //Comscore.startPlaylist(MediaDetailsObj)
         
         var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST)
