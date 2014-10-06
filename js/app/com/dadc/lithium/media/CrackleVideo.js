@@ -360,6 +360,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
     this.onOpened = function(){
         //Comscore.sendClip(m_current_time)
+        ConvivaIntegration.createSession(VideoManagerInstance.getCoreVideo(), m_video_url, m_media_details_obj)
     }
 
     this.onPlaying = function(){
