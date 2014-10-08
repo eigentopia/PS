@@ -39,6 +39,9 @@ var VideoController = function( ParentControllerObj )
     var m_seek_interval = INITIAL_SEEK_INTERVAL;
     var m_last_time = 0;
 
+    //stuff for UpNext
+    var totalVideosPlayed= 0;
+
     this.audioVideoUrlSwitch = false;
 
         // INNOVID INTEGRATION: maintain a reference to any IG videos that are playing
@@ -160,6 +163,13 @@ var VideoController = function( ParentControllerObj )
     var currentAudioVideoUrl=null; 
     var currentSubtitleUrl=null;
     var subsLoaded = false
+    var currentMediaList = null
+
+    //should be called before prepareToOpen
+    this.setMediaList = function (mediaList){
+
+        currentMediaList = mediaList
+    }
 
     this.prepareToOpen = function( MediaDetailsObj, audioVideoUrl, subtitleUrl )
     {
@@ -260,6 +270,12 @@ var VideoController = function( ParentControllerObj )
             m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, This, This );
             m_crackle_video.setSubtitleContainer(m_subtitle_container)
             
+            if(this.currentMediaList == null && MediaDetailsObj.videoContextList){
+                this.currentMediaList = MediaDetailsObj.videoContextList
+                for (var i=0; i<MediaDetailsObj.videoContextList.length;i++){
+                    console.log(MediaDetailsObj.videoContextList[i]);
+                }
+            }
             if(m_last_time>0){
                 m_crackle_video.setCurrentTime(m_last_time)
                 if(m_crackle_video.isPaused()){

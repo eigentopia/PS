@@ -155,6 +155,19 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
     this.requestParentAction = function( json_data_args ){};
     this.notifyPreparationStatus = function( controller_id ){};
     this.getUniqueID = function(){return m_unique_id;};
+    //God, really?
+    this.getItemList = function(){ 
+        var list = [];
+        var channelMediaList =  m_channel_folder_list_obj.m_data.FolderList[0].PlaylistList[0].MediaList
+
+        if(channelMediaList){
+            list = channelMediaList;
+        }
+
+        return list;
+
+       
+    }
     
     this.navDown = function(){
         if ( m_is_focussed && m_present_widgets.length > 0) {

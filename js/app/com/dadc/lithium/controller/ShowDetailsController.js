@@ -26,6 +26,7 @@ var ShowDetailsController = function( ParentControllerObj ){
     var m_media_details_timer;
     var media_details_request                   = null;
     var self = this;
+    var media_objs = [];
     
     var showChannelId;
     var currentMediaDetails; //for tracking. note this only loads on a second call to the API?!?!
@@ -34,6 +35,22 @@ var ShowDetailsController = function( ParentControllerObj ){
     this.getParentController = function(){return m_parent_controller_obj;};
     this.getDisplayNode = function( ){return m_root_node;};
     this.getControllerName = function(){return 'ShowDetailsController';};
+
+        //God, really?
+    this.getItemList = function(){ 
+        var list = [];
+        var channelMediaList =  media_objs
+
+        if(channelMediaList){
+            for(var i=0;i<channelMediaList.length;i++){
+                list.push(channelMediaList[i].data)
+            }
+        }
+
+        return list;
+
+       
+    }
 
     function checkUserWatchList(){
         ApplicationController.getUserPauseResumeList(function(){
@@ -118,7 +135,6 @@ var ShowDetailsController = function( ParentControllerObj ){
                     var folder_obj  = ChannelFolderListObj.getItem( i );
                     var folder_name = folder_obj.getName();
                     var playlistListObj = folder_obj.getPlaylistList();
-                    var media_objs = [];
                     
                     if( playlistListObj.getTotalLockedToChannel() > 0 ){
                         for( var ii = 0; ii < playlistListObj.getTotalLockedToChannel(); ii++ ){

@@ -1023,6 +1023,30 @@ var ApplicationController = function( screenObj ){
                 
                 repeatPSNCheck( function(){
                     m_controller_before_video_started = m_focused_controller;
+                    var videoContextList = []
+                    //Keep the context if coming from a list so we can next video
+                    if(m_controller_before_video_started.getControllerName() =='RecommendedWatchlistController' ||
+                        m_controller_before_video_started.getControllerName() == "ShowDetailsController"){
+
+                        // Folderlist> playlist> medialist
+                        videoContextList = m_controller_before_video_started.getItemList();
+                        //Add it to the object we are passing videoController
+                        json_data_args.MediaDetailsObj.videoContextList = videoContextList
+
+
+                    }
+                    else{ //get featured of MediaDetailsObj type
+                        var request = new FeaturedRequest( 'movies', 
+                                                        FeaturedRequest.FILTER_TYPE.ALL, 
+                                                        StorageManagerInstance.get( 'geocode' ), 
+                                                        60, 
+                                                        function( FeaturedObj, status ){
+                        //SAMPLE URL
+                        //http://api.crackle.com/Service.svc/featured/movies/all/us/30?format=json
+                            var boo = FeaturedObj;
+                        })
+                    }
+
                     // Wey: This fixes timeline bug where pending focused controller
                     // would still be set causing abnormal behaviors
                     m_pending_focused_controller = null;
