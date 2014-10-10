@@ -34,6 +34,12 @@ var Dictionary = function()
 var Dictionary = new Dictionary();
 
 Dictionary.TEXT = {
+    WANTTOCONTINE:{
+        'en': 'Would you like to continue watching?',
+        'pt': 'Would you like to continue watching?',
+        'es': 'Would you like to continue watching?',
+        'fr': 'Would you like to continue watching?' 
+    },
     WATCHLISTS: {
         'en': 'Watchlists',
         'pt': 'Filas',
@@ -244,6 +250,18 @@ Dictionary.TEXT = {
         'pt': 'Sobre',
         'es': 'Sobre',
 		'fr': 'Informations'
+    },
+    YES: {
+        'en': 'Yes',
+        'pt': 'Si',
+        'es': 'Si',
+        'fr': 'Oui'        
+    },
+    NO: {
+        'en': 'No',
+        'pt': 'No',
+        'es': 'No',
+        'fr': 'Non'
     },
     ABOUT_TEXT: {
         'en': 'Say hello to Crackle, a new kind of network for a new kind of viewer. We handpick the most compelling selection of full-length Hollywood movies, TV shows and originals for you to enjoy wherever, whenever you want. No hassles, no subscription, no commitment required. Ever. Crackle. It’s On. \n\nFor more information, terms of service and privacy policy please visit: \n\nwww.crackle.com/privacy.aspx \nwww.crackle.com/tos',

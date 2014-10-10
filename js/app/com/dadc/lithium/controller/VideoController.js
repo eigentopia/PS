@@ -41,6 +41,11 @@ var VideoController = function( ParentControllerObj )
 
     //stuff for UpNext
     var totalVideosPlayed= 0;
+    var currentVideoEndCreditMark= null;
+    var nextVideoOverlay = null
+    var nextVideoContinueOverlay = null
+    var currentMediaList = null
+    var currentMediaListIndex = 0;
 
     this.audioVideoUrlSwitch = false;
 
@@ -158,12 +163,48 @@ var VideoController = function( ParentControllerObj )
             }
             m_timeline_widget.update( engine_timer );
         }
+
+         if ( m_crackle_video && m_crackle_video.getCurrentTime() >= currentVideoEndCreditMark){
+            //Show the overlay- remember the conditions in enterpressed.
+            if (totalVideosPlayed>= 5){ //and there are actually more to play.
+                //pause
+                VideoManagerInstance.pause()
+                //show would you like to continue
+                openNextVideoContinueOverlay();
+                return;
+            }
+            if(!nextVideoOverlay){
+                openNextVideoOverlay();       
+            }
+         }
     };
+
+    function openNextVideoContinueOverlay(){
+        nextVideoContinueOverlay = new NextVideoContinueWidget()
+        m_root_node.addChild(nextVideoContinueOverlay.getDisplayNode())
+        //position
+
+    }
+
+    function closeNextVideoContinueOverlay(){
+        nextVideoContinueOverlay = null;
+        m_root_node.removeChild(nextVideoContinueOverlay.getDisplayNode())
+        VideoManagerInstance.pause()
+    }
+
+    function openNextVideoOverlay(){
+        nextVideoOverlay = new NextVideoWidget(MediaDetailsObj)
+        m_root_node.addChild(nextVideoOverlay.getDisplayNode())
+    }
+
+    function closeNextVideoOverlay(){
+        nextVideoOverlay = null
+        m_root_node.removeChild(nextVideoOverlay.getDisplayNode())
+    }    
 
     var currentAudioVideoUrl=null; 
     var currentSubtitleUrl=null;
     var subsLoaded = false
-    var currentMediaList = null
 
     //should be called before prepareToOpen
     this.setMediaList = function (mediaList){
@@ -193,6 +234,13 @@ var VideoController = function( ParentControllerObj )
         // console.log("2 prepareToOpen with")
         // console.log(currentAudioVideoUrl)
         // console.log(subtitleUrl)
+
+        if(currentVideoEndCreditMark == null){
+            currentVideoEndCreditMark = MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds;
+            if(MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds == null){
+                currentVideoEndCreditMark = MediaDetailsObj.data.DurationInSeconds - 10
+            }
+        }
 
         if(currentSubtitleUrl != subtitleUrl){
 
@@ -267,15 +315,23 @@ var VideoController = function( ParentControllerObj )
         {
 
             Logger.log("currentAudioVideoUrl: " + currentAudioVideoUrl);
-            m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, This, This );
-            m_crackle_video.setSubtitleContainer(m_subtitle_container)
-            
-            if(this.currentMediaList == null && MediaDetailsObj.videoContextList){
-                this.currentMediaList = MediaDetailsObj.videoContextList
+
+            if(currentMediaList == null && MediaDetailsObj.videoContextList){
+                currentMediaList = MediaDetailsObj.videoContextList
                 for (var i=0; i<MediaDetailsObj.videoContextList.length;i++){
                     console.log(MediaDetailsObj.videoContextList[i]);
+                    if (MediaDetailsObj.data.ID == MediaDetailsObj.videoContextList[i].ID){
+                        currentMediaListIndex = i;
+                    }
                 }
             }
+
+            totalVideosPlayed ++
+            
+            m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, This, This );
+            m_crackle_video.setSubtitleContainer(m_subtitle_container)
+
+            
             if(m_last_time>0){
                 m_crackle_video.setCurrentTime(m_last_time)
                 if(m_crackle_video.isPaused()){
@@ -287,6 +343,10 @@ var VideoController = function( ParentControllerObj )
 
 
     this.navLeft = function(){
+        if(nextVideoContinueOverlay){
+            nextVideoContinueOverlay.navLeft();
+            return;
+        }
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
             m_last_seek_timer = engine.getTimer();
             m_seek_direction = VideoController.SEEK_DIRECTION.RW;
@@ -311,6 +371,10 @@ var VideoController = function( ParentControllerObj )
         Logger.log('VideoController navRight' );
 
         Logger.log( 'VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ' + ( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ) );
+        if(nextVideoContinueOverlay){
+            nextVideoContinueOverlay.navRight();
+            return;
+        }
 
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
             m_last_seek_timer = engine.getTimer();
@@ -495,6 +559,13 @@ var VideoController = function( ParentControllerObj )
         this.circlePressed();
     }
 
+    this.playNext = function(){
+        currentMediaListIndex ++
+        m_last_time = 0;
+        m_playback_ready = false;
+        this.prepareToOpen(currentMediaList[currentMediaListIndex])
+    }
+
 
     /// potentially an issue
     this.notifyPlaybackReady = function()
@@ -511,9 +582,16 @@ var VideoController = function( ParentControllerObj )
             VideoManagerInstance.stop();
             VideoManagerInstance.close();
             VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_media_details_obj.getDurationInSeconds() );
-            m_parent_controller_obj.requestingParentAction(
-                {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: this}
-            );
+
+            //Is there more in the list?
+            if(currentMediaListIndex< currentMediaList.length){
+                this.playNext();
+            }
+            else{
+                m_parent_controller_obj.requestingParentAction(
+                    {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: this}
+                );
+            }
         }
         catch( e )
         {
