@@ -1,8 +1,6 @@
-/**
- * Error Widget
- */
+
 var ContinueWidget = function( ) {
-    var rootNode = engine.createContainer();
+    this.rootNode = engine.createContainer();
     var message = Dictionary.getText( Dictionary.TEXT.WANTTOCONTINE );
     this.yesButton;
     this.noButton;
@@ -15,9 +13,9 @@ var ContinueWidget = function( ) {
     //     }
     //     initWidget();
     // };
-    this.getDisplayNode = function(){
-        return rootNode;
-    };
+    // this.getDisplayNode = function(){
+    //     return rootNode;
+    // };
     // this.update = function( engine_timer ){
     //     if( LoggerConfig.CONFIG.UPDATE_DEBUG ) Logger.log( 'ErrorWidget update() ' + engine_timer );
     // }
@@ -31,35 +29,33 @@ var ContinueWidget = function( ) {
 //            tblock = engine.createTextBlock( 'Error', FontLibraryInstance.getFont_ERRORTITLE(), 1100 );
 //            m_root_node.addChild( tblock );
 
-    var tblock = engine.createTextBlock( message, FontLibraryInstance.getFont_ERRORMESSAGE(), 1100 );
+    var tblock = engine.createTextBlock( message, FontLibraryInstance.getFont_ERRORMESSAGE(), 700 );
 
-    yesButton = getButtonContainer(Dictionary.getText( Dictionary.TEXT.YES), 'selected');
-    yesButton.selected = true;
-    noButton = getButtonContainer(Dictionary.getText( Dictionary.TEXT.NO), 'unselected');
-    noButton.selected = false;
+    yesButton = Button(Dictionary.getText( Dictionary.TEXT.YES), true);
+    noButton = Button(Dictionary.getText( Dictionary.TEXT.NO), false);
 
     bg_slate.height = tblock.naturalHeight + 84 + 85
     
     tblock.x = ( bg_slate.width / 2 ) - ( tblock.naturalWidth / 2 );
     tblock.y = 30;
 
-    yesButton.x = 10
-    noButton.x = bg_slate.width - 10
-    yesButton.y = noButton.y = bg_slate.height - 114;
+    yesButton.rootNode.x = bg_slate.x + 100
+    noButton.rootNode.x = bg_slate.x + bg_slate.width - 220
+    yesButton.rootNode.y = noButton.rootNode.y = bg_slate.height - 100;
 
-    m_root_node.addChild( bg_slate );
-    m_root_node.addChild( tblock );
-    m_root_node.addChild( yesButton );
-    m_root_node.addChild( noButton );
+    this.rootNode.addChild( bg_slate );
+    this.rootNode.addChild( tblock );
+    this.rootNode.addChild( yesButton.rootNode );
+    this.rootNode.addChild( noButton.rootNode );
             
-        }catch( e ){
-            if( bg_slate && m_root_node.contains( bg_slate ) ){
-                m_root_node.removeChild( bg_slate );
-            }
-            if( tblock && m_root_node.contains( tblock ) ){
-                m_root_node.removeChild( tblock );
-            }
-        }
+        // }catch( e ){
+        //     if( bg_slate && m_root_node.contains( bg_slate ) ){
+        //         m_root_node.removeChild( bg_slate );
+        //     }
+        //     if( tblock && m_root_node.contains( tblock ) ){
+        //         m_root_node.removeChild( tblock );
+        //     }
+        // }
     //}
     
     function getBackgroundSlate(){
@@ -67,47 +63,65 @@ var ContinueWidget = function( ) {
         
         tmp_slate.shader            = ShaderCreatorInstance.createAlphaShader( 1 );
         tmp_slate.shader.texture    = AssetLoaderInstance.getImage( "Artwork/error_dialog.png" ).shader.texture;
-        tmp_slate.width             = AssetLoaderInstance.getImage( "Artwork/error_dialog.png" ).width;
-        tmp_slate.height            = AssetLoaderInstance.getImage( "Artwork/error_dialog.png" ).height;
+        tmp_slate.width             = 710//AssetLoaderInstance.getImage( "Artwork/error_dialog.png" ).width;
+        tmp_slate.height            = 300//AssetLoaderInstance.getImage( "Artwork/error_dialog.png" ).height;
 
         return tmp_slate;
     }
     
-    function getButtonContainer(text, state){
+    function Button(text, state){
 
-        var button_container = engine.createContainer();
+        var rootNode = engine.createContainer();
+        var selected = state
 
-        var button_slate 
-        if(state == "selected"){
-            button_slate = ShaderCreatorInstance.create9SliceShader( AssetLoaderInstance.getImage( "Artwork/buttons/button_small_orange.png" ), 14, 14, RGBLibraryInstance.getWHITE( 1 ) );
-        }else{
-            button_slate = ShaderCreatorInstance.create9SliceShader( AssetLoaderInstance.getImage( "Artwork/buttons/button_small_unselected.png" ), 14, 14, RGBLibraryInstance.getWHITE( 1 ) );  
+        var selectedSlate = ShaderCreatorInstance.create9SliceShader( AssetLoaderInstance.getImage( "Artwork/subnav_button_orange.png" ), 14, 14, RGBLibraryInstance.getWHITE( 1 ) );
+        var notSelectedSlate = ShaderCreatorInstance.create9SliceShader( AssetLoaderInstance.getImage( "Artwork/subnav_button_gray.png" ), 14, 14, RGBLibraryInstance.getWHITE( 1 ) );  
+   
+        selectedSlate.width = notSelectedSlate.width = 100 //AssetLoaderInstance.getImage( "Artwork/buttons/button_small_orange.png" ).width;
+        selectedSlate.height = notSelectedSlate.height = 50//AssetLoaderInstance.getImage( "Artwork/buttons/button_small_orange.png" ).height;
+
+        if(state == true ){
+            rootNode.addChild( selectedSlate );
+        }
+        else{   
+            rootNode.addChild( notSelectedSlate );
         }
         
-        button_slate.width = AssetLoaderInstance.getImage( "Artwork/buttons/button_small_orange.png" ).width;
-        button_slate.height = AssetLoaderInstance.getImage( "Artwork/buttons/button_small_orange.png" ).height;
-    
-        button_container.addChild( button_slate );
         
+        var tblock = engine.createTextBlock( text, FontLibraryInstance.getFont_ERRORBUTTON(), 50 );
+        tblock.x = selectedSlate.width/2 - tblock.naturalWidth/2;
+        tblock.y = selectedSlate.height/2 - tblock.naturalHeight/2;
+        rootNode.addChild( tblock );
         
-        var tblock = engine.createTextBlock( text, FontLibraryInstance.getFont_ERRORBUTTON(), 500 );
-        tblock.x = button_slate.width/2 - tblock.naturalWidth/2;
-        tblock.y = button_slate.height/2 - tblock.naturalHeight/2;
-        button_container.addChild( tblock );
-        
-        return button_container;
+        return {
+            rootNode:rootNode,
+            selected:function (){return selected},
+            select: function(state){
+                selected = state;
+                rootNode.removeChildAt[1]
+                var slate;
+                if(state == true){
+                    slate = selectedSlate
+                }
+                else{
+                    slate = notSelectedSlate; 
+                }
+                
+                rootNode.addChildAt(slate, 1)
+            }
+        };
     }
 
     this.navLeft = function(){
         if(noButton.selected){
-            yesButton.selected = true;
-            noButton.selected = false;
+            yesButton.select(true);
+            noButton.select(false);
         }
     }
     this.navRight = function(){
         if(yesButton.selected){
-            yesButton.selected = false;
-            noButton.selected = true;
+            yesButton.select(false);
+            noButton.select(true);            
         }
     }
     

@@ -42,11 +42,11 @@ var ShaderCreator = function(){
         return tmp_shader;
     }
 
-    this.createAlphaColorShader = function( RGBLibrary_COLOR ){
-        var tmp_shader = engine.createShader( "Shaders/vpBasic.cg", "Shaders/fpAlphaColor.cg" );
-            tmp_shader.fillColor = RGBLibrary_COLOR;
-        return tmp_shader;
-    }    
+    // this.createAlphaColorShader = function( RGBLibrary_COLOR ){
+    //     var tmp_shader = engine.createShader( "Shaders/vpBasic.cg", "Shaders/fpAlphaColor.cg" );
+    //         tmp_shader.fillColor = RGBLibrary_COLOR;
+    //     return tmp_shader;
+    // }    
 
     // todo: i don't think this is making a copy, upgrade so that it is.
     this.create9SliceShader = function( source_image, rounding_width, rounding_height, uf4_multiply_color ){

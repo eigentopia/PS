@@ -40,6 +40,12 @@ Dictionary.TEXT = {
         'es': 'Would you like to continue watching?',
         'fr': 'Would you like to continue watching?' 
     },
+    PRESSFORNEXT:{
+        'en': 'Press X or ENTER to start next video',
+        'pt': 'Press X or ENTER to start next video',
+        'es': 'Press X or ENTER to start next video',
+        'fr': 'Press X or ENTER to start next video' 
+    },
     WATCHLISTS: {
         'en': 'Watchlists',
         'pt': 'Filas',
