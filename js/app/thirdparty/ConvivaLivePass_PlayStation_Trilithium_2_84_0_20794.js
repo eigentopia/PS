@@ -1,4 +1,6 @@
-function ConvivaPrivateLoader(){};
+var loadConviva=typeof ConvivaPrivateLoader==='undefined';
+if(loadConviva){
+var ConvivaPrivateLoader=(typeof ConvivaPrivateLoader!=='undefined')?ConvivaPrivateLoader:(function(){});
 (function(){
 
 
@@ -467,8 +469,11 @@ return null;
 defStatMeth(_s,CandidateStream,"ConstructClone",__ConstructClone);defStatMeth(_s,CandidateStream,"ConstructClone",__ConstructClone);
 function __ConstructClone(fromObj){
 if(fromObj==null)return null;
-
-return fromObj;
+var res=new CandidateStream("",-1,null);
+res.id=NativeLang.GetStringField("id",fromObj);
+res.bitrate=slint.Cast(NativeLang.GetField("bitrate",fromObj));
+res.resource=NativeLang.GetStringField("resource",fromObj);
+return res;
 }
 
 if(_s!=STAT_INIT)_constr.apply(_s,arguments);
@@ -645,6 +650,21 @@ if(_s==STAT_INIT)ConvivaContentInfo.CDN_NAME_TELENOR="TELENOR";
 
 
 if(_s==STAT_INIT)ConvivaContentInfo.CDN_NAME_FASTLY="FASTLY";
+
+
+
+
+if(_s==STAT_INIT)ConvivaContentInfo.CDN_NAME_TELIA="TELIA";
+
+
+
+
+if(_s==STAT_INIT)ConvivaContentInfo.CDN_NAME_CHINANETCENTER="CHINANETCENTER";
+
+
+
+
+if(_s==STAT_INIT)ConvivaContentInfo.CDN_NAME_MIRRORIMAGE="MIRRORIMAGE";
 
 
 
@@ -907,6 +927,7 @@ defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_BT",ConvivaContentInfo.CDN_NAME_BT);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_CDNETWORKS",ConvivaContentInfo.CDN_NAME_CDNETWORKS);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_CDNVIDEO",ConvivaContentInfo.CDN_NAME_CDNVIDEO);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_CHINACACHE",ConvivaContentInfo.CDN_NAME_CHINACACHE);
+defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_CHINANETCENTER",ConvivaContentInfo.CDN_NAME_CHINANETCENTER);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_COMCAST",ConvivaContentInfo.CDN_NAME_COMCAST);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_EDGECAST",ConvivaContentInfo.CDN_NAME_EDGECAST);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_FASTLY",ConvivaContentInfo.CDN_NAME_FASTLY);
@@ -917,6 +938,7 @@ defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_IPONLY",ConvivaContentInfo.CDN_NAME_
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_LEVEL3",ConvivaContentInfo.CDN_NAME_LEVEL3);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_LIMELIGHT",ConvivaContentInfo.CDN_NAME_LIMELIGHT);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_MICROSOFT",ConvivaContentInfo.CDN_NAME_MICROSOFT);
+defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_MIRRORIMAGE",ConvivaContentInfo.CDN_NAME_MIRRORIMAGE);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_NGENIX",ConvivaContentInfo.CDN_NAME_NGENIX);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_NICE",ConvivaContentInfo.CDN_NAME_NICE);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_OCTOSHAPE",ConvivaContentInfo.CDN_NAME_OCTOSHAPE);
@@ -926,6 +948,7 @@ defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_SWARMCAST",ConvivaContentInfo.CDN_NA
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_TALKTALK",ConvivaContentInfo.CDN_NAME_TALKTALK);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_TELEFONICA",ConvivaContentInfo.CDN_NAME_TELEFONICA);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_TELENOR",ConvivaContentInfo.CDN_NAME_TELENOR);
+defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_TELIA",ConvivaContentInfo.CDN_NAME_TELIA);
 defStatMeth(_s,ConvivaContentInfo,"CDN_NAME_VELOCIX",ConvivaContentInfo.CDN_NAME_VELOCIX);
 defStatMeth(_s,ConvivaContentInfo,"DEVICE_TYPE_CONSOLE",ConvivaContentInfo.DEVICE_TYPE_CONSOLE);
 defStatMeth(_s,ConvivaContentInfo,"DEVICE_TYPE_MOBILE",ConvivaContentInfo.DEVICE_TYPE_MOBILE);
@@ -1230,7 +1253,6 @@ return 0;
 
 
 
-
 defPubMeth(_s,"GetPlayheadTimeMs",__GetPlayheadTimeMs);defPubMeth(_s,"GetPlayheadTimeMs",__GetPlayheadTimeMs);
 function __GetPlayheadTimeMs(){
 return-1;
@@ -1321,6 +1343,17 @@ return-1;
 defPubMeth(_s,"SetStartingBufferLengthMs",__SetStartingBufferLengthMs);defPubMeth(_s,"SetStartingBufferLengthMs",__SetStartingBufferLengthMs);
 function __SetStartingBufferLengthMs(ms){
 
+}
+
+
+
+
+
+
+
+defPubMeth(_s,"GetIsStartingBufferFull",__GetIsStartingBufferFull);defPubMeth(_s,"GetIsStartingBufferFull",__GetIsStartingBufferFull);
+function __GetIsStartingBufferFull(){
+return false;
 }
 
 
@@ -1546,7 +1579,6 @@ _s.SetDownloadStateChange(StreamInfo.VIDEO,ConvivaStreamerProxy.DOWNLOADSTATE_AC
 _s.SetDownloadStateChange(StreamInfo.AUDIO,ConvivaStreamerProxy.DOWNLOADSTATE_ACTIVE);
 
 
-
 var newInfo=_s._stream;
 _s._stream=new StreamInfo(-1,ConvivaContentInfo.CDN_NAME_OTHER,ConvivaContentInfo.NO_RESOURCE,-1,-1,-1);
 _s.SetStream(newInfo);
@@ -1728,7 +1760,6 @@ defPubMeth(_s,"GetDisplayHeight",__GetDisplayHeight);defPubMeth(_s,"GetDisplayHe
 function __GetDisplayHeight(){
 return _s._displayHeight;
 }
-
 
 
 
@@ -1984,6 +2015,7 @@ _s.SetStream(updatedStream);
 
 
 
+
 defPubMeth(_s,"SetCdnName",__SetCdnName);defPubMeth(_s,"SetCdnName",__SetCdnName);
 function __SetCdnName(updatedCdnName){
 var updatedStream=new StreamInfo(-2,updatedCdnName,null,-1,-1,-1);
@@ -2193,9 +2225,11 @@ if(LivePass.readyState){
 LivePass._utils.log("LivePass.init(): already initialized.");
 return;
 }
+if(LivePass._utils==null){
 
 
 LivePass._utils=Utils.CreateUtils(null);
+}
 if(customerKey==null||customerKey.length==0){
 LivePass._utils.err("LivePass.init(): invalid customerKey: "+customerKey);
 return;
@@ -2234,7 +2268,7 @@ if(LivePass.readyState){
 LivePass._utils.log("LivePass.initWithSettings(): already initialized.");
 return;
 }
-Utils.CreateUtils(settings);
+LivePass._utils=Utils.CreateUtils(settings);
 LivePass.init(customerKey);
 }
 
@@ -2257,6 +2291,7 @@ if(LivePass._utils!=null){
 LivePass._utils.cleanup();
 }
 LivePass._utils=null;
+LivePass._settings=null;
 },"LivePass.cleanup");
 }
 LivePass.readyState=false;
@@ -2350,7 +2385,6 @@ session.setCurrentStreamInfo(streamInfo);
 
 
 
-
 defStatMeth(_s,LivePass,"setCurrentStreamMetadata",__setCurrentStreamMetadata);
 function __setCurrentStreamMetadata(sessionId,metadata){
 if(!LivePass.readyState){
@@ -2367,6 +2401,24 @@ session.setCurrentStreamMetadata(metadata);
 }
 
 
+
+
+
+
+defStatMeth(_s,LivePass,"setCdnNameOrResource",__setCdnNameOrResource);
+function __setCdnNameOrResource(sessionId,resource){
+if(!LivePass.readyState){
+LivePass.ping("LivePass.setCdnNameOrResource before LivePass.init");
+return;
+}
+LivePass._utils.runProtected(
+function(){
+var session=LivePass._sessionFactory.getSession(sessionId);
+if(session!=null){
+session.setCdnNameOrResource(resource);
+}
+},"LivePass.setCdnNameOrResource");
+}
 
 
 
@@ -2408,69 +2460,6 @@ if(session!=null){
 session.attachStreamer(streamer);
 }
 },"LivePass.attachStreamer");
-}
-
-
-
-
-
-
-
-
-
-
-
-defStatMeth(_s,LivePass,"initialResourceBitrateSelection",__initialResourceBitrateSelection);
-function __initialResourceBitrateSelection(sessionId,candidateStreamsCallback){
-if(!LivePass.readyState){
-LivePass.ping("LivePass.initialResourceBitrateSelection before LivePass.init");
-return;
-}
-LivePass._utils.runProtected(
-function(){
-var session=LivePass._sessionFactory.getSession(sessionId);
-if(session!=null){
-session.initialResourceBitrateSelection();
-}
-},"LivePass.initialResourceBitrateSelection");
-
-}
-
-
-
-
-
-
-
-
-
-
-defStatMeth(_s,LivePass,"createPrecisionSession",__createPrecisionSession);
-function __createPrecisionSession(streamer,contentInfo){
-return 0;
-}
-
-
-
-
-
-
-
-
-
-defStatMeth(_s,LivePass,"midStreamResourceBitrateSelection",__midStreamResourceBitrateSelection);
-function __midStreamResourceBitrateSelection(sessionId,switchTrigger,candidateStreamsCallback){
-if(!LivePass.readyState){
-LivePass.ping("LivePass.midStreamResourceBitrateSelection before LivePass.init");
-return;
-}
-LivePass._utils.runProtected(
-function(){
-var session=LivePass._sessionFactory.getSession(sessionId);
-if(session!=null){
-session.midStreamResourceBitrateSelection(switchTrigger);
-}
-},"LivePass.midStreamResourceBitrateSelection");
 }
 
 
@@ -2778,34 +2767,72 @@ if(_s==STAT_INIT)StreamInfo.RESOURCE=3;
 
 
 
-if(_s!=STAT_INIT)_s.type=StreamInfo.UNKNOWN;
+
+
+
+if(_s!=STAT_INIT)_s.__auto_type=undefined;
+defGet(_s,"type",__get_type);defGet(_s,"type",__get_type);
+function __get_type(){return _s.__auto_type;}
+defSet(_s,"type",__set_type);defSet(_s,"type",__set_type);
+function __set_type(value){_s.__auto_type=value;}
 
 
 
 
 
 
-if(_s!=STAT_INIT)_s.sourceHeightPixels=-1;
+if(_s!=STAT_INIT)_s.__auto_sourceHeightPixels=undefined;
+defGet(_s,"sourceHeightPixels",__get_sourceHeightPixels);defGet(_s,"sourceHeightPixels",__get_sourceHeightPixels);
+function __get_sourceHeightPixels(){return _s.__auto_sourceHeightPixels;}
+defSet(_s,"sourceHeightPixels",__set_sourceHeightPixels);defSet(_s,"sourceHeightPixels",__set_sourceHeightPixels);
+function __set_sourceHeightPixels(value){_s.__auto_sourceHeightPixels=value;}
 
 
 
 
 
-if(_s!=STAT_INIT)_s.sourceWidthPixels=-1;
+
+if(_s!=STAT_INIT)_s.__auto_sourceWidthPixels=undefined;
+defGet(_s,"sourceWidthPixels",__get_sourceWidthPixels);defGet(_s,"sourceWidthPixels",__get_sourceWidthPixels);
+function __get_sourceWidthPixels(){return _s.__auto_sourceWidthPixels;}
+defSet(_s,"sourceWidthPixels",__set_sourceWidthPixels);defSet(_s,"sourceWidthPixels",__set_sourceWidthPixels);
+function __set_sourceWidthPixels(value){_s.__auto_sourceWidthPixels=value;}
 
 
 
 
 
-if(_s!=STAT_INIT)_s.bitrateKbps=-1;
+
+
+if(_s!=STAT_INIT)_s.__auto_bitrateKbps=undefined;
+defGet(_s,"bitrateKbps",__get_bitrateKbps);defGet(_s,"bitrateKbps",__get_bitrateKbps);
+function __get_bitrateKbps(){return _s.__auto_bitrateKbps;}
+defSet(_s,"bitrateKbps",__set_bitrateKbps);defSet(_s,"bitrateKbps",__set_bitrateKbps);
+function __set_bitrateKbps(value){_s.__auto_bitrateKbps=value;}
 
 
 
-if(_s!=STAT_INIT)_s.resource=null;
 
 
 
-if(_s!=STAT_INIT)_s.cdnName=null;
+
+if(_s!=STAT_INIT)_s.__auto_resource=undefined;
+defGet(_s,"resource",__get_resource);defGet(_s,"resource",__get_resource);
+function __get_resource(){return _s.__auto_resource;}
+defSet(_s,"resource",__set_resource);defSet(_s,"resource",__set_resource);
+function __set_resource(value){_s.__auto_resource=value;}
+
+
+
+
+
+
+
+if(_s!=STAT_INIT)_s.__auto_cdnName=undefined;
+defGet(_s,"cdnName",__get_cdnName);defGet(_s,"cdnName",__get_cdnName);
+function __get_cdnName(){return _s.__auto_cdnName;}
+defSet(_s,"cdnName",__set_cdnName);defSet(_s,"cdnName",__set_cdnName);
+function __set_cdnName(value){_s.__auto_cdnName=value;}
 
 
 
@@ -2857,8 +2884,14 @@ return _s.cdnName==other.cdnName&&_s.resource==other.resource&&_s.bitrateKbps==o
 defStatMeth(_s,StreamInfo,"ConstructClone",__ConstructClone);defStatMeth(_s,StreamInfo,"ConstructClone",__ConstructClone);
 function __ConstructClone(fromObj){
 if(fromObj==null)return null;
-
-return fromObj;
+var res=new StreamInfo(-1,ConvivaContentInfo.CDN_NAME_OTHER,null,-1,-1,-1);
+res.type=slint.Cast(NativeLang.GetField("type",fromObj));
+res.bitrateKbps=slint.Cast(NativeLang.GetField("bitrateKbps",fromObj));
+res.resource=NativeLang.GetStringField("resource",fromObj);
+res.cdnName=NativeLang.GetStringField("cdnName",fromObj);
+res.sourceHeightPixels=slint.Cast(NativeLang.GetField("sourceHeightPixels",fromObj));
+res.sourceWidthPixels=slint.Cast(NativeLang.GetField("sourceWidthPixels",fromObj));
+return res;
 }
 
 defPubMeth(_s,"ToStr",__ToStr);defPubMeth(_s,"ToStr",__ToStr);
@@ -3144,8 +3177,14 @@ return null;
 
 defStatMeth(_s,StreamSwitch,"ConstructClone",__ConstructClone);defStatMeth(_s,StreamSwitch,"ConstructClone",__ConstructClone);
 function __ConstructClone(fromObj){
-
-return fromObj;
+var res=new StreamSwitch(null,null,null,-1,"","");
+res.id=NativeLang.GetStringField("id",fromObj);
+res.sourceStream=CandidateStream.ConstructClone(NativeLang.GetField("sourceStream",fromObj));
+res.targetStream=CandidateStream.ConstructClone(NativeLang.GetField("targetStream",fromObj));
+res.timeoutMs=slint.Cast(NativeLang.GetField("timeoutMs",fromObj));
+res.mode=NativeLang.GetStringField("mode",fromObj);
+res.status=NativeLang.GetStringField("status",fromObj);
+return res;
 }
 
 
@@ -3221,19 +3260,44 @@ if(_s==STAT_INIT)StreamerError.SEVERITY_WARNING=0;
 if(_s==STAT_INIT)StreamerError.SEVERITY_FATAL=1;
 
 
-if(_s!=STAT_INIT)_s.errorCode=undefined;
+
+if(_s!=STAT_INIT)_s.__auto_errorCode=undefined;
+defGet(_s,"errorCode",__get_errorCode);defGet(_s,"errorCode",__get_errorCode);
+function __get_errorCode(){return _s.__auto_errorCode;}
+defSet(_s,"errorCode",__set_errorCode);defSet(_s,"errorCode",__set_errorCode);
+function __set_errorCode(value){_s.__auto_errorCode=value;}
 
 
-if(_s!=STAT_INIT)_s.severity=undefined;
+
+if(_s!=STAT_INIT)_s.__auto_severity=undefined;
+defGet(_s,"severity",__get_severity);defGet(_s,"severity",__get_severity);
+function __get_severity(){return _s.__auto_severity;}
+defSet(_s,"severity",__set_severity);defSet(_s,"severity",__set_severity);
+function __set_severity(value){_s.__auto_severity=value;}
 
 
-if(_s!=STAT_INIT)_s.stream=undefined;
+
+if(_s!=STAT_INIT)_s.__auto_stream=undefined;
+defGet(_s,"stream",__get_stream);defGet(_s,"stream",__get_stream);
+function __get_stream(){return _s.__auto_stream;}
+defSet(_s,"stream",__set_stream);defSet(_s,"stream",__set_stream);
+function __set_stream(value){_s.__auto_stream=value;}
 
 
-if(_s!=STAT_INIT)_s.index=undefined;
+
+if(_s!=STAT_INIT)_s.__auto_index=undefined;
+defGet(_s,"index",__get_index);defGet(_s,"index",__get_index);
+function __get_index(){return _s.__auto_index;}
+defSet(_s,"index",__set_index);defSet(_s,"index",__set_index);
+function __set_index(value){_s.__auto_index=value;}
 
 
-if(_s!=STAT_INIT)_s.scope=undefined;
+
+if(_s!=STAT_INIT)_s.__auto_scope=undefined;
+defGet(_s,"scope",__get_scope);defGet(_s,"scope",__get_scope);
+function __get_scope(){return _s.__auto_scope;}
+defSet(_s,"scope",__set_scope);defSet(_s,"scope",__set_scope);
+function __set_scope(value){_s.__auto_scope=value;}
 
 
 
@@ -3301,8 +3365,13 @@ _s.scope=_scope;
 defStatMeth(_s,StreamerError,"ConstructClone",__ConstructClone);defStatMeth(_s,StreamerError,"ConstructClone",__ConstructClone);
 function __ConstructClone(fromObj){
 if(fromObj==null)return null;
-
-return fromObj;
+var res=new StreamerError("",null,0,0,0);
+res.errorCode=NativeLang.GetStringField("errorCode",fromObj);
+res.severity=slint.Cast(NativeLang.GetField("severity",fromObj));
+res.stream=StreamInfo.ConstructClone(NativeLang.GetField("stream",fromObj));
+res.scope=slint.Cast(NativeLang.GetField("scope",fromObj));
+res.index=slint.Cast(NativeLang.GetField("index",fromObj));
+return res;
 }
 
 defPubMeth(_s,"ToStr",__ToStr);defPubMeth(_s,"ToStr",__ToStr);
@@ -3393,12 +3462,14 @@ _s._utils=Utils.getInstance();
 _s._contentInfo=contentInfo;
 _s._sessionId=sessionId;
 _s._nextHeartbeat=new DictionaryCS();
+_s._streamerObject=streamer;
 
 _s._startTimeMs=0;
 _s._lastStateUpdateTimeMs=0;
 
 _s._pauseJoinTimeStartTimeMs=0;
 _s._pauseJointTimeTotalMs=0;
+
 
 _s._cumulativeTimePerState=new DictionaryCS();
 var _for_array_1=PlayerStates.stateToInt.KeyValuePairs;
@@ -3417,8 +3488,6 @@ _s._encodedFps=-1;
 _s._contentLengthSec=-1;
 _s._playingFpsObservationCount=0;
 _s._playingFpsTotal=0;
-
-_s._streamerObject=streamer;
 }
 
 defPubMeth(_s,"start",__start);
@@ -3428,6 +3497,7 @@ _s._lastStateUpdateTimeMs=nowMs;
 _s.buildInitialStreamInfo();
 
 _s.attachStreamer(_s._streamerObject);
+_s._streamerObject=null;
 }
 
 
@@ -3448,25 +3518,12 @@ return;
 _s._streamer=Monitor.wrapInConvivaStreamerProxy(streamerObject,_s._sessionId);
 
 _s._sessionFlags=_s._streamer.GetCapabilities();
+_s.SetPlayingState(ConvivaStreamerProxy.UNKNOWN);
+
+
 _s._streamer.SetMonitoringNotifier(_s.notificationFromStreamerProxy);
 
-
 _s._lastStateUpdateTimeMs=_s._utils.epochTimeMs();
-_s.SetPlayingState(_s._streamer.GetPlayingState());
-
-
-if(_s._streamInfo!=null){
-_s._streamer.SetStream(_s._streamInfo);
-}
-_s._streamInfo=_s._streamer.GetStream();
-
-
-if(_s._streamer.GetLastMetadata()!=null){
-_s.OnMetadata(_s._streamer.GetLastMetadata());
-}
-if(_s._streamer.GetLastError()!=null){
-_s.OnError(_s._streamer.GetLastError());
-}
 }
 
 
@@ -3480,6 +3537,7 @@ _s.SetPlayingState(ConvivaStreamerProxy.NOT_MONITORED);
 _s._streamer=null;
 }
 }
+
 
 defPubMeth(_s,"pauseJoinTime",__pauseJoinTime);
 function __pauseJoinTime(){
@@ -3495,6 +3553,7 @@ _s.declareStateChange(newState,oldState);
 }
 
 }
+
 
 
 
@@ -3528,6 +3587,7 @@ var initialCdnName=ConvivaContentInfo.CDN_NAME_OTHER;
 
 if(_s._contentInfo!=null){
 initialCdnName=_s._contentInfo.defaultReportingCdnName;
+
 if(_s._contentInfo.defaultReportingResource==null||
 _s._contentInfo.defaultReportingResource==ConvivaContentInfo.NO_RESOURCE){
 initialResource=initialCdnName;
@@ -3536,16 +3596,6 @@ initialResource=_s._contentInfo.defaultReportingResource;
 }
 initialBitrateKbps=_s._contentInfo.defaultReportingBitrateKbps;
 }
-
-
-
-
-
-
-
-
-
-
 
 _s._streamInfo=new StreamInfo(initialBitrateKbps,initialCdnName,initialResource,-1,-1,-1);
 }
@@ -3630,9 +3680,42 @@ _s.OnPlayingStateChange(newState);
 }
 
 
-defPrivMeth(_s,"SetStream",__SetStream);
+defPubMeth(_s,"SetStream",__SetStream);
 function __SetStream(targetStream){
-if(targetStream!=null){
+if(targetStream==null){
+return;
+}
+
+
+
+
+
+
+
+if(_s._streamer!=null){
+if(targetStream.bitrateKbps==_s._streamer.GetBitrateKbps()){
+
+targetStream.bitrateKbps=-2;
+}
+if(targetStream.cdnName==_s._streamer.GetCdnName()){
+
+targetStream.cdnName=null;
+}
+if(targetStream.resource==_s._streamer.GetResource()){
+
+targetStream.resource=null;
+}
+}
+
+
+if(targetStream.resource==null&&targetStream.cdnName!=null&&_s._streamInfo.cdnName==_s._streamInfo.resource){
+targetStream.resource=targetStream.cdnName;
+}
+if(targetStream.bitrateKbps<=-2)targetStream.bitrateKbps=_s._streamInfo.bitrateKbps;
+if(targetStream.cdnName==null)targetStream.cdnName=_s._streamInfo.cdnName;
+if(targetStream.resource==null||targetStream.resource==ConvivaContentInfo.NO_RESOURCE)targetStream.resource=_s._streamInfo.resource;
+if(!_s._streamInfo.equals(targetStream)){
+_s.updateStateCumulativeTime();
 _s.enqueueStreamChangeEvent(_s._streamInfo,targetStream);
 _s._streamInfo=targetStream;
 }
@@ -3647,22 +3730,24 @@ _s.declareError(e.errorCode,(e.severity==StreamerError.SEVERITY_FATAL));
 
 defPrivMeth(_s,"OnMetadata",__OnMetadata);
 function __OnMetadata(metadata){
-var metadataDict=Lang.DictionaryFromRepr(metadata);
-if(metadataDict.ContainsKey("framerate")){
-_s._encodedFps=slint.Cast(_s._utils.parseNumber(metadataDict.GetValue("framerate"),-1));
-_s._utils.logSession("Monitor: received framerate metadata: "+_s._encodedFps,_s._sessionId);
-}
-if(metadataDict.ContainsKey("duration")){
-_s._contentLengthSec=slint.Cast(_s._utils.parseNumber(metadataDict.GetValue("duration"),-1));
-_s._utils.logSession("Monitor: received duration metadata: "+_s._contentLengthSec,_s._sessionId);
-}
-}
 
+var metadataDict=Lang.DictionaryFromRepr(metadata);
+if(metadataDict.ContainsKey(ConvivaStreamerProxy.METADATA_ENCODED_FRAMERATE)){
+_s._encodedFps=slint.Cast(_s._utils.parseNumber(metadataDict.GetValue(ConvivaStreamerProxy.METADATA_ENCODED_FRAMERATE),-1));
+_s._utils.logSession("Monitor: received "+ConvivaStreamerProxy.METADATA_ENCODED_FRAMERATE+" metadata: "+_s._encodedFps,_s._sessionId);
+}
+if(metadataDict.ContainsKey(ConvivaStreamerProxy.METADATA_DURATION)){
+_s._contentLengthSec=slint.Cast(_s._utils.parseNumber(metadataDict.GetValue(ConvivaStreamerProxy.METADATA_DURATION),-1));
+_s._utils.logSession("Monitor: received "+ConvivaStreamerProxy.METADATA_DURATION+" metadata: "+_s._contentLengthSec,_s._sessionId);
+}
+}
 
 
 defPubMeth(_s,"updateHeartbeat",__updateHeartbeat);
 function __updateHeartbeat(heartbeat){
 _s.updateMetrics();
+
+
 var playingTime=_s._cumulativeTimePerState.GetValue(PlayerStates.ePlaying);
 var hasJoined=(_s._joinTimeMs>=0);
 var bufferingTime=0;
@@ -3716,9 +3801,13 @@ if(_s._streamer!=null){
 _s._streamer.Cleanup();
 }
 _s._streamer=null;
+_s._streamerObject=null;
 _s._eventQueue=null;
 _s._contentInfo=null;
 _s._nextHeartbeat=null;
+_s._streamInfo=null;
+_s._cumulativeTimePerState=null;
+_s._utils=null;
 }
 
 defPrivMeth(_s,"updateMetrics",__updateMetrics);
@@ -3734,23 +3823,13 @@ _s._playingFpsObservationCount++;
 _s.updateStateCumulativeTime();
 }
 
-
-
-
 defPrivMeth(_s,"enqueueEvent",__enqueueEvent);
 function __enqueueEvent(type,eventData){
 _s._eventQueue.enqueueEvent(type,eventData,slint.Cast(_s._utils.epochTimeMs()-_s._startTimeMs));
 }
 
-
-
 defPrivMeth(_s,"enqueueStreamChangeEvent",__enqueueStreamChangeEvent);
 function __enqueueStreamChangeEvent(oldStream,newStream){
-if(oldStream.equals(newStream)){
-return;
-}
-_s.updateStateCumulativeTime();
-
 var newState=new DictionaryCS();
 var oldState=new DictionaryCS();
 if(oldStream.GetBitrateKbps()!=newStream.GetBitrateKbps()&&newStream.GetBitrateKbps()>0){
@@ -3758,15 +3837,15 @@ oldState.SetValue("br",oldStream.GetBitrateKbps());
 newState.SetValue("br",newStream.GetBitrateKbps());
 _s._utils.logSession("Monitor: change bitrate from "+oldState.GetValue("br")+" to "+newState.GetValue("br"),_s._sessionId);
 }
-if(oldStream.GetResource()!=newStream.GetResource()){
-oldState.SetValue("rs",oldStream.GetResource());
-newState.SetValue("rs",newStream.GetResource());
-_s._utils.logSession("Monitor: change resource from "+oldState.GetValue("rs")+" to "+newState.GetValue("rs"),_s._sessionId);
-}
 if(oldStream.GetCdnName()!=newStream.GetCdnName()){
 oldState.SetValue("cdn",oldStream.GetCdnName());
 newState.SetValue("cdn",newStream.GetCdnName());
 _s._utils.logSession("Monitor: change cdnName from "+oldState.GetValue("cdn")+" to "+newState.GetValue("cdn"),_s._sessionId);
+}
+if(oldStream.GetResource()!=newStream.GetResource()){
+oldState.SetValue("rs",oldStream.GetResource());
+newState.SetValue("rs",newStream.GetResource());
+_s._utils.logSession("Monitor: change resource from "+oldState.GetValue("rs")+" to "+newState.GetValue("rs"),_s._sessionId);
 }
 _s.declareStateChange(newState,oldState);
 }
@@ -3903,9 +3982,6 @@ statInit(EventQueue,"EventQueue");
 function Session(){
 var _s=this;
 
-if(_s!=STAT_INIT)_s.streamer=null;
-
-
 if(_s!=STAT_INIT)_s._contentInfo=null;
 
 
@@ -3932,8 +4008,6 @@ if(_s!=STAT_INIT)_s._startTimeMs=0;
 if(_s!=STAT_INIT)_s._heartbeatSequenceNumber=0;
 
 function _constr(streamer,contentInfo,global){
-
-_s.streamer=streamer;
 _s._contentInfo=contentInfo;
 _s._utils=Utils.getInstance();
 _s._settings=_s._utils.getSettings();
@@ -4100,28 +4174,25 @@ _s._clientIdWaiter=null;
 }
 if(_s._monitor!=null){
 _s._monitor.cleanup();
+_s._monitor=null;
 }
 if(_s._encodeHeartbeatTimer!=null){
 _s._encodeHeartbeatTimer.cleanup();
 _s._encodeHeartbeatTimer=null;
 }
-_s._monitor=null;
-_s.streamer=null;
+if(_s._eventQueue!=null){
+_s._eventQueue.flushEvents();
+_s._eventQueue=null;
+}
+_s._contentInfo=null;
+_s._nativeReprTags=null;
+_s._settings=null;
+_s._utils=null;
 }
 
 defPrivMeth(_s,"log",__log);
 function __log(message){
 _s._utils.logSession(message,_s._sessionId);
-}
-
-
-defPubMeth(_s,"setCurrentStreamInfo",__setCurrentStreamInfo);
-function __setCurrentStreamInfo(streamInfo){
-_s.log("Session.setCurrentStreamInfo(): bitrate="+streamInfo.bitrateKbps+" resource="+streamInfo.resource);
-if(_s._monitor!=null&&_s._monitor.streamer!=null){
-
-_s._monitor.streamer.SetStream(streamInfo);
-}
 }
 
 
@@ -4135,12 +4206,31 @@ _s._monitor.OnError(err);
 }
 
 
+defPubMeth(_s,"setCurrentStreamInfo",__setCurrentStreamInfo);
+function __setCurrentStreamInfo(streamInfo){
+_s.log("Session.setCurrentStreamInfo(): bitrate="+streamInfo.bitrateKbps+" cdnName="+streamInfo.cdnName+" resource="+streamInfo.resource);
+if(_s._monitor!=null&&_s._monitor.streamer!=null){
+
+_s._monitor.streamer.SetStream(streamInfo);
+}
+}
+
+
 defPubMeth(_s,"setCurrentStreamMetadata",__setCurrentStreamMetadata);
 function __setCurrentStreamMetadata(metadata){
 _s.log("Session.setCurrentStreamMetadata()");
 if(_s._monitor!=null&&_s._monitor.streamer!=null){
 
 _s._monitor.streamer.SetMetadata(metadata);
+}
+}
+
+defPubMeth(_s,"setCdnNameOrResource",__setCdnNameOrResource);
+function __setCdnNameOrResource(resource){
+_s.log("Session.setCdnNameOrResource()");
+if(_s._monitor!=null){
+var newStream=new StreamInfo(-2,resource,resource,-1,-1,-1);
+_s._monitor.SetStream(newStream);
 }
 }
 
@@ -4265,8 +4355,7 @@ return "";
 
 defPrivMeth(_s,"encodeAndPostHeartbeat",__encodeAndPostHeartbeat);
 function __encodeAndPostHeartbeat(heartbeat,afterPostCbk){
-_s._utils.jsonEncode(heartbeat,
-function(jsonHeartbeat){
+var jsonHeartbeat=_s._utils.jsonEncode(heartbeat);
 var url=_s._settings.gatewayUrl+_s._settings.gatewayPath;
 var contentType="application/json";
 _s.log("Send HB["+(_s._heartbeatSequenceNumber-1)+"]"+_s.sessionTypeTag());
@@ -4274,17 +4363,18 @@ _s._utils.httpRequest(true,url,jsonHeartbeat,contentType,_s.onHeartbeatResponse)
 if(afterPostCbk!=null){
 afterPostCbk();
 }
-});
 }
 
 
 
 defPrivMeth(_s,"onHeartbeatResponse",__onHeartbeatResponse);
 function __onHeartbeatResponse(isSuccess,jsonResponse){
+if(_s._utils!=null){
 _s._utils.runProtected(
 function(){
 if(isSuccess){
 var decodedResponse=_s._utils.jsonDecode(jsonResponse);
+if(decodedResponse!=null){
 if(decodedResponse.ContainsKey("clid")){
 _s._utils.setClientIdFromServer(Lang.ToString((decodedResponse.GetValue("clid"))),false);
 }
@@ -4311,9 +4401,13 @@ _s._settings.gatewayUrl=gatewayUrl;
 }
 }
 }else{
-_s.log("Received no response (or a bad response) to a POST request.");
+_s.log("Decoded heartbeat response is null.");
+}
+}else{
+_s.log("Received no response (or a bad response) to heartbeat POST request.");
 }
 },"onHeartbeatResponse");
+}
 }
 
 defPrivMeth(_s,"onClientIdLoaded",__onClientIdLoaded);
@@ -4601,11 +4695,16 @@ list.splice(idx,1);
 
 defStatMeth(_s,NativeLang,"GetField",__GetField);
 function __GetField(propName,obj){
+return obj[propName];
 }
 
 defStatMeth(_s,NativeLang,"GetStringField",__GetStringField);
 function __GetStringField(propName,obj){
 var o=NativeLang.GetField(propName,obj);
+if(o){
+return o.toString();
+}
+return null;
 }
 }
 statInit(NativeLang,"NativeLang");
@@ -4628,7 +4727,7 @@ if(_s!=STAT_INIT)_s.gatewayPath="/0/wsg";
 if(_s!=STAT_INIT)_s.protocolVersion="1.7";
 
 
-if(_s!=STAT_INIT)_s.clientVersion="2.82.0.19066";
+if(_s!=STAT_INIT)_s.clientVersion="2.84.0.20794";
 
 
 if(_s!=STAT_INIT)_s.clientInstanceId=0;
@@ -4641,6 +4740,9 @@ if(_s!=STAT_INIT)_s.enableLogging=false;
 
 
 if(_s!=STAT_INIT)_s.platformApi=null;
+
+
+if(_s!=STAT_INIT)_s.allowUncaughtExceptions=false;
 
 if(_s!=STAT_INIT)_s.pingComponentName="jscws";
 if(_s!=STAT_INIT)_s.pingUrl="https://pings.conviva.com/ping.ping";
@@ -4668,6 +4770,9 @@ _s.heartbeatIntervalMs=slint.Cast(sobj.GetValue(key));
 break;
 case "enableLogging":
 _s.enableLogging=Boolean(sobj.GetValue(key));
+break;
+case "allowUncaughtExceptions":
+_s.allowUncaughtExceptions=Boolean(sobj.GetValue(key));
 break;
 default:
 throw new Error("Unsupported settings: "+key);
@@ -4847,8 +4952,6 @@ _s._referenceCount--;
 if(_s._referenceCount>0){
 return;
 }
-_s._settings=null;
-
 if(_s.clientIdLoadingDone!=null){
 _s.clientIdLoadingDone.Cleanup();
 _s.clientIdLoadingDone=null;
@@ -4857,6 +4960,11 @@ if(_s._cleanables!=null){
 Cleanable.cleanupCollection(_s._cleanables);
 _s._cleanables=null;
 }
+if(_s._settings!=null&&_s._settings.platformApi!=null){
+_s._settings.platformApi.cleanup();
+}
+_s._settings=null;
+Utils._instance=null;
 }
 
 defPubMeth(_s,"logNoBuffer",__logNoBuffer);
@@ -4944,7 +5052,7 @@ _s.runProtectedSync(func,message);
 
 defPubMeth(_s,"runProtectedSync",__runProtectedSync);
 function __runProtectedSync(func,message){
-var allowUncaughtExceptions=_s._settings.platformApi.allowUncaughtExceptions();
+var allowUncaughtExceptions=_s._settings.allowUncaughtExceptions;
 
 if(allowUncaughtExceptions){
 func();
@@ -4961,7 +5069,7 @@ _s.onUncaughtException(message,e);
 defPrivMeth(_s,"onUncaughtException",__onUncaughtException);
 function __onUncaughtException(msg,e){
 try{
-_s.ping("Uncaught exception: "+Lang.ToString(e));
+_s.ping("Uncaught exception: "+msg+": "+Lang.ToString(e));
 }catch(eping){
 _s.err("Caught exception while sending ping: "+Lang.ToString(eping));
 }
@@ -4989,13 +5097,27 @@ if(!_s._cachedPingUrl){
 
 var componentName="jscws";
 
+var metadataSchema=null;
+
+try{
+var platformMetadata=Lang.DictionaryFromRepr(_s._settings.platformApi.getPlatformMetadata());
+if(platformMetadata!=null&&platformMetadata.ContainsKey("sch")){
+metadataSchema=platformMetadata.GetValue("sch");
+}
+}catch(e){
+}
+
 _s._pingUrl=_s._settings.pingUrl+"?"
 +"comp="+componentName
 +"&clv="+_s._settings.clientVersion
 +"&cid="+_s._settings.customerKey
 +"&uuid="+_s.clientId;
 
-if(_s.clientId!=Utils.DEFAULT_CLIENT_ID){
+if(metadataSchema!=null){
+_s._pingUrl+="&sch="+metadataSchema;
+}
+
+if(_s.clientId!=Utils.DEFAULT_CLIENT_ID&&metadataSchema!=null){
 _s._cachedPingUrl=true;
 }
 }
@@ -5025,7 +5147,12 @@ return _s._settings.platformApi.epochTimeMs();
 defPubMeth(_s,"createTimer",__createTimer);
 function __createTimer(timerAction,intervalMs,actionName){
 var cleanable=new Cleanable(_s._cleanables);
-cleanable.setCleanupAction(_s._settings.platformApi.createTimer(timerAction,intervalMs,actionName));
+var wrappedAction=null;
+wrappedAction=(
+function(){
+_s.runProtected(timerAction,actionName);
+});
+cleanable.setCleanupAction(_s._settings.platformApi.createTimer(wrappedAction,intervalMs,actionName));
 return cleanable;
 }
 
@@ -5109,11 +5236,13 @@ if(_s._loadClientIdTimeout!=null){
 _s._loadClientIdTimeout.cleanup();
 _s._loadClientIdTimeout=null;
 }
-var result=undefined;
+var result=null;
+if(fSuccess){
 try{
 result=_s.jsonDecode(loadedData);
 }catch(e){
 result=null;
+}
 }
 var loadedClientId=null;
 if(fSuccess&&result!=null&&result.ContainsKey("clId")){
@@ -5169,10 +5298,9 @@ _s.err("An error occurred while saving the clientId.");
 }
 },"utils.writeClientId onSaved");
 });
-_s.jsonEncode(Lang.StringDictionaryToRepr(dataToSave),
-function(dataStr){
+var dataObject=Lang.StringDictionaryToRepr(dataToSave);
+var dataStr=_s.jsonEncode(dataObject);
 _s._settings.platformApi.saveLocalData(dataStr,onSaved);
-});
 }
 
 
@@ -5225,14 +5353,27 @@ return cleanable;
 
 
 defPubMeth(_s,"jsonEncode",__jsonEncode);
-function __jsonEncode(obj,callback){
-_s._settings.platformApi.jsonEncode(obj,callback);
+function __jsonEncode(obj){
+var res=null;
+_s.runProtectedSync(
+function(){
+res=_s._settings.platformApi.jsonEncode(obj);
+},
+"utils.jsonEncode");
+return res;
 }
 
 
 defPubMeth(_s,"jsonDecode",__jsonDecode);
 function __jsonDecode(json){
-return _s._settings.platformApi.jsonDecode(json);
+var res=null;
+_s.runProtectedSync(
+function(){
+var decodedJson=_s._settings.platformApi.jsonDecode(json);
+res=Lang.DictionaryFromRepr(decodedJson);
+},
+"utils.jsonDecode");
+return res;
 }
 
 
@@ -5857,6 +5998,10 @@ function _constr(){
 _s._httpClientObject=engine.createHttpClient();
 }
 
+this.cleanup=function(){
+_s._httpClientObject=null;
+}
+
 this.saveLocalData=function(data,callback){
 try{
 engine.storage.local[_convivaKey]=data;
@@ -5891,21 +6036,38 @@ if(typeof(data)!=="string"){
 data=_s.jsonEncode(data,null);
 }
 
-var httpRequestObject=_s._httpClientObject.request((isPOST?"POST":"GET"),url);
+var httpRequestObject=_s._httpClientObject.createRequest((isPOST?"POST":"GET"),url);
 if(isPOST){
 httpRequestObject.sendBody(data);
 Utils.getInstance().logNoBuffer(data);
 }
-httpRequestObject.onError=function(httpStatusCode,content,size){
+httpRequestObject.onComplete=function(response,status){
 Utils.getInstance().runProtected(function(){
-callback(false,null);
+if(status<=0){
 
-},"httpRequest.onError");
+
+
+
+
+
+
+
+callback(false,null);
+}else{
+
+
+if(response){
+var responseString=response.toString('string');
+if(typeof responseString=='undefined'){
+callback(false,null);
+}else{
+Utils.getInstance().logNoBuffer(responseString);
+callback(true,responseString);
 }
-httpRequestObject.onComplete=function(response){
-Utils.getInstance().runProtected(function(){
-Utils.getInstance().logNoBuffer(response);
-callback(true,response);
+}else{
+callback(false,null);
+}
+}
 },"httpRequest.onComplete");
 }
 
@@ -5936,10 +6098,7 @@ _intervals[intervalId].active=false;
 }
 
 this.createTimer=function(timerAction,intervalMs,actionName){
-var wrapperAction=function(){
-Utils.getInstance().runProtected(timerAction,actionName);
-};
-var timerId=_s.setInterval(wrapperAction,intervalMs);
+var timerId=_s.setInterval(timerAction,intervalMs);
 return(function(){
 if(timerId!=-1){
 _s.clearInterval(timerId);
@@ -5947,27 +6106,23 @@ timerId=-1;
 }});
 }
 
-this.jsonEncode=function(obj,callback){
-var result=null;
-Utils.getInstance().runProtected(function(){
-result=JSON.stringify(obj);
-},"jsonEncode");
-if(callback){
-callback(result);
-}
-return result;
+this.jsonEncode=function(obj){
+var jsonString=null;
+jsonString=JSON.stringify(obj);
+return jsonString;
 }
 
 this.jsonDecode=function(json){
-var parsedJson=json;
-var result=null;
-if(typeof(json)=='string'){
-Utils.getInstance().runProtected(function(){
+var parsedJson=null;
+
+try{
 parsedJson=JSON.parse(json);
-result=Lang.DictionaryFromRepr(parsedJson);
-},"jsonDecode");
+}catch(e){
+if(Math.random()<0.01){
+Utils.getInstance().ping("JSON parse error. IGNORE Payload: "+json);
 }
-return result;
+}
+return parsedJson;
 }
 
 this.consoleLog=function(message){
@@ -5980,10 +6135,6 @@ this.consoleErr=function(message){
 if(typeof console!='undefined'&&console.error){
 console.error(message);
 }
-}
-
-this.allowUncaughtExceptions=function(){
-return false;
 }
 
 
@@ -6069,13 +6220,23 @@ ConvivaStreamerProxy.call(_s);
 _s.Log('PlayStationTrilithiumStreamerProxy._constr()');
 
 _s.video=video;
-_s._lastPHT=0;
+
+
+
+
+
+
+
+
+
+
+_s._PHTChanged=false;
 
 _s._capabilities=ConvivaStreamerProxy.CAPABILITY_VIDEO
 +ConvivaStreamerProxy.CAPABILITY_QUALITY_METRICS
 +ConvivaStreamerProxy.CAPABILITY_BITRATE_METRICS;
 
-_s.SetPlayingState(ConvivaStreamerProxy.STOPPED);
+_s.SetPlayingState(ConvivaStreamerProxy.UNKNOWN);
 _s._ended=false;
 
 _s._setAllEventListeners();
@@ -6089,6 +6250,8 @@ _s.Log('PlayStationTrilithiumStreamerProxy.Cleanup()');
 
 _s._stopPolling();
 _s._removeAllEventListeners();
+
+_s.video=null;
 
 _s.super_Cleanup();
 
@@ -6147,23 +6310,31 @@ _s.SetDuration(_s.video.duration);
 
 if(_s.video){
 var currentPHT=_s.video.currentTime;
+
+
 if(_s.video.paused){
 if(_s.GetPlayingState()!=ConvivaStreamerProxy.PAUSED){
 _s.SetPlayingState(ConvivaStreamerProxy.PAUSED);
 }
-}else if(currentPHT>_s._lastPHT){
+}else if(_s._PHTChanged==true&&currentPHT>_s._lastPHT){
+
+
+
 if(_s.GetPlayingState()!=ConvivaStreamerProxy.PLAYING){
 _s.SetPlayingState(ConvivaStreamerProxy.PLAYING);
 
 _s._ended=false;
 }
-}else if(currentPHT==_s._lastPHT&&_s.GetPlayingState()!=ConvivaStreamerProxy.STOPPED&&_s._ended==false){
+}else if(_s._PHTChanged==true&&currentPHT==_s._lastPHT&&_s.GetPlayingState()!=ConvivaStreamerProxy.STOPPED&&_s._ended==false){
+
+
 if(_s.GetPlayingState()!=ConvivaStreamerProxy.PAUSED){
 _s.SetPlayingState(ConvivaStreamerProxy.BUFFERING);
 }
 }
 
 if(currentPHT!=_s._lastPHT){
+_s._PHTChanged=true;
 _s._lastPHT=currentPHT;
 }
 }
@@ -6187,27 +6358,19 @@ _s._polling=false;
 }
 
 this._overrideEventListener=function(target,eventListener,convivaListener){
-
-if(typeof target[eventListener]==="function"){
-if(!_s._savedListeners[target]){
-_s._savedListeners[target]={};
-}
-_s._savedListeners[target][eventListener]=target[eventListener];
-}
-wrappedListener=function(){
+_s._savedListeners[eventListener]=target[eventListener];
+var wrappedListener=function(){
 convivaListener.apply(_s,arguments);
-if(typeof _s._savedListeners[target][eventListener]==="function"){
-_s._savedListeners[target][eventListener].apply(target,arguments);
+if(typeof _s._savedListeners[eventListener]==="function"){
+_s._savedListeners[eventListener].apply(target,arguments);
 }
 };
 target[eventListener]=wrappedListener;
 }
 
 this._restoreEventListener=function(target,eventListener){
-if(_s._savedListeners[target]&&typeof _s._savedListeners[target][eventListener]==="function"){
-target[eventListener]=_s._savedListeners[target][eventListener];
-_s._savedListeners[target][eventListener]=null;
-}
+target[eventListener]=_s._savedListeners[eventListener];
+_s._savedListeners[eventListener]=null;
 }
 
 this._setAllEventListeners=function(){
@@ -6229,6 +6392,8 @@ _s._restoreEventListener(_s.video,PlayStationTrilithiumStreamerProxy.VideoListen
 _s._restoreEventListener(_s.video,PlayStationTrilithiumStreamerProxy.VideoListeners.ON_BITRATE_CHANGE);
 _s._restoreEventListener(_s.video,PlayStationTrilithiumStreamerProxy.VideoListeners.ON_ENDED);
 }
+
+_s._savedListeners={};
 }
 
 this.onBitrateChange=function(){
@@ -6269,6 +6434,7 @@ if(_s!=STAT_INIT)_constr.apply(_s,arguments);
 }
 statInit(PlayStationTrilithiumStreamerProxy,"PlayStationTrilithiumStreamerProxy");
 })();
-function Conviva(){};
+var Conviva=(typeof Conviva!=='undefined')?Conviva:(function(){});
 Conviva.LivePass=ConvivaPrivateLoader.LivePass;Conviva.ConvivaContentInfo=ConvivaPrivateLoader.ConvivaContentInfo;Conviva.StreamerError=ConvivaPrivateLoader.StreamerError;Conviva.ConvivaStreamerProxy=ConvivaPrivateLoader.ConvivaStreamerProxy;Conviva.Settings=ConvivaPrivateLoader.Settings;Conviva.StreamInfo=ConvivaPrivateLoader.StreamInfo;Conviva.Utils=ConvivaPrivateLoader.Utils;Conviva.PlayStationTrilithiumStreamerProxy=ConvivaPrivateLoader.PlayStationTrilithiumStreamerProxy;Conviva.PlayStationTrilithiumApi=ConvivaPrivateLoader.PlayStationTrilithiumApi;
+}
 

@@ -220,5 +220,7 @@ VideoManager.VIDEOCONFIG = {
         "transfer-type":"progressive-download",
         "encryption-type":"none"
     },
-    TYPE_PROGRESSIVE: {}
+    TYPE_PROGRESSIVE: {
+        "content-type":"video/m3u8",
+    }
 }

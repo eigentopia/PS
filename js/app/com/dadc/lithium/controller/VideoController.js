@@ -495,7 +495,6 @@ var VideoController = function( ParentControllerObj )
             VideoManagerInstance.stop();
             VideoManagerInstance.close();
             VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_media_details_obj.getDurationInSeconds() );
-            ConvivaIntegration.cleanUpSession();
             m_parent_controller_obj.requestingParentAction(
                 {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: this}
             );

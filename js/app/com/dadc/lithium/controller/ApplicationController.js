@@ -73,7 +73,7 @@ include( "js/app/com/dadc/lithium/model/ChannelFolderList.js" );
 
 include( "js/app/com/dadc/lithium/model/ComScoreModel.js" );
 include( "js/app/com/dadc/lithium/model/Conviva.js" );
-include( "js/app/thirdparty/ConvivaLivePass_2_82_0_19066.js" );
+include( "js/app/thirdparty/ConvivaLivePass_PlayStation_Trilithium_2_84_0_20794.js" );
 
 include( "js/app/com/dadc/lithium/media/InnovidVideo.js" );
 include( "js/app/com/dadc/lithium/media/InnovidInternalVideo.js" );
@@ -1045,7 +1045,7 @@ var ApplicationController = function( screenObj ){
             //console.log("****STOPPPPINGINGNGINGINGNG")
                 closeAllVisibleControllers();
                 unsetFocusAllControllers();
-
+                ConvivaIntegration.cleanUpSession();
 //                showNavigation();
 
                 m_video_controller.unsetFocus();

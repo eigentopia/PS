@@ -182,6 +182,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     function playCrackleVideo()
     {
         Logger.log("CrackleVideo.playCrackleVideo()");
+        ConvivaIntegration.adEnd()
         VideoManagerInstance.play( This )
         /*try
         {
@@ -347,12 +348,14 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         if( m_playlists[ m_media_details_obj.getDurationInSeconds() ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
             playAd( m_media_details_obj.getDurationInSeconds() );
         }else{
+            ConvivaIntegration.cleanUpSession();
             PlaybackReadyListener.notifyPlaybackEnded();
         }
     };
 
     this.onError = function(){
         m_disposed = true;
+        ConvivaIntegration.cleanUpSession();
         VideoManagerInstance.stop();
         VideoManagerInstance.close();
         notifyListeners( new PlaybackError( VideoManagerInstance.getPlaybackTimePTS() ) );
@@ -360,7 +363,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
     this.onOpened = function(){
         //Comscore.sendClip(m_current_time)
-        ConvivaIntegration.createSession(VideoManagerInstance.getCoreVideo(), m_video_url, m_media_details_obj)
+        // var video_config = VideoManagerInstance.getCurrentJSVideo().getVideoConfig()
+        // if(video_config["content-type"] == "video/m3u8"){
+        //     ConvivaIntegration.attachStreamer()
+        // }
     }
 
     this.onPlaying = function(){
@@ -522,12 +528,15 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
     function playAd( adIndex ){
         Logger.log("play add called: index" + adIndex);
+        if(adIndex == 0){
+            ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
+        }
         if( typeof m_playlists[ adIndex ] !== "undefined" ){
             m_is_playing = false;
             if( m_subtitle_container ) removeSubtitleContainer();
 
             PlaybackReadyListener.notifyAdPlaybackStarting();
-
+            ConvivaIntegration.adStart();
             m_playlists[ adIndex ].play(adIndex);
             return true;
         }

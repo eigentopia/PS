@@ -11,15 +11,14 @@ var ConvivaIntegration = {
 	// Reference to the current sessionId
 
 	sessionId: null,
+	video: null,
 
  	// When the user clicks play
 	
  	createSession: function(videoObj, vidUrl, mediaInfo) {
-
- 		// Clean up previous session
-	
-	 	ConvivaIntegration.cleanUpSession();
-	
+ 		if(videoObj != null){
+ 			ConvivaIntegration.video = videoObj 
+		}
 	 	// Begin: Set up metadata
 		var media = mediaInfo.data;
 
@@ -34,7 +33,7 @@ var ConvivaIntegration = {
 	 					episodeName		: media.Title,
 	 					externalSite	: "PS3",
 	 					genre			: media.Genre,
-	 					playerVersion	: "2.01",
+	 					playerVersion	: "2.1",
 	 					rating			: media.Rating,
 	 					season 			: (media.Season)?media.Season:"",
 	 					show			: media.ShowName
@@ -59,9 +58,32 @@ var ConvivaIntegration = {
 
  		ConvivaIntegration.sessionId = Conviva.LivePass.createSession( videoObj, convivaMetadata );
 
- },
+ 	},
+ 	attachStreamer:function(){
+ 		if(ConvivaIntegration.video != null){
+ 			Conviva.LivePass.attachStreamer(ConvivaIntegration.sessionId, ConvivaIntegration.video )
+ 		}
+ 		else{
+ 			ConvivaIntegration.video = VideoManagerInstance.getCoreVideo()
 
- // When the stream is done with playback
+ 			Conviva.LivePass.attachStreamer(ConvivaIntegration.sessionId, ConvivaIntegration.video )
+ 		}
+ 	}, 
+ 	detachStreamer:function(){
+ 		if(ConvivaIntegration.video != null){
+ 			Conviva.LivePass.detachStreamer(ConvivaIntegration.sessionId )
+ 		}
+ 	},
+ 	adStart:function(){
+ 		ConvivaIntegration.detachStreamer()
+ 		Conviva.LivePass.adStart(ConvivaIntegration.sessionId )
+ 	},  
+ 	adEnd:function(){
+ 		Conviva.LivePass.adEnd(ConvivaIntegration.sessionId );
+ 		ConvivaIntegration.attachStreamer()
+ 	}, 
+
+ 	// When the stream is done with playback
 
  	cleanUpSession: function() {
 	
@@ -73,4 +95,5 @@ var ConvivaIntegration = {
 	
  		}
  	}
+
 }
