@@ -127,7 +127,7 @@ ADManager.AdHeader = function( adHeaderNode )
                                     if( rendition.getCreativeRenditionId() === renditionID )
                                     {
                                         asset = rendition.getAsset();
-                                        if( isValid( asset ) === true )
+                                        if( isValid( asset ) === true && asset.getUrl() !== null )
                                         {
                                             Logger.log("Found Asset object: ");
                                             Logger.logObj( asset );
@@ -136,7 +136,7 @@ ADManager.AdHeader = function( adHeaderNode )
                                             found = true;
                                             break;
                                         }
-                                        else Logger.log("ADHeader.getVideoUrl() - unable to get asset from rendition");
+                                        else Logger.log("ADHeader.getVideoUrl() - unable to get asset or URL from rendition");
                                     }
                                 }
                                 else Logger.log("ADHeader.getVideoUrl() - rendition iteration:" + rendIndex + " unable to get creative rendition");

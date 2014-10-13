@@ -140,6 +140,10 @@ var InnovidVideo = function( adHeaderObj, FreewheelEventCallbackHelperObj, Freew
         }
     };
     
+    this.onOpened = function(){
+        
+    }
+    
     // on video end
     this.onEnded = function()
     {

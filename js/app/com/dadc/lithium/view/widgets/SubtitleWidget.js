@@ -89,6 +89,7 @@ var SubtitleWidget = function( SubtitlesObj ) {
     function getTextContainer( message ){
         Logger.log("getTextContainer for message: " + message);
         var tblock;
+        var shadowBlock;
         var messages = message.split( TTMLSubtitle.CONFIG.BREAK_LINES );
         var container = engine.createContainer();
 
@@ -102,11 +103,13 @@ var SubtitleWidget = function( SubtitlesObj ) {
         		tblock = engine.createTextBlock( messages[ i ], FontLibraryInstance.getFont_SUBTITLE(), 1700 );
         	//            tblock.shader = shader;
         		// disabled the glow shader
-
-        		tmp_container.addChild( tblock );
-
+                shadowBlock = engine.createTextBlock( messages[ i ], FontLibraryInstance.getFont_SUBTITLESHADOW(), 1700 );
+                tmp_container.addChild( shadowBlock );
+                tmp_container.addChild( tblock );
         		tblock.x = 1920 / 2 - tblock.naturalWidth / 2;
         		tblock.y = -( ( messages.length - 1 ) - i ) * 50;
+                shadowBlock.x = tblock.x+1
+                shadowBlock.y = tblock.y+1
 
         		container.addChild( tmp_container );
     	    }

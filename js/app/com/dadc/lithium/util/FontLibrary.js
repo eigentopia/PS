@@ -98,47 +98,124 @@ var FontLibrary = function(){
     this.getFont_ABOUT = function(){
         return {font: FontLibrary.FONT.NORMAL, size: 45, color: [1, 1, 1, 1.0], preserveSpaces: true};
     }
-    
+    var currentFont = null;
     // Subtitle Widget
     this.getFont_SUBTITLE = function(){
-        var localStorage = engine.storage.local
-        var font = {font: FontLibrary.FONT.BOLD, size: 45, color: [255/255, 255/255, 0/255, 1.0], preserveSpaces: true};
-        if(localStorage["subFontConfig"]){
-            var subFontConfig = JSON.parse(localStorage["subFontConfig"])
-            var systemFont;
-            switch (subFontConfig.font){
-                case 'monospace':
-                    systemFont = FontLibrary.FONT.NORMAL
-                    break;
-                case "proportional": 
-                    systemFont = FontLibrary.FONT.NORMAL
-                    break
-                case 'monospace_serif':
-                    systemFont = FontLibrary.FONT.NORMAL
-                    break;
-                case "proportional_serif": 
-                    systemFont = FontLibrary.FONT.NORMAL
-                    break
-                case 'casual':
-                    systemFont = FontLibrary.FONT.NORMAL
-                    break;
-                case "cursive": 
-                    systemFont = FontLibrary.FONT.NORMAL
-                    break
-                case 'small_caps':
-                    systemFont = FontLibrary.FONT.NORMAL
-                    break;
-            }
-
-            font.font = systemFont
-            font.size = subFontConfig.size;
-            font.color[0] = subFontConfig.fontColor[0]/255 *100
-            font.color[1] = subFontConfig.fontColor[1]/255 *100
-            font.color[2] = subFontConfig.fontColor[2]/255 *100
-            font.color[3] = subFontConfig.fontColor[3]
+        if(currentFont !== null){
+            return currentFont;
         }
-        
-        return font
+        else{
+
+            var localStorage = engine.storage.local
+            var font = {font: FontLibrary.FONT.BOLD, 
+                        size: 45, 
+                        color: [255/255, 255/255, 0/255, 1.0], 
+                        preserveSpaces: true, 
+                        dynamic:true, 
+                        align:'justify',
+                        maxLines:4};
+            if(localStorage["subFontConfig"]){
+                var subFontConfig = JSON.parse(localStorage["subFontConfig"])
+                var systemFont;
+                switch (subFontConfig.fontType){
+                    case 'monospace':
+                        systemFont = FontLibrary.FONT.monospace
+                        break;
+                    case "proportional": 
+                        systemFont = FontLibrary.FONT.proportional
+                        break
+                    case 'monospaceserif':
+                        systemFont = FontLibrary.FONT.monospace_serif
+                        break;
+                    case "proportionalserif": 
+                        systemFont = FontLibrary.FONT.proportional_serif
+                        break
+                    case 'casual':
+                        systemFont = FontLibrary.FONT.casual
+                        break;
+                    case "cursive": 
+                        systemFont = FontLibrary.FONT.cursive
+                        break
+                    case 'smallcaps':
+                        systemFont = FontLibrary.FONT.small_caps
+                        break;
+                }
+
+                font.font = systemFont
+                font.size = 45//subFontConfig.size;
+                font.color[0] = subFontConfig.fontColor[0]/255 *100
+                font.color[1] = subFontConfig.fontColor[1]/255 *100
+                font.color[2] = subFontConfig.fontColor[2]/255 *100
+                font.color[3] = subFontConfig.fontColor[3]
+                font.preserveSpaces= true
+                font.dynamic = true
+                font.align = 'justify'
+
+                font.maxLines = 4;
+            }
+            currentFont = font;    
+            return font
+        }
+    }
+    var currentShadow=null
+    this.getFont_SUBTITLESHADOW = function(){
+        if(currentShadow !== null){
+            return currentShadow;
+        }
+        else{
+            var alpha = 1;
+            var localStorage = engine.storage.local
+            var font = {font: FontLibrary.FONT.BOLD, 
+                        size: 45, 
+                        color: [0/255, 0/255, 0/255, 1.0], 
+                        preserveSpaces: true, 
+                        dynamic:true, 
+                        align:'justify',
+                        maxLines:4};
+            if(localStorage["subFontConfig"]){
+                var subFontConfig = JSON.parse(localStorage["subFontConfig"])
+                var systemFont;
+                alpha = subFontConfig.fontColor[3]
+                switch (subFontConfig.fontType){
+                    case 'monospace':
+                        systemFont = FontLibrary.FONT.monospace
+                        break;
+                    case "proportional": 
+                        systemFont = FontLibrary.FONT.proportional
+                        break
+                    case 'monospaceserif':
+                        systemFont = FontLibrary.FONT.monospace_serif
+                        break;
+                    case "proportionalserif": 
+                        systemFont = FontLibrary.FONT.proportional_serif
+                        break
+                    case 'casual':
+                        systemFont = FontLibrary.FONT.casual
+                        break;
+                    case "cursive": 
+                        systemFont = FontLibrary.FONT.cursive
+                        break
+                    case 'smallcaps':
+                        systemFont = FontLibrary.FONT.small_caps
+                        break;
+                }
+
+                font.font = systemFont
+                font.size = 45//subFontConfig.size;
+                font.color[0] = 0/255//subFontShadowConfig.fontColor[0]/255 *100
+                font.color[1] = 0/255//subFontShadowConfig.fontColor[1]/255 *100
+                font.color[2] = 0/255//subFontShadowConfig.fontColor[2]/255 *100
+                font.color[3] = alpha
+                font.preserveSpaces= true
+                font.dynamic = true
+                font.align = 'justify'
+                font.maxLines = 4;
+
+            }
+            currentShadow = font;    
+            return font
+        }
+
     }
     this.getFont_SUBTITLECHOOSER = function(){
         return {font: FontLibrary.FONT.BOLD, size: 40, color: [255/255, 255/255, 255/255, 1.0], preserveSpaces: true};
@@ -214,9 +291,16 @@ if( engine.stats.device.platform == 'html' ){
 }else{
     FontLibrary.FONT = {
         NORMAL: "Fonts/arial.ttf",
-        BOLD: "Fonts/arialbd.ttf"
+        BOLD: "Fonts/arialbd.ttf",
+        monospace:"Fonts/monospace.ttf",
+        proportional:"Fonts/proportional.ttf",
+        monospace_serif: "Fonts/monospaceserif.ttf",
+        proportional_serif:"Fonts/proportionalserif.ttf",
+        casual:"Fonts/casual.ttf",
+        cursive:"Fonts/cursive.ttf",
+        small_caps:"Fonts/smallcaps.ttf"
+
     };
 }
-
 
 FontLibraryInstance = new FontLibrary();
