@@ -6,7 +6,7 @@
 var GeoCountryRequest = function( callback )
 {
     //SAMPLE URL http://api.crackle.com/Service.svc/geo/country
-    var url = "https://api.crackle.com/Service.svc/geo/country?format=json";
+    var url = "http://api.crackle.com/Service.svc/geo/country?format=json";
     Logger.log( "GeoCountryRequest url = " + url );
 
     var httpRequestObj = null;
@@ -29,7 +29,7 @@ var GeoCountryRequest = function( callback )
         else if( ModelConfig.CONFIG.CERT_VALIDATION )
             ModelConfig.httpClientObj.setCertificateAuthority( ModelConfig.CONFIG.CERT_VALIDATION );
 
-        httpRequestObj = ModelConfig.httpClientObj.createRequest( "GET", url, { headers: AuthenticationInstance.getAuthorizationHeader( url ) }, null );
+        httpRequestObj = ModelConfig.httpClientObj.createRequest( "GET", url, null, null );
         httpRequestObj.onComplete = onRequestComplete;
 	    httpRequestObj.start();
     }

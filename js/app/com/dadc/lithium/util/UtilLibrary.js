@@ -32,28 +32,32 @@ UtilLibraryInstance = new UtilLibrary();
 function getTextFromNode( jsonParsedNode )
 {
     // is our argument valid?
-    if( typeof jsonParsedNode === "undefined" || jsonParsedNode === null )
-    return null;
+    if( typeof jsonParsedNode === "undefined" || jsonParsedNode === null ){
+        return null;
+    }
     
     // is it already what we want?
     var output = jsonParsedNode;
-    if( typeof output === "string" )
-    return output;
+    if( typeof output === "string" ){
+        return output;
+    }
     
     // is it node type 'Text'? (type 3)
     if( typeof jsonParsedNode["#text"] !== "undefined" )
     {
-    output = jsonParsedNode["#text"];
-    if( typeof output === "string" )
-        return output; 
+        output = jsonParsedNode["#text"];
+        if( typeof output === "string" ){
+            return output; 
+        }
     }
     
     // is it node type 'CDATA'? (type 4)
     if( typeof jsonParsedNode["#cdata-section"] !== "undefined" )
     {
     output = jsonParsedNode["#cdata-section"];
-    if( typeof output === "string" )
-        return output;
+        if( typeof output === "string" ){
+            return output;
+        }
     }
     
     // couldn't get a string - hopefully the caller will know what to do with it

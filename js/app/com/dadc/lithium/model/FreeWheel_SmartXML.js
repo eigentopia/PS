@@ -53,7 +53,6 @@ FreeWheelModel.FreeWheel_SmartXMLRequest = function( media_id, callback, freewhe
         }else {
             try{
                 var json_data = XMLParser_DAC.XMLToJSON( data );
-                console.log(json_data);
                 if ( !json_data ||
                     (
                         json_data.siteSection &&
@@ -68,7 +67,7 @@ FreeWheelModel.FreeWheel_SmartXMLRequest = function( media_id, callback, freewhe
                     initHttpRequest();
                     httpRequestObj.start();
                 }else{
-                    callback( new FreeWheelModel.AdResponse( json_data.adResponse ), status );
+                    callback( new FreeWheelModel.AdResponse( json_data ), status );
                 }
             }catch( e ){
                 Logger.log( '!!! EXCEPTION !!!' );
