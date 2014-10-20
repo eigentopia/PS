@@ -130,7 +130,11 @@ var FreewheelVideo = function( adHeaderObj, FreewheelEventCallbackHelperObj, Fre
     };
 
     this.onOpened = function(){
-        
+        AnalyticsManagerInstance.fireAdStartEvent(mediaObj);
+        FreewheelEventCallbackHelperObj.postSlotImpressionUrls();
+        adHeaderObj.postImpressionUrls();
+        FreewheelEventCallbackHelperObj.postImpressionUrls();
+        //     //Comscore.sendClip(adBreak); 
     }
     
     this.onEnded = function(){

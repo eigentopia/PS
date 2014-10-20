@@ -267,6 +267,7 @@ FreeWheelModel.TemporalAdSlotList = function( data )
 
 FreeWheelModel.TemporalAdSlot = function( data )
 {
+    this.data = data;
     var m_selectedAds = (data && data.selectedAds) ? new FreeWheelModel.SelectedAds( data.selectedAds ) : null;
     var m_eventCallbacks = (data && data.eventCallbacks) ? new FreeWheelModel.EventCallbackList( data.eventCallbacks ) : null;
 
@@ -281,6 +282,7 @@ FreeWheelModel.TemporalAdSlot = function( data )
 
 FreeWheelModel.SelectedAds = function( data )
 {
+    this.data = data;
     var adReferenceListObj = data.adReference ? new FreeWheelModel.AdReferenceList( data.adReference ) : null;
     this.getAdReferenceList = function(){return adReferenceListObj;};
 };
@@ -318,6 +320,7 @@ FreeWheelModel.AdReferenceList = function( data )
 
 FreeWheelModel.AdReference = function( data )
 {
+    this.data = data;
     var eventCallbackList = data.eventCallbacks ? new FreeWheelModel.EventCallbackList( data.eventCallbacks ) : null;
 
     this.getEventCallbackList   = function(){return eventCallbackList;};
@@ -338,6 +341,14 @@ FreeWheelModel.EventCallbackList = function( data )
             for( var i = 0; i < data.eventCallback.length; i++ )
             {
                 eventCallbackList.push( new FreeWheelModel.EventCallback( data.eventCallback[ i ] ) );
+                if(data.eventCallback[i].trackingURLs && data.eventCallback[i].trackingURLs.url && data.eventCallback[i].trackingURLs.url.length){
+                    for(z=0;z<data.eventCallback[i].trackingURLs.url.length;z++){
+                        var newData = data.eventCallback[ i ].trackingURLs.url[z]
+                        newData.attributes.url = newData.attributes.value
+                        eventCallbackList.push( new FreeWheelModel.EventCallback( newData ) );
+                    }
+                }
+                
             }
         }
         else
@@ -365,14 +376,14 @@ FreeWheelModel.EventCallbackList = function( data )
 
     this.getEventCallbackByName     = function( name )
     {
-    for( var i = 0; i < eventCallbackList.length; i++ )
-    {
-        if( eventCallbackList[i].getName() === name )
+        for( var i = 0; i < eventCallbackList.length; i++ )
         {
-            return eventCallbackList[i];
+            if( eventCallbackList[i].getName() === name )
+            {
+                return eventCallbackList[i];
+            }
         }
-    }
-    return null;
+        return null;
     };
 
 };

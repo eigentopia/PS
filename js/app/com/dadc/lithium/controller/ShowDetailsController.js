@@ -286,7 +286,7 @@ var ShowDetailsController = function( ParentControllerObj ){
             }            
         }
     }
-    
+    var m_ad_manager;
     this.enterPressed = function(){
                 
             if ( m_is_focussed && getVisibleMenuWidgetIndex() >= 0 && m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].isActive() && m_media_details_request === undefined ){
@@ -304,6 +304,9 @@ var ShowDetailsController = function( ParentControllerObj ){
                                 ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );                    
                             }else{
                                 // Request from the application controller to start the video playback
+                                // m_ad_manager = new ADManager( MediaDetailsObj, self );
+                                // m_ad_manager.prepare();        
+                                // m_ad_manager.addListener( self);
                                 m_parent_controller_obj.requestingParentAction(
                                     {action: ApplicationController.OPERATIONS.START_VIDEO_PLAYBACK, MediaDetailsObj: MediaDetailsObj, calling_controller: this}
                                 );
@@ -332,6 +335,19 @@ var ShowDetailsController = function( ParentControllerObj ){
                 })
             }
     
+    }
+
+    var m_playlists = []
+    this.notifyAdManagerUpdated = function( ADManager_EVENT ){
+        for( var i = 0; i < m_ad_manager.getTotalTemporaAdSlots(); i++ ){
+            var temporal_ad_slot = m_ad_manager.getTemporaAdSlot( i );
+            var time_position = parseInt( temporal_ad_slot.getTimePosition() );
+
+            m_playlists[ time_position ] = new FreewheelPlaylist( temporal_ad_slot, self );
+        }
+
+        console.log("playlists")
+        console.dir(m_playlists)
     }
     
     // MILAN-BEN HACK: ALLOW FOR THE SHOW DETAILS RESPONSE TO BE ABANDONED (EG: USER PRESSES PLAY & CIRCLE *BEFORE* MEDIA DETAILS ARE RETURNED, PUTTING THE APP INTO A WEIRD STATE)

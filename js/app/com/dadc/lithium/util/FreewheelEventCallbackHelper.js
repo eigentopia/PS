@@ -74,16 +74,17 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
         var output = [];
         for( var i = 0; i < m_allEventCallbacks.length; i++ )
         {
-            // if( m_allEventCallbacks[i].getType() === "GENERIC" )
-            // output.push( m_allEventCallbacks[i].getUrl() );
-            // else 
-            if( m_allEventCallbacks[i].getName() === "defaultImpression" )
+            if(  m_allEventCallbacks[i].getName() === "defaultImpression" ){
+
                 output.push( m_allEventCallbacks[i].getUrl() );
+            }
+
         }
     
-        Logger.shout("FreewheelEventCallbackHelper.postImpressionUrls() - " + output.length + " impression/generic/defaultImpression events to fire out of " + m_allEventCallbacks.length);
-        if( output.length !== 0 )
+        Logger.shout("FreewheelEventCallbackHelper.postImpressionUrls() - Total impressions of generic or defaultImpression: " + output.length);
+        if( output.length !== 0 ){
             Logger.logObj( output );
+        }
     
         for( var i = 0; i < output.length; i++ )
         {
@@ -193,13 +194,14 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
         {
             if( m_allEventCallbacks[i].getName() === "complete" )
             {
-            output.push( m_allEventCallbacks[i].getUrl() );
+                output.push( m_allEventCallbacks[i].getUrl() );
             }
         }
     
         Logger.shout("FreewheelEventCallbackHelper.postCompleteTrackingUrls() - " + output.length + " complete events to fire out of " + m_allEventCallbacks.length);
-        if( output.length !== 0 )
+        if( output.length !== 0 ){
             Logger.logObj( output );
+        }
         
         for( var i = 0; i < output.length; i++ )
         {

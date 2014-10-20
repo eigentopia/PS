@@ -173,9 +173,9 @@ var VideoController = function( ParentControllerObj )
                 openNextVideoContinueOverlay();
                 return;
             }
-            if(!nextVideoOverlay){
-                openNextVideoOverlay();       
-            }
+            // if(!nextVideoOverlay){
+            //     openNextVideoOverlay();       
+            // }
          }
     };
 

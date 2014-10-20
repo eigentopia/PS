@@ -41,7 +41,7 @@ var VastParser = function( ADHeaderObj, wrapper_url )
      */
     function processVastUrl( wrapper_url, recursive_counter )
     {
-        Logger.log("ADTRACKER: VastParser processVastUrl");
+        Logger.log("ADTRACKER: VastParser processVastUrl. Counter: "+ recursive_counter);
     
         if ( recursive_counter > MAX_VAST_RECURSION ) return;
         if( typeof wrapper_url !== "string" ) return;
@@ -209,6 +209,7 @@ var VastParser = function( ADHeaderObj, wrapper_url )
             } // if creatives
 
             if ( is_wrapper === true ){
+                Logger.shout("I FOUND A WRAPPER")
                 processVastUrl( vastObj, recursive_counter + 1 );
 
             }
@@ -293,6 +294,7 @@ var VastParser = function( ADHeaderObj, wrapper_url )
 
 var VastTrackingUrl = function( url, VastTrackingUrl_EVENT )
 {
+    this.url = url;
     this.getUrl = function() { return url; };
     this.getEvent = function() {return VastTrackingUrl_EVENT; };
 };

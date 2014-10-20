@@ -196,9 +196,6 @@ var MovieDetailsController = function ( ParentControllerObj ){
       
         mediaObj = MediaDetailsObj;
         mediaId = MediaDetailsObj.getID();
-        // m_ad_manager = new ADManager( MediaDetailsObj, null );
-        // m_ad_manager.prepare();        
-        // m_ad_manager.addListener( self);
         //Comscore.startPlaylist(MediaDetailsObj)
         
         var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST)
@@ -237,12 +234,12 @@ var MovieDetailsController = function ( ParentControllerObj ){
         progressWidget.refreshWidget( MediaDetailsObj.getDurationInSeconds(), VideoProgressManagerInstance.getProgress( mediaId ) );
         currentFocus = watchNowButton;
 
-        var nvcWidget = new ContinueWidget();
-        nvcWidget.rootNode.y = 400
-        m_master_container.addChild(nvcWidget.rootNode)
+        // var nvcWidget = new ContinueWidget();
+        // nvcWidget.rootNode.y = 400
+        // m_master_container.addChild(nvcWidget.rootNode)
 
-        var nvWidget = new NextVideoWidget(MediaDetailsObj)
-        m_master_container.addChild(nvWidget)
+        // var nvWidget = new NextVideoWidget(MediaDetailsObj)
+        // m_master_container.addChild(nvWidget)
 
 
     }
