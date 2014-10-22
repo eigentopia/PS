@@ -9,7 +9,7 @@ include( "js/app/thirdparty/streamsense.trilithium.4.1408.01.js");
 
 var Comscore = function(){
     var platform = engine.stats.device.platform
-    var hashedDeviceID = platform+" TEST DEVICE"// CryptoJS.MD5( engine.stats.device.id );
+    var hashedDeviceID = platform+"_TEST_DEVICE"// CryptoJS.MD5( engine.stats.device.id );
     var comscoreId = '3000012';
     var streamsense = null;
     var contentPart = 0;
@@ -94,9 +94,9 @@ var Comscore = function(){
             ns_st_cl : (parseInt(mediaDetails.DurationInSeconds)*1000).toString(), // Length of the stream (milliseconds) not here
             ns_st_cu : mediaDetails.PermaLink, // The clip URL
             ns_st_ct : (mediaDetails.Duration > 3600)?'vc12':'vc11', // Classification type
-            c3 : "null", // Dictionary classification value
-            c4 : "null", // Unused dictionary classification value
-            c6 : "null" // Unused dictionary classification value
+            c3 : "*null", // Dictionary classification value
+            c4 : "*null", // Unused dictionary classification value
+            c6 : "*null" // Unused dictionary classification value
         }
 
         return comObj;
@@ -168,7 +168,7 @@ var Comscore = function(){
         }
         else{
             var c = pickClip(time*1000);
-            clip = Object.create(c)
+            clip = pickClip(time*1000)//Object.create(c)
         }
         
         aggregatePart += 1
@@ -180,10 +180,9 @@ var Comscore = function(){
         streamsense.setClip(clip)
         var result = '';
         for(key in clip) {
-            result += key + '=' + clip[key] + '&';
+            result += '&' + key + '=' + clip[key];
         }
         
-        result = result.slice(0, result.length - 1); 
         
         sendComscore(baseUrl + result)
 
