@@ -168,8 +168,6 @@ VideoManager = function(){
         m_core_video_obj.play();
 
         var CCSettings = m_core_video_obj.getCCSystemSettings();
-        console.log("CCSETTINGS")
-        console.dir(CCSettings)
 
         engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
 

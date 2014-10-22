@@ -134,8 +134,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         Logger.shout("CrackleVideo.play() called");
         // For Event52
         AnalyticsManagerInstance.resetTime();
-        //Comscore.clearPlaylist()
-        //Comscore.startPlaylist(m_media_details_obj)
+        Comscore.clearPlaylist()
+        Comscore.startPlaylist(m_media_details_obj)
 
         if( ! m_marks_finalized ){
             finalizePlaybackMarks();
@@ -183,7 +183,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     {
         Logger.log("CrackleVideo.playCrackleVideo()");
         VideoManagerInstance.play( This )
-        /*try
+        /*try -- all this is now in onOpened.
         {
             if ( VideoManagerInstance.play( This ) === false )
             {
@@ -341,7 +341,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     this.onEnded = function(){
         Logger.log( 'CrackleVideo onEnded()' );
         m_video_ended = true;
-        //Comscore.sendEnd(m_current_time * 1000)
+        Comscore.sendEnd(m_current_time * 1000)
         // DO we have a postroll?
         if( m_playlists[ m_media_details_obj.getDurationInSeconds() ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
             playAd( m_media_details_obj.getDurationInSeconds() );
@@ -358,7 +358,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
 
     this.onOpened = function(){
-        //Comscore.sendClip(m_current_time)
+        Comscore.sendClip(m_current_time)
     }
 
     this.onPlaying = function(){
@@ -366,7 +366,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     // ads will flag the ADForgiveness object to disregard this call when neccessary
         ADForgivenessInstance.startTimer();
         notifyListeners( new PlayingEvent( VideoManagerInstance.getPlaybackTimePTS() ) );
-        //Comscore.sendPlay(m_current_time * 1000)
+        Comscore.sendPlay(m_current_time * 1000)
         // DAN & MILAN: videoView analytic call
         m_ad_manager.sendVideoViewCallback();
     };
@@ -492,7 +492,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         m_is_paused = !m_is_paused;
         if(m_is_paused){
             VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_current_time);
-            //Comscore.sendPause(m_current_time *1000)
+            Comscore.sendPause(m_current_time *1000)
         }
         this.pause( m_is_paused );
     };

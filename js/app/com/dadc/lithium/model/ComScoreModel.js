@@ -5,13 +5,13 @@
 include( "js/app/com/dadc/lithium/util/md5.js" );
 include( "js/app/com/dadc/lithium/util/HTTP.js" );
 //include( "js/app/thirdparty/streamsense.trilithium.js");
-//include( "js/app/thirdparty/streamsense.trilithium.js");
+include( "js/app/thirdparty/streamsense.trilithium.4.1408.01.js");
 
 var Comscore = function(){
     var platform = engine.stats.device.platform
     var hashedDeviceID = platform+" TEST DEVICE"// CryptoJS.MD5( engine.stats.device.id );
     var comscoreId = '3000012';
-    var streamsense;
+    var streamsense = null;
     var contentPart = 0;
     var aggregatePart= 0;
     var currentTrackingObj ={};
@@ -109,7 +109,7 @@ var Comscore = function(){
     //
     function sendStartup(){
         console.log("COMSCORE : START")
-        //streamsense = new ns_.StreamSense({}, "http://b.scorecardresearch.com/b?c1=19&c2=" + comscoreId + "&c4=crackle&c10=console&ns_ap_device="+ApplicationController.PLATFORM+"&c12=" + hashedDeviceID)
+        streamsense = new ns_.StreamSense({}, "http://b.scorecardresearch.com/b?c1=19&c2=" + comscoreId + "&c4=crackle&c10=console&ns_ap_device="+ApplicationController.PLATFORM+"&c12=" + hashedDeviceID)
 
         Logger.log( "ComScoreModel.js - SendComScore() - called - hashed Device ID: " + hashedDeviceID );
         sendComscore( baseUrl+'&ns_st_ev=Start' );
@@ -133,13 +133,13 @@ var Comscore = function(){
         var mediaDetails = mediaObj.m_data;
         currentTrackingObj = comscoreObj(mediaDetails);
 
-        //streamsense.setPlaylist();
+        streamsense.setPlaylist();
 
         if(mediaDetails.Chapters && mediaDetails.Chapters.length){
             var chapters = mediaDetails.Chapters
             //for(var i= 0; i< chapters.length; i++){
             clips = chapters.map(function(c, i){
-                var clip = Object.create(currentTrackingObj);
+                var clip = new comscoreObj(mediaObj.m_data);
                 clip.ns_st_pn = (i + 1).toString();
                 clip.startTime = c.StartTimeInMilliSeconds
                 clip.endTime = (chapters[i + 1] && chapters[i + 1].StartTimeInMilliSeconds)?chapters[i + 1].StartTimeInMilliSeconds:parseInt(mediaDetails.DurationInSeconds)*1000;
@@ -163,7 +163,7 @@ var Comscore = function(){
     function sendClip(time){
         var clip;
         if(isNaN(time)){
-            clip = Object.create(currentTrackingObj);
+            clip = currentTrackingObj;
             clip.ns_st_ct = (time == "preroll")?"va11":"va12" //va11 - preroll, va12 - midroll, va13 - postroll.
         }
         else{
@@ -177,7 +177,7 @@ var Comscore = function(){
         console.log("COMSCORE CLIP ******** TIME" + time*1000)
         console.dir(clip)
         console.log("******************")
-        //streamsense.setClip(clip)
+        streamsense.setClip(clip)
         var result = '';
         for(key in clip) {
             result += key + '=' + clip[key] + '&';
@@ -191,17 +191,17 @@ var Comscore = function(){
 
     function sendPlay(pos){
         console.log("COMSCORE : Sending PLAY "+ pos)
-        //streamsense.notify(ns_.StreamSense.PlayerEvents.PLAY, {}, pos)
+        streamsense.notify(ns_.StreamSense.PlayerEvents.PLAY, {}, pos)
         sendComscore(baseUrl + "&ns_st_ev=play&ns_st_pt="+pos)
     }
     function sendPause(pos){
         console.log("COMSCORE : Sending PAUSE "+ pos)
-        //streamsense.notify(ns_.StreamSense.PlayerEvents.PAUSE, {}, pos)
+        streamsense.notify(ns_.StreamSense.PlayerEvents.PAUSE, {}, pos)
         sendComscore(baseUrl + "&ns_st_ev=pause&ns_st_pt="+pos)
     }
     function sendEnd(pos){
         console.log("COMSCORE : Sending END "+ pos)
-        //streamsense.notify(ns_.StreamSense.PlayerEvents.END, {}, pos)
+        streamsense.notify(ns_.StreamSense.PlayerEvents.END, {}, pos)
         sendComscore(baseUrl + "&ns_st_ev=end&ns_st_pt="+pos)
     }
 

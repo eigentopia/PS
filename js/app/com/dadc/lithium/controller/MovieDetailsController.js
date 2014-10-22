@@ -196,7 +196,6 @@ var MovieDetailsController = function ( ParentControllerObj ){
       
         mediaObj = MediaDetailsObj;
         mediaId = MediaDetailsObj.getID();
-        //Comscore.startPlaylist(MediaDetailsObj)
         
         var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST)
         if (ApplicationController.isInUserWatchlist(watchListItem) ){
