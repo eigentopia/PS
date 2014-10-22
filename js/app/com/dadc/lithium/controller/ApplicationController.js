@@ -2553,7 +2553,12 @@ var ApplicationController = function( screenObj ){
     }
     //Initialize all the tracking.
     Conviva.LivePass.toggleTraces(true)
-    Conviva.LivePass.init( ConvivaIntegration.customerKey );
+    //Conviva.LivePass.init( ConvivaIntegration.customerKey );
+
+    var settings = {}
+    settings.gatewayUrl = "https://testonly.conviva.com"
+    Conviva.LivePass.init( ConvivaIntegration.customerKey, settings )
+
 
     Comscore.sendStartup();
 }

@@ -59,28 +59,27 @@ var ConvivaIntegration = {
  		ConvivaIntegration.sessionId = Conviva.LivePass.createSession( videoObj, convivaMetadata );
 
  	},
- 	attachStreamer:function(){
- 		if(ConvivaIntegration.video != null){
- 			Conviva.LivePass.attachStreamer(ConvivaIntegration.sessionId, ConvivaIntegration.video )
- 		}
- 		else{
- 			ConvivaIntegration.video = VideoManagerInstance.getCoreVideo()
-
- 			Conviva.LivePass.attachStreamer(ConvivaIntegration.sessionId, ConvivaIntegration.video )
- 		}
+ 	attachStreamer:function(video){
+ 		Logger.log("attachStreamer")
+		ConvivaIntegration.video = video
+		Conviva.LivePass.attachStreamer(ConvivaIntegration.sessionId, video )
  	}, 
  	detachStreamer:function(){
+ 		Logger.log("detachStreamer")
+ 		console.dir(ConvivaIntegration.video)
  		if(ConvivaIntegration.video != null){
  			Conviva.LivePass.detachStreamer(ConvivaIntegration.sessionId )
  		}
  	},
  	adStart:function(){
+ 		Logger.log("AD START")
  		ConvivaIntegration.detachStreamer()
  		Conviva.LivePass.adStart(ConvivaIntegration.sessionId )
  	},  
  	adEnd:function(){
+ 		Logger.log("AD END")
  		Conviva.LivePass.adEnd(ConvivaIntegration.sessionId );
- 		ConvivaIntegration.attachStreamer()
+ 		//ConvivaIntegration.attachStreamer()
  	}, 
 
  	// When the stream is done with playback

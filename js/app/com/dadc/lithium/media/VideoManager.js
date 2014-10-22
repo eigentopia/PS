@@ -103,9 +103,16 @@ VideoManager = function(){
             {"video-starttimeoffset": m_current_jsvideo.getResumeTime()} 
         );
         Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
-        Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime() );
+        Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime() + " "+ m_current_jsvideo.getVideoConfig());
         
-        
+        if(m_current_jsvideo.getVideoConfig()["content-type"] == "video/m3u8"){
+            if(ConvivaIntegration.sessionId == null){
+                ConvivaIntegration.createSession(m_core_video_obj, m_current_jsvideo.getVideoURL(), m_current_jsvideo.getMediaDetailsObj())
+            }
+                
+            ConvivaIntegration.attachStreamer(m_core_video_obj);
+        }
+
         Logger.log("core play called");
         
     }
@@ -168,13 +175,13 @@ VideoManager = function(){
     function onOpened(){
         Logger.log("core onOpened called");
         m_video_time_on_play_before_timeupdate = engine.getTimer();
+
+        if(m_current_jsvideo.getVideoConfig() == "video/m3u8"){
+            var CCSettings = m_core_video_obj.getCCSystemSettings();
+            engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
+        }
+
         m_core_video_obj.play();
-
-        var CCSettings = m_core_video_obj.getCCSystemSettings();
-        console.log("CCSETTINGS")
-        console.dir(CCSettings)
-
-        engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
 
         if( m_current_jsvideo != null ){
             m_current_jsvideo.onOpened();  

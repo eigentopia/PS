@@ -183,6 +183,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     {
         Logger.log("CrackleVideo.playCrackleVideo()");
         ConvivaIntegration.adEnd()
+
         VideoManagerInstance.play( This )
         /*try
         {
@@ -362,6 +363,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
 
     this.onOpened = function(){
+        //ConvivaIntegration.attachStreamer()
         //Comscore.sendClip(m_current_time)
         // var video_config = VideoManagerInstance.getCurrentJSVideo().getVideoConfig()
         // if(video_config["content-type"] == "video/m3u8"){
@@ -377,6 +379,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //Comscore.sendPlay(m_current_time * 1000)
         // DAN & MILAN: videoView analytic call
         m_ad_manager.sendVideoViewCallback();
+        //ConvivaIntegration.attachStreamer()
     };
 
     this.onStalled = function(){
@@ -536,8 +539,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             if( m_subtitle_container ) removeSubtitleContainer();
 
             PlaybackReadyListener.notifyAdPlaybackStarting();
-            ConvivaIntegration.adStart();
             m_playlists[ adIndex ].play(adIndex);
+            
+            ConvivaIntegration.adStart();
+            
             return true;
         }
         else{
