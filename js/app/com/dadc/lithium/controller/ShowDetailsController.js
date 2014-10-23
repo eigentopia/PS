@@ -9,6 +9,10 @@ include( "js/app/com/dadc/lithium/model/MediaDetails.js" );
 include( "js/app/com/dadc/lithium/model/ChannelDetails.js" );
 include( "js/app/com/dadc/lithium/model/ChannelFolderList.js" );
 
+
+
+include( "js/app/com/dadc/lithium/view/widgets/NextVideoWidget.js" );
+
 var ShowDetailsController = function( ParentControllerObj ){
     var m_unique_id                             = Controller.reserveUniqueID();
     var m_parent_controller_obj                 = ParentControllerObj;
@@ -169,6 +173,11 @@ var ShowDetailsController = function( ParentControllerObj ){
                         // Update widgets with data
                         m_show_detail_thumb_widget.refreshWidget( ChannelDetailsObj );
                         ChannelDetailsObj = null;
+
+        var nvWidget = new NextVideoWidget( m_show_details_menu_widgets[ 0 ].getSelectedObj())
+        nvWidget.x = 100
+        nvWidget.y = 100
+        m_master_container.addChild(nvWidget)
                     }
                 });
                 m_http_requests.push( channel_details_request );

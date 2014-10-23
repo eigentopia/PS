@@ -29,7 +29,7 @@ var ContinueWidget = function( ) {
 //            tblock = engine.createTextBlock( 'Error', FontLibraryInstance.getFont_ERRORTITLE(), 1100 );
 //            m_root_node.addChild( tblock );
 
-    var tblock = engine.createTextBlock( message, FontLibraryInstance.getFont_ERRORMESSAGE(), 700 );
+    var tblock = engine.createTextBlock( message, FontLibraryInstance.PLAYNEXTDETAILS, 700 );
 
     yesButton = Button(Dictionary.getText( Dictionary.TEXT.YES), true);
     noButton = Button(Dictionary.getText( Dictionary.TEXT.NO), false);
@@ -61,10 +61,10 @@ var ContinueWidget = function( ) {
     function getBackgroundSlate(){
         var tmp_slate = engine.createSlate();
         
-        tmp_slate.shader            = ShaderCreatorInstance.createAlphaShader( 1 );
-        tmp_slate.shader.texture    = AssetLoaderInstance.getImage( "Artwork/error_dialog.png" ).shader.texture;
-        tmp_slate.width             = 710//AssetLoaderInstance.getImage( "Artwork/error_dialog.png" ).width;
-        tmp_slate.height            = 300//AssetLoaderInstance.getImage( "Artwork/error_dialog.png" ).height;
+        tmp_slate.shader            = ShaderCreatorInstance.createSolidColorShader( RGBLibraryInstance.getDARKGRAY(.9) );
+        //tmp_slate.shader.texture    = AssetLoaderInstance.getImage( "Artwork/error_dialog.png" ).shader.texture;
+        tmp_slate.width             = 610//AssetLoaderInstance.getImage( "Artwork/error_dialog.png" ).width;
+        tmp_slate.height            = 100//AssetLoaderInstance.getImage( "Artwork/error_dialog.png" ).height;
 
         return tmp_slate;
     }
@@ -88,7 +88,7 @@ var ContinueWidget = function( ) {
         }
         
         
-        var tblock = engine.createTextBlock( text, FontLibraryInstance.getFont_ERRORBUTTON(), 50 );
+        var tblock = engine.createTextBlock( text, FontLibraryInstance.PLAYNEXTDETAILS, 20 );
         tblock.x = selectedSlate.width/2 - tblock.naturalWidth/2;
         tblock.y = selectedSlate.height/2 - tblock.naturalHeight/2;
         rootNode.addChild( tblock );

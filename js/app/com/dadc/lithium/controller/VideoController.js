@@ -332,7 +332,10 @@ var VideoController = function( ParentControllerObj )
 
             //check here if next item is show or movie
             //if show, get list splice in to existing list.
-            if(currentMediaList != null && currentMediaList[currentMediaListIndex+1].isShow){
+            if(currentMediaList != null 
+                && currentMediaList[currentMediaListIndex+1].data.ItemType == "Channel"
+                && (currentMediaList[currentMediaListIndex+1].data.RootChannelID == 114 ||
+                    currentMediaList[currentMediaListIndex+1].data.RootChannelID == 46)){
                 CrackleApi.Collections.showEpisodeList(currentMediaList[currentMediaListIndex].ID,
                     function(showList, status){
                         if(showList != false && showList.length){

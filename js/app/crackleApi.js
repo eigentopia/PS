@@ -5,51 +5,47 @@ include("js/app/com/dadc/lithium/util/HTTP.js")
 		var url = "https://api.crackle.com/Service.svc/appconfig?format=json";
            
         HTTP.request(url, "GET", function(data, status){
-                if(data != null && status == 200){
-                    crackleUser.watchlist = [];
-                    var items = data.Items;
-                    crackleUser.watchlist = items.slice(0);
+            if(data != null && status == 200){
+                crackleUser.watchlist = [];
+                var items = data.Items;
+                crackleUser.watchlist = items.slice(0);
 
-                    callback && callback(data, status)
-                }
-                else{
-                    callback && callback(null, status)
-                }
-            })
-        
-        HTTP.startRequest()
+                callback && callback(data, status)
+            }
+            else{
+                callback && callback(null, status)
+            }
+        })
 	},
     User:{
     	watchList: function(cb){
     		var url = ModelConfig.getServerURLRoot() + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' );
             HTTP.request(url, "GET", function(data, status){
-                    if(data != null && status == 200){
+                if(data != null && status == 200){
 
 
-                        cb && cb(data, status)
-                    }
-                    else{
-                        cb && cb(null, status)
-                    }
-                })
-            HTTP.startRequest()
+                    cb && cb(data, status)
+                }
+                else{
+                    cb && cb(null, status)
+                }
+            })
         },
         history: function(cb){
             if(crackleUser.id != ""){
                 var url = ModelConfig.getServerURLRoot() + "queue/history/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' );
                 HTTP.request(url, "GET", function(data, status){
-                        if(data != null && status == 200){
-                            if(cb){
-                                cb(data, status)
-                            }
+                    if(data != null && status == 200){
+                        if(cb){
+                            cb(data, status)
                         }
-                        else{
-                            if(cb){
-                                cb(null, status)
-                            }
+                    }
+                    else{
+                        if(cb){
+                            cb(null, status)
                         }
-                    })
-                HTTP.startRequest()
+                    }
+                })
             }
         },
         addToWatchlist: function (id, type, cb){
@@ -64,7 +60,6 @@ include("js/app/com/dadc/lithium/util/HTTP.js")
                     cb && cb(false, status)
                 }
             })
-            HTTP.startRequest()
         },
         removeFromWatchlist : function(id, type, callback){
             var url =  ModelConfig.getServerURLRoot() + "queue/queue/remove/member/"+ crackleUser.id +"/"+type+"/"+id;
@@ -78,7 +73,6 @@ include("js/app/com/dadc/lithium/util/HTTP.js")
                     callback && callback(false, status)
                 }
             })
-            HTTP.startRequest()
         },
         pauseResumeList: function(callback){
             if(Crackle.User.id != ""){
@@ -116,9 +110,8 @@ include("js/app/com/dadc/lithium/util/HTTP.js")
                     callback&&callback(false, status)
                 }
             })
-            HTTP.startRequest()
         }
-    },
+    }, //End Media Item
     Collections:{
         slideShow: function(category, callback){
             var url = "slideshow/"+ category +"/"+StorageManagerInstance.get( 'geocode' );
@@ -145,6 +138,7 @@ include("js/app/com/dadc/lithium/util/HTTP.js")
                 }
 
             })
+        },
         showEpisodeList: function(id, cb){
             var channelUrl = ModelConfig.getServerURLRoot() + "channel/" + id + "/folders/" + StorageManagerInstance.get( 'geocode' ) + "?format=json";
             Logger.log( "showEpisodeList " + url );
@@ -176,11 +170,12 @@ include("js/app/com/dadc/lithium/util/HTTP.js")
                 else{
                     cb&&cb(false, status)
                 }
-        }
+            })
+        },
         featured: function(){
 
         }
-    }
+    }// End Collections.
 
     //send whole object? getAPI: function(obj, cb) {var foo = ObjectByType(obj) do stuff return something based on foo}
 }
