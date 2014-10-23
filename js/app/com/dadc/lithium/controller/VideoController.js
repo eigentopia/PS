@@ -173,9 +173,9 @@ var VideoController = function( ParentControllerObj )
                 openNextVideoContinueOverlay();
                 return;
             }
-            // if(!nextVideoOverlay){
-            //     openNextVideoOverlay();       
-            // }
+            if(!nextVideoOverlay){
+                openNextVideoOverlay();       
+            }
          }
     };
 
@@ -319,7 +319,6 @@ var VideoController = function( ParentControllerObj )
             if(currentMediaList == null && MediaDetailsObj.videoContextList){
                 currentMediaList = MediaDetailsObj.videoContextList
                 for (var i=0; i<MediaDetailsObj.videoContextList.length;i++){
-                    console.log(MediaDetailsObj.videoContextList[i]);
                     if (MediaDetailsObj.data.ID == MediaDetailsObj.videoContextList[i].ID){
                         currentMediaListIndex = i;
                     }
@@ -330,6 +329,19 @@ var VideoController = function( ParentControllerObj )
             
             m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, This, This );
             m_crackle_video.setSubtitleContainer(m_subtitle_container)
+
+            //check here if next item is show or movie
+            //if show, get list splice in to existing list.
+            if(currentMediaList != null && currentMediaList[currentMediaListIndex+1].isShow){
+                CrackleApi.Collections.showEpisodeList(currentMediaList[currentMediaListIndex].ID,
+                    function(showList, status){
+                        if(showList != false && showList.length){
+                            Array.prototype.splice.apply(currentMediaList, [currentMediaListIndex, 0].concat(showList));
+                        }
+                    })
+
+                currentMediaListIndex ++ //move byond the show in the index.
+            }
 
             
             if(m_last_time>0){
@@ -563,6 +575,7 @@ var VideoController = function( ParentControllerObj )
         currentMediaListIndex ++
         m_last_time = 0;
         m_playback_ready = false;
+
         this.prepareToOpen(currentMediaList[currentMediaListIndex])
     }
 

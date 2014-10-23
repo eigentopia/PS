@@ -115,7 +115,7 @@ var FontLibrary = function(){
                         color: [255/255, 255/255, 0/255, 1.0], 
                         preserveSpaces: true, 
                         dynamic:true, 
-                        alignment:'justify',
+                        alignment:'center',
                         maxLines:4};
             if(localStorage["subFontConfig"]){
                 var subFontConfig = JSON.parse(localStorage["subFontConfig"])
@@ -152,7 +152,7 @@ var FontLibrary = function(){
                 font.color[3] = subFontConfig.fontColor[3]
                 font.preserveSpaces= true
                 font.dynamic = true
-                font.alignment = 'justify'
+                font.alignment = 'center'
 
                 font.maxLines = 4;
             }

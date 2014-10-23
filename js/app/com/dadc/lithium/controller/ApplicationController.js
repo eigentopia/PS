@@ -79,6 +79,8 @@ include( "js/app/com/dadc/lithium/media/InnovidInternalVideo.js" );
 include( "js/app/com/dadc/lithium/model/InteractiveAdModel.js" );
 include( "js/app/com/dadc/lithium/view/widgets/InteractiveAdWidget.js" );
 
+include("js/app/crackleApi.js")
+
 
 // THIS CONTROLLER WILL HANDLE THE FLOW OF THE APPLICATION
 var ApplicationController = function( screenObj ){
@@ -1026,7 +1028,8 @@ var ApplicationController = function( screenObj ){
                     var videoContextList = []
                     //Keep the context if coming from a list so we can next video
                     if(m_controller_before_video_started.getControllerName() =='RecommendedWatchlistController' ||
-                        m_controller_before_video_started.getControllerName() == "ShowDetailsController"){
+                        m_controller_before_video_started.getControllerName() == "ShowDetailsController"||
+                        m_controller_before_video_started.getControllerName() == "MyWatchlistController"){
 
                         // Folderlist> playlist> medialist
                         videoContextList = m_controller_before_video_started.getItemList();
@@ -2423,7 +2426,7 @@ var ApplicationController = function( screenObj ){
     }
 
     //Watchlist stuff here because it can be called from many different places.
-    var watchListDirty = false;
+
     ApplicationController.isInUserWatchlist = function(id){
 
         //return false if not logged
