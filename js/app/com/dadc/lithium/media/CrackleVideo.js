@@ -132,6 +132,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     this.play = function()
     {
         Logger.shout("CrackleVideo.play() called");
+        console.dir(m_media_details_obj)
         // For Event52
         AnalyticsManagerInstance.resetTime();
         Comscore.clearPlaylist()

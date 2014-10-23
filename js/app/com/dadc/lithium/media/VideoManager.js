@@ -78,9 +78,13 @@ VideoManager = function(){
                 m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_MP4 );
                 Logger.log( 'mp4' );
                 break;
-            default:
+            case "video/m3u8":
                 m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_PROGRESSIVE );
                 Logger.log( 'm3u8' );
+                break;
+            default:
+                onError();
+                return;
                 break;
         }
 
@@ -215,5 +219,7 @@ VideoManager.VIDEOCONFIG = {
         "transfer-type":"progressive-download",
         "encryption-type":"none"
     },
-    TYPE_PROGRESSIVE: {}
+    TYPE_PROGRESSIVE: {
+        "content-type":"video/m3u8"
+    }
 }
