@@ -144,6 +144,7 @@ var MediaDetails = function( json_data ){
     this.getSeason                      = function(){return this.m_data.Season;};
     //this.getAspectRatio                 = function(){return this.m_data.AspectRatio;};
     this.getMediaType                   = function(){return this.m_data.MediaType;};
+    this.getItemType                   = function(){return this.m_data.ItemType;};
     //this.getShowAdBefore                = function(){return this.m_data.ShowAdBefore;};
     //this.getShowAdAfter                 = function(){return this.m_data.ShowAdAfter;};
     this.getScrubbingForgiveness        = function(){return 30 }//this.m_data.ScrubbingForgiveness;};

@@ -236,7 +236,7 @@ var VideoController = function( ParentControllerObj )
         // console.log(subtitleUrl)
 
         if(currentVideoEndCreditMark == null){
-            currentVideoEndCreditMark = MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds;
+            currentVideoEndCreditMark = MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds/1000;
             if(MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds == null){
                 currentVideoEndCreditMark = MediaDetailsObj.data.DurationInSeconds - 10
             }
@@ -315,7 +315,7 @@ var VideoController = function( ParentControllerObj )
         {
 
             Logger.log("currentAudioVideoUrl: " + currentAudioVideoUrl);
-
+            //This should keep the context of the list.
             if(currentMediaList == null && MediaDetailsObj.videoContextList){
                 currentMediaList = MediaDetailsObj.videoContextList
                 for (var i=0; i<MediaDetailsObj.videoContextList.length;i++){
@@ -332,18 +332,25 @@ var VideoController = function( ParentControllerObj )
 
             //check here if next item is show or movie
             //if show, get list splice in to existing list.
-            if(currentMediaList != null 
-                && currentMediaList[currentMediaListIndex+1].data.ItemType == "Channel"
-                && (currentMediaList[currentMediaListIndex+1].data.RootChannelID == 114 ||
-                    currentMediaList[currentMediaListIndex+1].data.RootChannelID == 46)){
-                CrackleApi.Collections.showEpisodeList(currentMediaList[currentMediaListIndex].ID,
-                    function(showList, status){
-                        if(showList != false && showList.length){
-                            Array.prototype.splice.apply(currentMediaList, [currentMediaListIndex, 0].concat(showList));
-                        }
-                    })
+            if(currentMediaList != null && MediaDetailsObj.videoContextList){ 
+            console.dir(currentMediaList[currentMediaListIndex])
+                var currentVideo =currentMediaList[currentMediaListIndex]
+                var nextVideo = currentMediaList[currentMediaListIndex+1]
+                if(currentMediaListIndex + 1 > currentMediaList.length){
+                    nextVideo = currentMediaList[0]
+                }
+                console.dir(nextVideo)
+                if(nextVideo.Season == "" && 
+                    (nextVideo.RootChannelID == 114 || nextVideo.RootChannelID == 46)){
+                    CrackleApi.Collections.showEpisodeList(currentVideo.ID,
+                        function(showList, status){
+                            if(showList != false && showList.length){
+                                Array.prototype.splice.apply(currentMediaList, [currentMediaListIndex, 0].concat(showList));
+                            }
+                        })
 
-                currentMediaListIndex ++ //move byond the show in the index.
+                    currentMediaListIndex ++ //move byond the show in the index.
+                }
             }
 
             
@@ -436,6 +443,21 @@ var VideoController = function( ParentControllerObj )
     }
     this.enterPressed = function(){
         Logger.log( 'VideoController enterPressed' );
+        
+        if(nextVideoOverlay){
+                        // store video progress
+            VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_crackle_video.getResumeTime() );
+            VideoManagerInstance.stop();
+            VideoManagerInstance.close();
+            this.playNext()
+            return;
+        }
+        
+        if(nextVideoContinueOverlay){
+            totalVideosPlayed = 0;
+            closeNextVideoContinueOverlay()
+        }
+
         if( m_seek_direction && m_crackle_video.isPlaying() ){
             toggleTimeline();
             m_seek_direction = null;

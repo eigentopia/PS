@@ -1036,33 +1036,54 @@ var ApplicationController = function( screenObj ){
                         //Add it to the object we are passing videoController
                         json_data_args.MediaDetailsObj.videoContextList = videoContextList
 
+                                            // Wey: This fixes timeline bug where pending focused controller
+                        // would still be set causing abnormal behaviors
+                        m_pending_focused_controller = null;
+
+                        m_focused_controller = m_video_controller;
+                        m_video_controller.setFocus();
+
+                        // NOTE: CALLING OPEN BEFORE PREPARE. WHY? FOR THE DISPLAY NODE? SHOULDN'T BE NEEDED THEORETICALLY
+                        m_video_controller.open();
+                        screenObj.addChild( m_video_controller.getDisplayNode() );
+
+                        // NOTE: CALLING PREPARE AFTER OPEN, WHY?
+                        m_video_controller.prepareToOpen( json_data_args.MediaDetailsObj, null, null);
+
 
                     }
                     else{ //get featured of MediaDetailsObj type
-                        var request = new FeaturedRequest( 'movies', 
+                        var request = new FeaturedRequest( FeaturedRequest.CATEGORY.MOVIES, 
                                                         FeaturedRequest.FILTER_TYPE.ALL, 
                                                         StorageManagerInstance.get( 'geocode' ), 
-                                                        60, 
+                                                        10, 
                                                         function( FeaturedObj, status ){
                         //SAMPLE URL
                         //http://api.crackle.com/Service.svc/featured/movies/all/us/30?format=json
                             var boo = FeaturedObj;
+
+                                 // Folderlist> playlist> medialist
+                            videoContextList = FeaturedObj.m_data.Items
+                            //Add it to the object we are passing videoController
+                            json_data_args.MediaDetailsObj.videoContextList = videoContextList
+
+                            // Wey: This fixes timeline bug where pending focused controller
+                            // would still be set causing abnormal behaviors
+                            m_pending_focused_controller = null;
+
+                            m_focused_controller = m_video_controller;
+                            m_video_controller.setFocus();
+
+                            // NOTE: CALLING OPEN BEFORE PREPARE. WHY? FOR THE DISPLAY NODE? SHOULDN'T BE NEEDED THEORETICALLY
+                            m_video_controller.open();
+                            screenObj.addChild( m_video_controller.getDisplayNode() );
+
+                            // NOTE: CALLING PREPARE AFTER OPEN, WHY?
+                            m_video_controller.prepareToOpen( json_data_args.MediaDetailsObj, null, null);
                         })
+                        
+                        request.startRequest();
                     }
-
-                    // Wey: This fixes timeline bug where pending focused controller
-                    // would still be set causing abnormal behaviors
-                    m_pending_focused_controller = null;
-
-                    m_focused_controller = m_video_controller;
-                    m_video_controller.setFocus();
-
-                    // NOTE: CALLING OPEN BEFORE PREPARE. WHY? FOR THE DISPLAY NODE? SHOULDN'T BE NEEDED THEORETICALLY
-                    m_video_controller.open();
-                    screenObj.addChild( m_video_controller.getDisplayNode() );
-
-                    // NOTE: CALLING PREPARE AFTER OPEN, WHY?
-                    m_video_controller.prepareToOpen( json_data_args.MediaDetailsObj, null, null);
                 })
 
                 break;

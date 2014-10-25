@@ -141,8 +141,8 @@ include("js/app/com/dadc/lithium/util/HTTP.js")
         },
         showEpisodeList: function(id, cb){
             var channelUrl = ModelConfig.getServerURLRoot() + "channel/" + id + "/folders/" + StorageManagerInstance.get( 'geocode' ) + "?format=json";
-            Logger.log( "showEpisodeList " + url );
-            HTTP.request(url, "GET", function(data, status){
+            Logger.log( "showEpisodeList " + channelUrl );
+            HTTP.request(channelUrl, "GET", function(data, status){
                 if(data != null && status ==200){
                     channel_folder_list = data;
                     

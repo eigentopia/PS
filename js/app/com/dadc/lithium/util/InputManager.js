@@ -22,7 +22,6 @@ var InputManager = function(){
     this.onKey = function( keyObj ){
         keyObj.onEnd = This.onKeyEnd;
         Logger.log( "onkey: " + keyObj.name );
-        console.dir(keyObj)
         if( keyObj.name == undefined )
             currentKey = undefined;
         else{

@@ -55,7 +55,7 @@ var NextVideoWidget = function(MediaObj){
 		img.x = 10
 		img.y= 10
 		rootNode.addChild(img);
-	}, null)
+	})
 
 	return rootNode;
 

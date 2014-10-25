@@ -2,6 +2,7 @@
 var ContinueWidget = function( ) {
     this.rootNode = engine.createContainer();
     var message = Dictionary.getText( Dictionary.TEXT.WANTTOCONTINE );
+    var spacing = 40
     this.yesButton;
     this.noButton;
 
@@ -15,8 +16,8 @@ var ContinueWidget = function( ) {
     tblock.x = ( bg_slate.width / 2 ) - ( tblock.naturalWidth / 2 );
     tblock.y = 20;
 
-    yesButton.rootNode.x = 170
-    noButton.rootNode.x = yesButton.rootNode.x + 170
+    yesButton.rootNode.x =( 610 - (yesButton.rootNode.getChildAt(0).width + spacing)*2)/2
+    noButton.rootNode.x = yesButton.rootNode.x + yesButton.rootNode.getChildAt(0).width + spacing
     yesButton.rootNode.y = noButton.rootNode.y = tblock.y + 50
 
     this.rootNode.addChild( bg_slate );
@@ -53,7 +54,7 @@ var ContinueWidget = function( ) {
         }
         
         
-        var tblock = engine.createTextBlock( text, FontLibraryInstance.PLAYNEXTDETAILS, 20 );
+        var tblock = engine.createTextBlock( text, FontLibraryInstance.PLAYNEXTDETAILSBUTTON, 200 );
         tblock.x = selectedSlate.width/2 - tblock.naturalWidth/2;
         tblock.y = selectedSlate.height/2 - tblock.naturalHeight/2;
         rootNode.addChild( tblock );
@@ -63,7 +64,7 @@ var ContinueWidget = function( ) {
             selected:function (){return selected},
             select: function(state){
                 selected = state;
-                rootNode.removeChildAt[1]
+                rootNode.removeChildAt[0]
                 var slate;
                 if(state == true){
                     slate = selectedSlate
