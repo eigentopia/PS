@@ -79,16 +79,16 @@ var FreewheelMediaType =
 
 var CONFIG= {
        // TEST
-    FREEWHEEL_URL: "http://23adc.v.fwmrm.net/ad/g/1",
-    FREEWHEEL_NETWORK_ID: 146140,
-    //FREEWHEEL_PROFILE: "crackle_"+engine.stats.device.platform+"_test"
-    FREEWHEEL_PROFILE: "crackle_ps3_test"
+    // FREEWHEEL_URL: "http://23adc.v.fwmrm.net/ad/g/1",
+    // FREEWHEEL_NETWORK_ID: 146140,
+    // //FREEWHEEL_PROFILE: "crackle_"+engine.stats.device.platform+"_test"
+    // FREEWHEEL_PROFILE: "crackle_ps3_test"
 
        // PRODUCTION
-    // FREEWHEEL_URL: "http://2517d.v.fwmrm.net/ad/g/1",
-    // FREEWHEEL_NETWORK_ID: 151933,
-    // //FREEWHEEL_PROFILE: "crackle_"+engine.stats.device.platform+"_live"
-    // FREEWHEEL_PROFILE: "crackle_ps3_live"
+    FREEWHEEL_URL: "http://2517d.v.fwmrm.net/ad/g/1",
+    FREEWHEEL_NETWORK_ID: 151933,
+    //FREEWHEEL_PROFILE: "crackle_"+engine.stats.device.platform+"_live"
+    FREEWHEEL_PROFILE: "crackle_ps3_live"
 }
 
 // DAN: MRM site sections update

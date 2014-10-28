@@ -41,7 +41,7 @@ var NextVideoWidget = function(MediaObj){
     
     rootNode.addChild( pressForNextText );
 	
-	var upNext = "Up Next: " + getFullTitle(MediaObj.data);
+	var upNext = "Up Next: " + getFullTitle(MediaObj);
 	var upNextText = engine.createTextBlock( upNext, FontLibraryInstance.PLAYNEXTDETAILS, containerWidth - (imageWidth + padding*2 ));
 	upNextText.y =  (containerHeight/2 - upNextText.naturalHeight/2) 
 	upNextText.x =  ((containerWidth+imageWidth)/2 - upNextText.naturalWidth/2)// + imageWidth
@@ -50,7 +50,7 @@ var NextVideoWidget = function(MediaObj){
 
 	var mediaObj = MediaObj;
 	//100x150 Onesheet
-	var itemImgURL = (MediaObj.data.Thumbnail_OneSheet100x150)?MediaObj.data.Thumbnail_OneSheet100x150:MediaObj.data.OneSheetImage100x150;
+	var itemImgURL = (MediaObj.Thumbnail_OneSheet100x150)?MediaObj.Thumbnail_OneSheet100x150:MediaObj.OneSheetImage100x150;
 	var oneSheet = engine.loadImage(itemImgURL, function(img){
 		img.x = 10
 		img.y= 10

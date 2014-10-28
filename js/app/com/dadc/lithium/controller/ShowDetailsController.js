@@ -174,10 +174,10 @@ var ShowDetailsController = function( ParentControllerObj ){
                         m_show_detail_thumb_widget.refreshWidget( ChannelDetailsObj );
                         ChannelDetailsObj = null;
 
-        var nvWidget = new NextVideoWidget( m_show_details_menu_widgets[ 0 ].getSelectedObj())
-        nvWidget.x = 100
-        nvWidget.y = 100
-        m_master_container.addChild(nvWidget)
+        // var nvWidget = new NextVideoWidget( m_show_details_menu_widgets[ 0 ].getSelectedObj())
+        // nvWidget.x = 100
+        // nvWidget.y = 100
+        // m_master_container.addChild(nvWidget)
                     }
                 });
                 m_http_requests.push( channel_details_request );
