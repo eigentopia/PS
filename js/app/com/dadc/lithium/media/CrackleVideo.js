@@ -531,10 +531,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
     function playAd( adIndex ){
         Logger.log("play add called: index" + adIndex);
-        if(adIndex == 0){
-            ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
-        }
         if( typeof m_playlists[ adIndex ] !== "undefined" ){
+            if(adIndex == 0){
+                ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
+            }
             m_is_playing = false;
             if( m_subtitle_container ) removeSubtitleContainer();
 

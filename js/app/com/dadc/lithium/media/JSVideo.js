@@ -130,7 +130,8 @@ JSVideo.VIDEOCONFIG = {
         "transfer-type":"progressive-download",
         "encryption-type":"none"
     },
-    TYPE_PROGRESSIVE: {}
+    TYPE_PROGRESSIVE: {
+    }   
 }
 
 var PlaybackEvent = function( ){ };

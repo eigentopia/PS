@@ -76,10 +76,12 @@ VideoManager = function(){
         switch( video_config["content-type"] ){
             case "video/mp4":
                 m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_MP4 );
+                m_core_video_obj.streamType = "mp4"
                 Logger.log( 'mp4' );
                 break;
             default:
                 m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_PROGRESSIVE );
+                m_core_video_obj.streamType = "m3u8"
                 Logger.log( 'm3u8' );
                 break;
         }
@@ -105,14 +107,7 @@ VideoManager = function(){
         Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
         Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime() + " "+ m_current_jsvideo.getVideoConfig());
         
-        if(m_current_jsvideo.getVideoConfig()["content-type"] == "video/m3u8"){
-            if(ConvivaIntegration.sessionId == null){
-                ConvivaIntegration.createSession(m_core_video_obj, m_current_jsvideo.getVideoURL(), m_current_jsvideo.getMediaDetailsObj())
-            }
-                
-            ConvivaIntegration.attachStreamer(m_core_video_obj);
-        }
-
+        
         Logger.log("core play called");
         
     }
@@ -176,9 +171,17 @@ VideoManager = function(){
         Logger.log("core onOpened called");
         m_video_time_on_play_before_timeupdate = engine.getTimer();
 
-        if(m_current_jsvideo.getVideoConfig() == "video/m3u8"){
+        if(m_core_video_obj.streamType == "m3u8"){
             var CCSettings = m_core_video_obj.getCCSystemSettings();
             engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
+            console.log("GOT ME CC")
+            if(m_core_video_obj.streamType == "m3u8"){
+                if(ConvivaIntegration.sessionId == null){
+                    ConvivaIntegration.createSession(m_core_video_obj, m_current_jsvideo.getVideoURL(), m_current_jsvideo.getMediaDetailsObj())
+                }
+
+                ConvivaIntegration.attachStreamer(m_core_video_obj)
+            }
         }
 
         m_core_video_obj.play();
@@ -228,6 +231,5 @@ VideoManager.VIDEOCONFIG = {
         "encryption-type":"none"
     },
     TYPE_PROGRESSIVE: {
-        "content-type":"video/m3u8",
     }
 }

@@ -12,6 +12,7 @@ var ConvivaIntegration = {
 
 	sessionId: null,
 	video: null,
+	attached: false,
 
  	// When the user clicks play
 	
@@ -57,17 +58,20 @@ var ConvivaIntegration = {
 	
 
  		ConvivaIntegration.sessionId = Conviva.LivePass.createSession( videoObj, convivaMetadata );
-
  	},
  	attachStreamer:function(video){
  		Logger.log("attachStreamer")
-		ConvivaIntegration.video = video
-		Conviva.LivePass.attachStreamer(ConvivaIntegration.sessionId, video )
+ 		if(ConvivaIntegration.attached == false){
+ 			ConvivaIntegration.attached = true
+			ConvivaIntegration.video = video
+			Conviva.LivePass.attachStreamer(ConvivaIntegration.sessionId, video )
+		}
  	}, 
  	detachStreamer:function(){
  		Logger.log("detachStreamer")
  		console.dir(ConvivaIntegration.video)
- 		if(ConvivaIntegration.video != null){
+ 		if(ConvivaIntegration.video != null && ConvivaIntegration.attached == true){
+ 			ConvivaIntegration.attached = false
  			Conviva.LivePass.detachStreamer(ConvivaIntegration.sessionId )
  		}
  	},
