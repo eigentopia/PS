@@ -171,19 +171,6 @@ VideoManager = function(){
         Logger.log("core onOpened called");
         m_video_time_on_play_before_timeupdate = engine.getTimer();
 
-        if(m_core_video_obj.streamType == "m3u8"){
-            var CCSettings = m_core_video_obj.getCCSystemSettings();
-            engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
-            console.log("GOT ME CC")
-            if(m_core_video_obj.streamType == "m3u8"){
-                if(ConvivaIntegration.sessionId == null){
-                    ConvivaIntegration.createSession(m_core_video_obj, m_current_jsvideo.getVideoURL(), m_current_jsvideo.getMediaDetailsObj())
-                }
-
-                ConvivaIntegration.attachStreamer(m_core_video_obj)
-            }
-        }
-
         m_core_video_obj.play();
 
         if( m_current_jsvideo != null ){
