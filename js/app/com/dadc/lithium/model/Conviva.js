@@ -69,7 +69,6 @@ var ConvivaIntegration = {
  	}, 
  	detachStreamer:function(){
  		Logger.log("detachStreamer")
- 		console.dir(ConvivaIntegration.video)
  		if(ConvivaIntegration.video != null && ConvivaIntegration.attached == true){
  			ConvivaIntegration.attached = false
  			Conviva.LivePass.detachStreamer(ConvivaIntegration.sessionId )
