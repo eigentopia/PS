@@ -76,10 +76,12 @@ VideoManager = function(){
         switch( video_config["content-type"] ){
             case "video/mp4":
                 m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_MP4 );
+                m_core_video_obj.streamType = "mp4"
                 Logger.log( 'mp4' );
                 break;
             case "video/m3u8":
                 m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_PROGRESSIVE );
+                m_core_video_obj.streamType = "m3u8"
                 Logger.log( 'm3u8' );
                 break;
             default:
@@ -107,7 +109,7 @@ VideoManager = function(){
             {"video-starttimeoffset": m_current_jsvideo.getResumeTime()} 
         );
         Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
-        Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime() );
+        Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime() + " "+ m_current_jsvideo.getVideoConfig());
         
         
         Logger.log("core play called");
@@ -135,7 +137,10 @@ VideoManager = function(){
         m_video_dimensions.width = width;
         m_video_dimensions.height = height;
     }
-    
+
+    this.getCoreVideo = function(){
+        return m_core_video_obj;
+    }
     
     this.getPlaybackTimePTS = function(){
         return ( m_core_video_obj != null )
@@ -169,11 +174,9 @@ VideoManager = function(){
     function onOpened(){
         Logger.log("core onOpened called");
         m_video_time_on_play_before_timeupdate = engine.getTimer();
+
         m_core_video_obj.play();
 
-        var CCSettings = m_core_video_obj.getCCSystemSettings();
-
-        engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
 
         if( m_current_jsvideo != null ){
             m_current_jsvideo.onOpened();  
@@ -220,6 +223,5 @@ VideoManager.VIDEOCONFIG = {
         "encryption-type":"none"
     },
     TYPE_PROGRESSIVE: {
-        "content-type":"video/m3u8"
     }
 }

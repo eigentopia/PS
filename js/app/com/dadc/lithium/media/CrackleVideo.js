@@ -183,6 +183,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     function playCrackleVideo()
     {
         Logger.log("CrackleVideo.playCrackleVideo()");
+        ConvivaIntegration.adEnd()
+
         VideoManagerInstance.play( This )
         /*try -- all this is now in onOpened.
         {
@@ -196,6 +198,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             }
             else{
                 //Comscore.sendClip(m_current_time)
+                ConvivaIntegration.createSession(VideoManagerInstance.getCoreVideo(), m_video_url, m_media_details_obj)
             }
         }
         catch( e )
@@ -347,19 +350,36 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         if( m_playlists[ m_media_details_obj.getDurationInSeconds() ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
             playAd( m_media_details_obj.getDurationInSeconds() );
         }else{
+            ConvivaIntegration.cleanUpSession();
             PlaybackReadyListener.notifyPlaybackEnded();
         }
     };
 
     this.onError = function(){
         m_disposed = true;
+        ConvivaIntegration.cleanUpSession();
         VideoManagerInstance.stop();
         VideoManagerInstance.close();
         notifyListeners( new PlaybackError( VideoManagerInstance.getPlaybackTimePTS() ) );
     };
 
     this.onOpened = function(){
-        Comscore.sendClip(m_current_time)
+
+        var parentVideo = VideoManagerInstance.getCoreVideo()
+        var CCSettings = parentVideo.getCCSystemSettings();
+        engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
+        console.log("GOT ME CC")
+        if(ConvivaIntegration.sessionId == null){
+            ConvivaIntegration.createSession(parentVideo, m_video_url, m_media_details_obj)
+        }
+            
+        ConvivaIntegration.attachStreamer(parentVideo)
+        //ConvivaIntegration.attachStreamer()
+        //Comscore.sendClip(m_current_time)
+        // var video_config = VideoManagerInstance.getCurrentJSVideo().getVideoConfig()
+        // if(video_config["content-type"] == "video/m3u8"){
+        //     ConvivaIntegration.attachStreamer()
+        // }
     }
 
     this.onPlaying = function(){
@@ -370,6 +390,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         Comscore.sendPlay(m_current_time * 1000)
         // DAN & MILAN: videoView analytic call
         m_ad_manager.sendVideoViewCallback();
+        //ConvivaIntegration.attachStreamer()
     };
 
     this.onStalled = function(){
@@ -522,12 +543,17 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     function playAd( adIndex ){
         Logger.log("play add called: index" + adIndex);
         if( typeof m_playlists[ adIndex ] !== "undefined" ){
+            if(adIndex == 0){
+                ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
+            }
             m_is_playing = false;
             if( m_subtitle_container ) removeSubtitleContainer();
 
             PlaybackReadyListener.notifyAdPlaybackStarting();
-
             m_playlists[ adIndex ].play(adIndex);
+            
+            ConvivaIntegration.adStart();
+            
             return true;
         }
         else{

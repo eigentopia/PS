@@ -88,7 +88,6 @@ var MediaDetails = function( json_data ){
     this.m_data = json_data;
     this.data = json_data;
     var self = this;
-    console.log(json_data)
     //CREATING OBJECTS
     var statusObj                                       = new MediaDetailsStatus( this.m_data.status );
     //var mediaDetailsParentChannelDetailsSummaryObj;
@@ -185,7 +184,7 @@ var MediaDetails = function( json_data ){
     this.getChapters                    = function(){return mediaDetailsChaptersListObj;};
     this.getRelatedItemsByMPM           = function(){return this.m_data.getRelatedItemsByMPM}
     this.getFeaturedMedia               = function(){return self;}
-    
+
     this.getMediaURLs = function(){
         var mediaUrls =[]
         var defaultMediaUrl = getVideoURLFromList(this.m_data.MediaURLs);
@@ -196,10 +195,10 @@ var MediaDetails = function( json_data ){
         // console.log("URLS")
         // console.dir(mediaUrls)
         // console.dir(this.m_data.MediaURLs)
-        
+
         //So this is where related things are hidden
         //m_data.RelatedItemsByMPM[ofObjects].LocalizedLanguage - for display in Row
-        //m_data.RelatedItemsByMPM[ofObjects].MediaUrls[ofObjects].Path    
+        //m_data.RelatedItemsByMPM[ofObjects].MediaUrls[ofObjects].Path
         if(this.m_data.RelatedItemsByMPM && this.m_data.RelatedItemsByMPM.length > 0){
             var relatedItems = this.m_data.RelatedItemsByMPM;
             for(var item = 0; item< relatedItems.length;item++){
@@ -207,20 +206,20 @@ var MediaDetails = function( json_data ){
                     var url = getVideoURLFromList( relatedItems[item].MediaURLs);
                     //LL must be here for text display
                     url.LocalizedLanguage = relatedItems[item].LocalizedLanguage
-                    mediaUrls.push(url); 
+                    mediaUrls.push(url);
                 }
             }
         }
 
         return mediaUrls;
     };
-    
+
     this.getClosedCaptionFiles = function(){
         var ccFiles = (this.m_data.ClosedCaptionFiles)?this.m_data.ClosedCaptionFiles:[]
         // console.log("GETCCFILES")
         // console.dir(ccFiles)
         //So this is where related things are hidden
-        //m_data.RelatedItemsByMPM[ofObjects].ClosedCaptionFiles[ofObjects].Path  
+        //m_data.RelatedItemsByMPM[ofObjects].ClosedCaptionFiles[ofObjects].Path
         if(this.m_data.RelatedItemsByMPM && this.m_data.RelatedItemsByMPM.length > 0){
             var relatedItems = this.m_data.RelatedItemsByMPM;
             for(var item =0;item<relatedItems.length;item++){
@@ -232,8 +231,8 @@ var MediaDetails = function( json_data ){
                     }
                 }
             }
-        } 
-        
+        }
+
         return ccFiles;
     };
     //this.getThumbnailScourDetails       = function(){return mediaDetailsThumbnailScourDetailsObj;};
