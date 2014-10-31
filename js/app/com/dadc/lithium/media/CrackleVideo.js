@@ -182,9 +182,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     function playCrackleVideo()
     {
         Logger.log("CrackleVideo.playCrackleVideo()");
-        ConvivaIntegration.adEnd()
 
         VideoManagerInstance.play( This )
+
+        //ConvivaIntegration.attachStreamer()
         /*try
         {
             if ( VideoManagerInstance.play( This ) === false )
@@ -367,11 +368,11 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         var CCSettings = parentVideo.getCCSystemSettings();
         engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
         console.log("GOT ME CC")
-        if(ConvivaIntegration.sessionId == null){
-            ConvivaIntegration.createSession(parentVideo, m_video_url, m_media_details_obj)
-        }
+        // if(ConvivaIntegration.sessionId == null){
+        //     ConvivaIntegration.createSession(parentVideo, m_video_url, m_media_details_obj)
+        // }
             
-        ConvivaIntegration.attachStreamer(parentVideo)
+        // ConvivaIntegration.attachStreamer(parentVideo)
         //ConvivaIntegration.attachStreamer()
         //Comscore.sendClip(m_current_time)
         // var video_config = VideoManagerInstance.getCurrentJSVideo().getVideoConfig()
@@ -543,14 +544,16 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         if( typeof m_playlists[ adIndex ] !== "undefined" ){
             if(adIndex == 0){
                 ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
+                ConvivaIntegration.adStart();
             }
             m_is_playing = false;
             if( m_subtitle_container ) removeSubtitleContainer();
 
+            ConvivaIntegration.detachStreamer();
+
             PlaybackReadyListener.notifyAdPlaybackStarting();
             m_playlists[ adIndex ].play(adIndex);
             
-            ConvivaIntegration.adStart();
             
             return true;
         }

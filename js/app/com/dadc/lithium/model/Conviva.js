@@ -11,15 +11,11 @@ var ConvivaIntegration = {
 	// Reference to the current sessionId
 
 	sessionId: null,
-	video: null,
 	attached: false,
 
  	// When the user clicks play
 	
  	createSession: function(videoObj, vidUrl, mediaInfo) {
- 		if(videoObj != null){
- 			ConvivaIntegration.video = videoObj 
-		}
 	 	// Begin: Set up metadata
 		var media = mediaInfo.data;
 
@@ -62,35 +58,36 @@ var ConvivaIntegration = {
  	attachStreamer:function(video){
  		Logger.log("attachStreamer")
  		if(ConvivaIntegration.attached == false){
- 			ConvivaIntegration.attached = true
-			ConvivaIntegration.video = video
+ 			Logger.log("attachStreamer not attached")
+ 			ConvivaIntegration.attached = true;
+ 			if(ConvivaIntegration.sessionId == null){ // just played a preroll.
+ 				Logger.log("attachStreamer ad end")
+ 				Conviva.LivePass.adEnd(ConvivaIntegration.sessionId );
+ 			}
+			Logger.log("attachStreamer video")
+			console.dir(video)
 			Conviva.LivePass.attachStreamer(ConvivaIntegration.sessionId, video )
 		}
  	}, 
  	detachStreamer:function(){
  		Logger.log("detachStreamer")
- 		if(ConvivaIntegration.video != null && ConvivaIntegration.attached == true){
+ 		if(ConvivaIntegration.sessionId != null && ConvivaIntegration.attached == true){//block here if in preroll
+ 			Logger.log("detachStreamer - activate")
  			ConvivaIntegration.attached = false
  			Conviva.LivePass.detachStreamer(ConvivaIntegration.sessionId )
  		}
  	},
  	adStart:function(){
- 		Logger.log("AD START")
- 		ConvivaIntegration.detachStreamer()
+ 		Logger.log("AD START- only for prerolls")
  		Conviva.LivePass.adStart(ConvivaIntegration.sessionId )
- 	},  
- 	adEnd:function(){
- 		Logger.log("AD END")
- 		Conviva.LivePass.adEnd(ConvivaIntegration.sessionId );
- 		//ConvivaIntegration.attachStreamer()
- 	}, 
+ 	},
 
  	// When the stream is done with playback
 
  	cleanUpSession: function() {
-	
+		Logger.log("Cleanup")
 	 		if ( ConvivaIntegration.sessionId != null ) {
-	
+			Logger.log("Cleanup - activate")
 	 			Conviva.LivePass.cleanupSession(ConvivaIntegration.sessionId );
 	
 	 			ConvivaIntegration.sessionId = null;
