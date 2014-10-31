@@ -12,12 +12,17 @@ var ConvivaIntegration = {
 
 	sessionId: null,
 	attached: false,
+	video:false,
 
  	// When the user clicks play
 	
  	createSession: function(videoObj, vidUrl, mediaInfo) {
+ 		if(videoObj){
+ 			ConvivaIntegration.video = true;
+ 		}
 	 	// Begin: Set up metadata
 		var media = mediaInfo.data;
+
 
 	 	var assetName = "["+media.ID +"]"+media.Title ;
 	
@@ -60,8 +65,9 @@ var ConvivaIntegration = {
  		if(ConvivaIntegration.attached == false){
  			Logger.log("attachStreamer not attached")
  			ConvivaIntegration.attached = true;
- 			if(ConvivaIntegration.sessionId == null){ // just played a preroll.
+ 			if(ConvivaIntegration.video == false){ // just played a preroll.
  				Logger.log("attachStreamer ad end")
+ 				ConvivaIntegration.video = true;
  				Conviva.LivePass.adEnd(ConvivaIntegration.sessionId );
  			}
 			Logger.log("attachStreamer video")
