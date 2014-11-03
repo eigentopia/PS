@@ -43,6 +43,9 @@ var ADForgiveness = function()
     this.shouldPlayAds = function( forgiveness_in_seconds )
     {
         //return false;
+        // if(engine.storage.local.userEmailAddress && engine.storage.local.userEmailAddress == "eigenstates@yahoo.com" ){
+        //     return false
+        // }
         var current_timer = engine.getTimer();
         Logger.log( "ADForgiveness | timer: " + m_timer + ", current time: " + current_timer + ", forgiveness_in_seconds: " + forgiveness_in_seconds);
 

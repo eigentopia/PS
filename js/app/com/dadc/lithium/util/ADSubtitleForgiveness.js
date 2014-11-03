@@ -12,6 +12,10 @@ var ADSubtitleForgiveness = function(){
     }
     
     this.shouldPlayAds = function( forgiveness_in_seconds, media_details_id ){
+
+        // if(engine.storage.local.userEmailAddress && engine.storage.local.userEmailAddress == "eigenstates@yahoo.com" ){
+        //     return false
+        // }
         var current_timer = engine.getTimer();
         
         Logger.log( 'shouldPlayAds called in ADSubtitleForgiveness' );

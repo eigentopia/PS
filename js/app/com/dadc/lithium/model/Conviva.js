@@ -11,17 +11,18 @@ var ConvivaIntegration = {
 	// Reference to the current sessionId
 
 	sessionId: null,
-	video: null,
 	attached: false,
+	video:false,
 
  	// When the user clicks play
 	
  	createSession: function(videoObj, vidUrl, mediaInfo) {
- 		if(videoObj != null){
- 			ConvivaIntegration.video = videoObj 
-		}
+ 		if(videoObj){
+ 			ConvivaIntegration.video = true;
+ 		}
 	 	// Begin: Set up metadata
 		var media = mediaInfo.data;
+
 
 	 	var assetName = "["+media.ID +"]"+media.Title ;
 	
@@ -59,39 +60,41 @@ var ConvivaIntegration = {
 
  		ConvivaIntegration.sessionId = Conviva.LivePass.createSession( videoObj, convivaMetadata );
  	},
+ 	
  	attachStreamer:function(video){
  		Logger.log("attachStreamer")
  		if(ConvivaIntegration.attached == false){
- 			ConvivaIntegration.attached = true
-			ConvivaIntegration.video = video
+ 			Logger.log("attachStreamer not attached")
+ 			ConvivaIntegration.attached = true;
+ 			if(ConvivaIntegration.video == false){ // just played a preroll.
+ 				Logger.log("attachStreamer ad end")
+ 				ConvivaIntegration.video = true;
+ 				Conviva.LivePass.adEnd(ConvivaIntegration.sessionId );
+ 			}
+			Logger.log("attachStreamer video")
+			console.dir(video)
 			Conviva.LivePass.attachStreamer(ConvivaIntegration.sessionId, video )
 		}
  	}, 
  	detachStreamer:function(){
  		Logger.log("detachStreamer")
- 		console.dir(ConvivaIntegration.video)
- 		if(ConvivaIntegration.video != null && ConvivaIntegration.attached == true){
+ 		if(ConvivaIntegration.sessionId != null && ConvivaIntegration.attached == true){//block here if in preroll
+ 			Logger.log("detachStreamer - activate")
  			ConvivaIntegration.attached = false
  			Conviva.LivePass.detachStreamer(ConvivaIntegration.sessionId )
  		}
  	},
  	adStart:function(){
- 		Logger.log("AD START")
- 		ConvivaIntegration.detachStreamer()
+ 		Logger.log("AD START- only for prerolls")
  		Conviva.LivePass.adStart(ConvivaIntegration.sessionId )
- 	},  
- 	adEnd:function(){
- 		Logger.log("AD END")
- 		Conviva.LivePass.adEnd(ConvivaIntegration.sessionId );
- 		//ConvivaIntegration.attachStreamer()
- 	}, 
+ 	},
 
  	// When the stream is done with playback
 
  	cleanUpSession: function() {
-	
+		Logger.log("Cleanup")
 	 		if ( ConvivaIntegration.sessionId != null ) {
-	
+			Logger.log("Cleanup - activate")
 	 			Conviva.LivePass.cleanupSession(ConvivaIntegration.sessionId );
 	
 	 			ConvivaIntegration.sessionId = null;
