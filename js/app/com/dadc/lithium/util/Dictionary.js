@@ -36,20 +36,20 @@ var Dictionary = new Dictionary();
 Dictionary.TEXT = {
     WANTTOCONTINE:{
         'en': 'Are you still watching?',
-        'pt': 'Would you like to continue watching?',
-        'es': 'Would you like to continue watching?',
-        'fr': 'Vous regardez toujours ? ' 
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
     },
     PRESSFORNEXT:{
         'en': 'Press X or ENTER to start next video',
-        'pt': 'Press X or ENTER to start next video',
-        'es': 'Press X or ENTER to start next video',
+        'pt': 'Pressione X ou Enter para iniciar o próximo vídeo.',
+        'es': 'Presiona X o ENTER para empezar el siguiente video',
         'fr': 'Appuyez sur X ou la touche entrée pour voir la vidéo suivante' 
     },
     UPNEXT:{
         'en': 'Up Next:',
-        'pt': 'Press X or ENTER to start next video',
-        'es': 'Press X or ENTER to start next video',
+        'pt': 'Em Seguida:',
+        'es': 'Siguiente',
         'fr': 'À suivre'
     }
     WATCHLISTS: {
