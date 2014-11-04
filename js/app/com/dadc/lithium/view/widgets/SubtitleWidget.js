@@ -24,6 +24,12 @@ var SubtitleWidget = function( SubtitlesObj ) {
 
     this.update = function( engine_timer ){
 //        if( LoggerConfig.CONFIG.UPDATE_DEBUG ) Logger.log( 'SubtitleWidget update() ' + engine_timer );
+        if(m_subtitle_container.contains(shadowBlock)){
+        tblock.x = 1920 / 2 - tblock.naturalWidth / 2;
+        shadowBlock.x = tblock.x+1
+        tblock.y = 0//  -( tblock.naturalHeight ) * 50;
+        shadowBlock.y = tblock.y+1
+    }
     };
 
     this.subtitlesObjectReady = function(){
@@ -85,6 +91,10 @@ var SubtitleWidget = function( SubtitlesObj ) {
             var formattedText = getTextContainer(sst)
             tblock.text = formattedText
             shadowBlock.text = formattedText
+                    tblock.x = 1920 / 2 - tblock.naturalWidth / 2;
+        shadowBlock.x = tblock.x+1
+        tblock.y = 0//  -( tblock.naturalHeight ) * 50;
+        shadowBlock.y = tblock.y+1
             //tblock.text = sst
             //shadowBlock.text = sst
         }else{
@@ -97,16 +107,16 @@ var SubtitleWidget = function( SubtitlesObj ) {
         tblock = engine.createTextBlock( " ", FontLibraryInstance.getFont_SUBTITLE(), 1700 );
         shadowBlock = engine.createTextBlock( " ", FontLibraryInstance.getFont_SUBTITLESHADOW(), 1700 );
 
-        tblock.x = 0
-        tblock.y = 0
+        // tblock.x = 0
+        // tblock.y = 0
+        // shadowBlock.x = tblock.x+1
+        // shadowBlock.y = tblock.y+1
+        tblock.x = 1920 / 2 - tblock.naturalWidth / 2;
         shadowBlock.x = tblock.x+1
+        tblock.y = 0//  -( tblock.naturalHeight ) * 50;
         shadowBlock.y = tblock.y+1
         m_subtitle_container.addChild(shadowBlock)
         m_subtitle_container.addChild(tblock)
-        // tblock.x = 1920 / 2 - tblock.naturalWidth / 2;
-        // shadowBlock.x = tblock.x+1
-        // tblock.y = 0//  -( tblock.naturalHeight ) * 50;
-        // shadowBlock.y = tblock.y+1
     }
     function getTextContainer( message ){
         Logger.log("getTextContainer for message: " + message);

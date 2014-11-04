@@ -51,7 +51,7 @@ Dictionary.TEXT = {
         'pt': 'Em Seguida:',
         'es': 'Siguiente',
         'fr': 'À suivre'
-    }
+    },
     WATCHLISTS: {
         'en': 'Watchlists',
         'pt': 'Filas',
