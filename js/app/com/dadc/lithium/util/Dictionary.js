@@ -47,10 +47,10 @@ Dictionary.TEXT = {
         'fr': 'Appuyez sur X ou la touche entrée pour voir la vidéo suivante' 
     },
     UPNEXT:{
-        'en': 'Up Next:',
-        'pt': 'Em Seguida:',
-        'es': 'Siguiente',
-        'fr': 'À suivre'
+        'en': 'Up Next: ',
+        'pt': 'Em Seguida: ',
+        'es': 'Siguiente: ',
+        'fr': 'À suivre: '
     },
     WATCHLISTS: {
         'en': 'Watchlists',

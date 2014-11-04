@@ -41,7 +41,7 @@ var NextVideoWidget = function(MediaObj){
     
     rootNode.addChild( pressForNextText );
 	
-	var upNext = "Up Next: " + getFullTitle(MediaObj);
+	var upNext = Dictionary.getText( Dictionary.TEXT.UPNEXT) + getFullTitle(MediaObj);
 	var upNextText = engine.createTextBlock( upNext, FontLibraryInstance.PLAYNEXTDETAILS, containerWidth - (imageWidth + padding*2 ));
 	upNextText.y =  (containerHeight/2 - upNextText.naturalHeight/2) 
 	upNextText.x =  ((containerWidth+imageWidth)/2 - upNextText.naturalWidth/2)// + imageWidth
