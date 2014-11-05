@@ -153,7 +153,7 @@ var FontLibrary = function(){
                 font.color[2] = subFontConfig.fontColor[2]/255 *100
                 font.color[3] = subFontConfig.fontColor[3]
                 font.preserveSpaces= true
-                font.dynamic = true
+                //font.dynamic = true
                 font.alignment = 'center'
 
                 font.maxLines = 4;
@@ -212,7 +212,7 @@ var FontLibrary = function(){
                 font.color[2] = 0/255//subFontShadowConfig.fontColor[2]/255 *100
                 font.color[3] = alpha
                 font.preserveSpaces= true
-                font.dynamic = true
+                //font.dynamic = true
                 font.alignment = 'center'
                 font.maxLines = 4;
 
