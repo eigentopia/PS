@@ -299,7 +299,7 @@ VastModel.MediaFilesList = function( data )
     else
     {
         Logger.log("VastModel.MediaFilesList() - pushing 1 mediaFile");
-        if(this.m_jsonData.MediaFile[ i ].type && this.m_jsonData.MediaFile[ i ].type == "video/mp4"){
+        if(this.m_jsonData.MediaFile[ i ] && this.m_jsonData.MediaFile[ i ].type && this.m_jsonData.MediaFile[ i ].type == "video/mp4"){
             this.m_mediaFileList.push( new VastModel.MediaFile( this.m_jsonData.MediaFile ) );
         }
     }

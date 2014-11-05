@@ -176,7 +176,7 @@ var VideoController = function( ParentControllerObj )
             m_timeline_widget.update( engine_timer );
         }
 
-        if ( m_crackle_video && m_crackle_video.getCurrentTime() >= currentVideoEndCreditMark){
+        if ( m_crackle_video && m_crackle_video.isPlaying() && m_crackle_video.getCurrentTime() >= currentVideoEndCreditMark){
             //Show the overlay- remember the conditions in enterpressed.
             var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length)?currentMediaListIndex + 1:0 //loop back
             
@@ -617,7 +617,7 @@ var VideoController = function( ParentControllerObj )
     }
     this.navUp = function(){
         Logger.log( 'navUp' );
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null){
             if( !m_timeline_widget.isVisible() ){
                 m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
                 m_timeline_widget.showCursor();

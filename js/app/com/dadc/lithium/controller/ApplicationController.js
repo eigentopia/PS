@@ -867,8 +867,8 @@ var ApplicationController = function( screenObj ){
                 closeAllVisibleControllers();
                 unsetFocusAllControllers();
                 m_focused_controller.close();
-//                showNavigation();
-
+    //                showNavigation();
+                ConvivaIntegration.cleanUpSession()
                 destroyDetailsControllers();
                 m_movie_details_controller = new MovieDetailsController( this );
                 m_movie_details_controller.getDisplayNode().x = 96+374+52;

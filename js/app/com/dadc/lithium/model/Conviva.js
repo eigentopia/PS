@@ -93,13 +93,13 @@ var ConvivaIntegration = {
 
  	cleanUpSession: function() {
 		Logger.log("Cleanup")
-	 		if ( ConvivaIntegration.sessionId != null ) {
+	 	//if ( ConvivaIntegration.sessionId != null ) {
 			Logger.log("Cleanup - activate")
 	 			Conviva.LivePass.cleanupSession(ConvivaIntegration.sessionId );
 	
 	 			ConvivaIntegration.sessionId = null;
 	
- 		}
+ 		//}
  	}
 
 }
