@@ -31,13 +31,13 @@ var NextVideoWidget = function(MediaObj){
 		pressForNextSlate.width = containerWidth
 		pressForNextSlate.y = 120
 
-
 	rootNode.addChild(background)
 	rootNode.addChild(pressForNextSlate)
 
-	var pressForNextText = engine.createTextBlock( pfnText, FontLibraryInstance.PLAYNEXTDETAILS, containerWidth -( imageWidth + padding));
+	var pfnt = (StorageManagerInstance.get( 'geocode' ) == 'en')? FontLibraryInstance.PLAYNEXTDETAILS:FontLibraryInstance.PLAYNEXTDETAILSALT
+	var pressForNextText = engine.createTextBlock( pfnText, pfnt, containerWidth -( imageWidth + padding));
     	pressForNextText.x = (containerWidth/2 - pressForNextText.naturalWidth/2) + imageWidth/2 
-        pressForNextText.y = pressForNextSlate.y + padding;
+        pressForNextText.y = pressForNextSlate.y + (padding + 5);
     
     rootNode.addChild( pressForNextText );
 	
@@ -50,12 +50,27 @@ var NextVideoWidget = function(MediaObj){
 
 	var mediaObj = MediaObj;
 	//100x150 Onesheet
-	var itemImgURL = (MediaObj.Thumbnail_OneSheet100x150)?MediaObj.Thumbnail_OneSheet100x150:MediaObj.OneSheetImage100x150;
-	var oneSheet = engine.loadImage(itemImgURL, function(img){
-		img.x = 10
-		img.y= 10
-		rootNode.addChild(img);
-	})
+
+	var itemImgURL = null;
+	if (MediaObj.Thumbnail_OneSheet100x150){
+		itemImgURL = MediaObj.Thumbnail_OneSheet100x150
+	}
+	else if(MediaObj.OneSheetImage100x150){
+	 	itemImgURL = MediaObj.OneSheetImage100x150;
+	}
+	else if(MediaObj.OneSheetImage_100_150){
+		itemImgURL = MediaObj.OneSheetImage_100_150
+	}
+
+	if(itemImgURL != null){
+		var oneSheet = engine.loadImage(itemImgURL, function(img){
+			if(img){
+				img.x = 10
+				img.y= 10
+				rootNode.addChild(img);
+			}
+		})
+	}
 
 	return rootNode;
 

@@ -97,8 +97,18 @@ var VideoController = function( ParentControllerObj )
     this.open = function( )
     {
         m_root_node.addChild( m_master_container );
+        totalVideosPlayed = 0
         m_last_time = 0;
         m_playback_ready = false;
+
+        totalVideosPlayed= 0;
+        currentVideoEndCreditMark= null;
+        nextVideoOverlay = null
+        nextVideoContinueOverlay = null
+        currentMediaList = null
+        currentMediaListIndex = 0;
+        startingMediaListIndex = 0;
+        continueCalled = false
     };
 
 
@@ -254,15 +264,12 @@ var VideoController = function( ParentControllerObj )
         // console.log("2 prepareToOpen with")
         // console.log(currentAudioVideoUrl)
         // console.log(subtitleUrl)
-
-        if(currentVideoEndCreditMark == null){
-            console.log("END CREDIT MARK "+ MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds)
-            currentVideoEndCreditMark = MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds/1000;
-            if(MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds == null){
-                currentVideoEndCreditMark = MediaDetailsObj.data.DurationInSeconds - 10
-            }
-            console.log("END CREDIT MARK "+currentVideoEndCreditMark)
+        console.log("EndCreditStartMarkInMilliSeconds "+ MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds)
+        currentVideoEndCreditMark = MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds/1000;
+        if(MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds == null){
+            currentVideoEndCreditMark = MediaDetailsObj.data.DurationInSeconds - 10
         }
+        console.log("END CREDIT MARK "+currentVideoEndCreditMark)
 
         if(currentSubtitleUrl != subtitleUrl){
 
@@ -279,12 +286,7 @@ var VideoController = function( ParentControllerObj )
             }
             else{
                 AnalyticsManagerInstance.subTitleOffEvent(  );
-                // if(m_master_container.contains(m_subtitle_container)){
-                //     m_master_container.removeChild(m_subtitle_container)
-                // }
-                // while ( m_subtitle_container.numChildren > 0 ){
-                //     m_subtitle_container.removeChildAt( 0 );
-                // }
+
                 if(m_crackle_video){
                     m_crackle_video.setSubtitleContainer(null)
                 }
@@ -367,12 +369,49 @@ var VideoController = function( ParentControllerObj )
                         CrackleApi.Collections.showEpisodeList(currentVideo.ID,
                             function(showList, status){
                                 if(showList != false && showList.length){
-                                    Array.prototype.splice.apply(currentMediaList, [currentMediaListIndex, 0].concat(showList));
+                                    Array.prototype.splice.apply(currentMediaList, [(currentMediaListIndex+1), 1].concat(showList));
                                 }
                             })
 
-                        currentMediaListIndex ++ //move byond the show in the index.
                         nextVideo = currentMediaList[currentMediaListIndex]
+                    }
+                    if(nextVideo.ItemType && nextVideo.ItemType == "Channel"){
+                            var channel_details_request = new ChannelDetailsRequest( nextVideo.ID, StorageManagerInstance.get( 'geocode' ), function( ChannelDetailsObj, status ){
+                            if ( status != 200 ){
+                //                // inform our parent controller our request failed
+                                ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );                    
+                            }else{
+                                var channelId = ChannelDetailsObj.getID();
+                                var channel_folder_list_request = new ChannelFolderListRequest( channelId, StorageManagerInstance.get( 'geocode' ), function( ChannelFolderListObj, status ){
+                                    if ( status != 200 ){
+                                        // inform our parent controller our request failed
+                                        ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );                    
+                                    }else{
+
+                                        var folder_obj  = ChannelFolderListObj.getItem( 0);
+                                        var folder_name = folder_obj.getName();
+                                        var playlistListObj = folder_obj.getPlaylistList();
+
+                                        if( playlistListObj.getTotalLockedToChannel() > 0 ){
+                                            var playlistObj = playlistListObj.getLockedToChannelItem( 0 );
+                                            var item =playlistObj.getMediaList().getItem( 0 );
+                                            //console.log("**** iiiget"+item.getID())
+                                            //if( ChannelDetailsObj.getFeaturedMedia() == null ){
+                                            currentMediaList.splice((currentMediaListIndex+1), 1, item.data)
+                                           // }else{
+                                           //     doMediaRequest( channelId );
+            //                                }
+                                        }
+
+                                    }
+
+                                })
+                                channel_folder_list_request.startRequest();
+                                
+                            
+                            }
+                        });
+                        channel_details_request.startRequest();
                     }
                 }
             }

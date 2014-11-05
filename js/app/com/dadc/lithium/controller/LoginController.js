@@ -166,7 +166,7 @@ var LoginController = function( ParentControllerObj ){
         var geoCode = StorageManagerInstance.get( 'geocode' )
         var creds = {"emailAddress":emailField,"password":passwordField,"geoCode":geoCode}
 
-        creds = {"emailAddress":'eigenstates@yahoo.com',"password":'solid5',"geoCode":geoCode}
+        //creds = {"emailAddress":'eigenstates@yahoo.com',"password":'solid5',"geoCode":geoCode}
 
         var sendbody = {data:JSON.stringify(creds), dataType:'Application/Json'}
 

@@ -1126,6 +1126,7 @@ var ApplicationController = function( screenObj ){
                 closeAllVisibleControllers();
                 unsetFocusAllControllers();
 
+                ConvivaIntegration.cleanUpSession();
 //                showNavigation();
 
                 try{
@@ -1203,6 +1204,7 @@ var ApplicationController = function( screenObj ){
                             screenObj.removeChild( m_video_controller.getDisplayNode() );
                             m_video_controller.stop();
                             m_video_controller.close();
+                            ConvivaIntegration.cleanUpSession();
                         }catch( e ){
                             Logger.log( '!!! EXCEPTION CLOSE_ERROR_CONTROLLER' );
                             Logger.logObj( e );
@@ -2416,7 +2418,7 @@ var ApplicationController = function( screenObj ){
     }
 
     ApplicationController.setUserInfo= function(user, cb){
-        if(user.userId == undefined){
+        if(user == null || user.userId == undefined){
             crackleUser.id = null
             crackleUser.email = null;
             crackleUser.watchlist = [];

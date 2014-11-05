@@ -172,6 +172,44 @@ include("js/app/com/dadc/lithium/util/HTTP.js")
                 }
             })
         },
+        channelFeature:function(nextVideo){
+            var channel_details_request = new ChannelDetailsRequest( nextVideo.ID, StorageManagerInstance.get( 'geocode' ), function( ChannelDetailsObj, status ){
+                if ( status != 200 ){
+    //                // inform our parent controller our request failed
+                    ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );                    
+                }else{
+                    var channelId = ChannelDetailsObj.getID();
+                    var channel_folder_list_request = new ChannelFolderListRequest( channelId, StorageManagerInstance.get( 'geocode' ), function( ChannelFolderListObj, status ){
+                        if ( status != 200 ){
+                            // inform our parent controller our request failed
+                            ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );                    
+                        }else{
+
+                            var folder_obj  = ChannelFolderListObj.getItem( 0);
+                            var folder_name = folder_obj.getName();
+                            var playlistListObj = folder_obj.getPlaylistList();
+
+                            if( playlistListObj.getTotalLockedToChannel() > 0 ){
+                                var playlistObj = playlistListObj.getLockedToChannelItem( 0 );
+                                var item =playlistObj.getMediaList().getItem( 0 );
+                                //console.log("**** iiiget"+item.getID())
+                                //if( ChannelDetailsObj.getFeaturedMedia() == null ){
+                                currentMediaList.splice(currentMediaListIndex, 1, item)
+                               // }else{
+                               //     doMediaRequest( channelId );
+//                                }
+                            }
+
+                        }
+
+                    })
+                    channel_folder_list_request.startRequest();
+                    
+                
+                }
+            });
+            channel_details_request.startRequest();
+        },
         featured: function(){
 
         }

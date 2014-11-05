@@ -42,7 +42,7 @@ Dictionary.TEXT = {
     },
     PRESSFORNEXT:{
         'en': 'Press X or ENTER to start next video',
-        'pt': 'Pressione X ou Enter para iniciar o próximo vídeo.',
+        'pt': 'Pressione X ou Enter para iniciar o próximo vídeo',
         'es': 'Presiona X o ENTER para empezar el siguiente video',
         'fr': 'Appuyez sur X ou la touche entrée pour voir la vidéo suivante' 
     },
@@ -240,10 +240,10 @@ Dictionary.TEXT = {
 		'fr': 'AVERTISSEMENT'
     },
     DISCLAIMER_2: {
-        'en': "CRACKLE(™) contains age-restricted material.",
-        'pt': 'CRACKLE(™) contêm material restrito para menores de idade.',
-        'es': 'CRACKLE(™) contiene material restringido por edad.',
-		'fr': "Le contenu de CRACKLE(™) peut être soumis à des restrictions d'âge."
+        'en': "CRACKLE™ contains age-restricted material.",
+        'pt': 'CRACKLE™ contêm material restrito para menores de idade.',
+        'es': 'CRACKLE™ contiene material restringido por edad.',
+		'fr': "Le contenu de CRACKLE™ peut être soumis à des restrictions d'âge."
     },
     DISCLAIMER_3: {
         'en': "The following program may contain mature/suggestive themes, simulated gambling, profanity or crude humor, fantasy or realistic violence, sexual content or nudity, horror/fear themes, strong language, alcohol, tobacco, drug use or references.",
