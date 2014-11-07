@@ -644,13 +644,15 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         Logger.log("event type: " + playbackEventObj.getEventType());
         Logger.log("number of listeners: " + m_playback_listeners.length );
 
+        if(playbackEventObj.getEventType() == 9){
+            PlaybackErrorListener.notifyPlaybackError( This );
+            return;
+        }
+        
         if(playbackEventObj.getEventType() == 7){
             console.log("GOT PLAY EVBENT PODCOMPLETE TO FALSE")
             ADForgiveness.podComplete = false;
         }
-
-    //if( playbackEventObj instanceof PlaybackError )   //DAN: no listeners are here, error event doesn't do anything, I'm trying this
-    //    PlaybackErrorListener.notifyPlaybackError( playbackEventObj, This );
 
         for( var i = 0; i < m_playback_listeners.length; i++ ){
             try

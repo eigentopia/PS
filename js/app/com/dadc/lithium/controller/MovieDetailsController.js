@@ -233,9 +233,9 @@ var MovieDetailsController = function ( ParentControllerObj ){
         progressWidget.refreshWidget( MediaDetailsObj.getDurationInSeconds(), VideoProgressManagerInstance.getProgress( mediaId ) );
         currentFocus = watchNowButton;
 
-        // var nvcWidget = new ContinueWidget();
-        // nvcWidget.rootNode.y = 400
-        // m_master_container.addChild(nvcWidget.rootNode)
+        var nvcWidget = new ContinueWidget();
+        nvcWidget.rootNode.y = 400
+        m_master_container.addChild(nvcWidget.rootNode)
 
         // var nvWidget = new NextVideoWidget(MediaDetailsObj)
         // m_master_container.addChild(nvWidget)

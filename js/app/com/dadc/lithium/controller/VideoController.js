@@ -201,6 +201,7 @@ var VideoController = function( ParentControllerObj )
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying() ){
             m_crackle_video.togglePause();
         }
+        m_timeline_widget.setVisible( false );
         nextVideoContinueOverlay = new ContinueWidget()
         nextVideoContinueOverlay.rootNode.x=1920/2 - 610/2
         nextVideoContinueOverlay.rootNode.y=1080/2-140/2
@@ -220,6 +221,7 @@ var VideoController = function( ParentControllerObj )
     }
 
     function openNextVideoOverlay(){
+        m_timeline_widget.setVisible( false );
         nextVideoOverlay = new NextVideoWidget(nextVideo)
         nextVideoOverlay.x = 1920 - 730 - 10
         nextVideoOverlay.y = 10

@@ -2,21 +2,21 @@
 var ContinueWidget = function( ) {
     this.rootNode = engine.createContainer();
     var message = Dictionary.getText( Dictionary.TEXT.WANTTOCONTINE );
-    var spacing = 40
+    var spacing = 60
 
     var bg_slate = getBackgroundSlate();
 
-    var tblock = engine.createTextBlock( message, FontLibraryInstance.PLAYNEXTDETAILS, 700 );
+    var tblock = engine.createTextBlock( message, FontLibraryInstance.PLAYNEXTDETAILS, 630 );
 
     this.yesButton = Button(Dictionary.getText( Dictionary.TEXT.YES), true);
     this.noButton = Button(Dictionary.getText( Dictionary.TEXT.NO), false);
     
     tblock.x = ( bg_slate.width / 2 ) - ( tblock.naturalWidth / 2 );
-    tblock.y = 20;
+    tblock.y = 10;
 
-    this.yesButton.rootNode.x =( 610 - (this.yesButton.rootNode.getChildAt(0).width + spacing)*2)/2
+    this.yesButton.rootNode.x = (bg_slate.width/2) - ((this.yesButton.rootNode.getChildAt(0).width *2) + spacing) /2
     this.noButton.rootNode.x = this.yesButton.rootNode.x + this.yesButton.rootNode.getChildAt(0).width + spacing
-    this.yesButton.rootNode.y = this.noButton.rootNode.y = tblock.y + 50
+    this.yesButton.rootNode.y = this.noButton.rootNode.y = tblock.y + 65
 
     this.rootNode.addChild( bg_slate );
     this.rootNode.addChild( tblock );
@@ -27,8 +27,8 @@ var ContinueWidget = function( ) {
         var tmp_slate = engine.createSlate();
         
         tmp_slate.shader            = ShaderCreatorInstance.createSolidColorShader( RGBLibraryInstance.getDARKGRAY(.9) );
-        tmp_slate.width             = 610
-        tmp_slate.height            = 140
+        tmp_slate.width             = 630
+        tmp_slate.height            = 150
 
         return tmp_slate;
     }
