@@ -176,7 +176,7 @@ var VideoController = function( ParentControllerObj )
             m_timeline_widget.update( engine_timer );
         }
 
-        if ( m_crackle_video && m_crackle_video.isPlaying() && m_crackle_video.getCurrentTime() >= currentVideoEndCreditMark){
+        if ( m_crackle_video && m_crackle_video.isPlaying() && VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.getCurrentTime() >= currentVideoEndCreditMark){
             //Show the overlay- remember the conditions in enterpressed.
             var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length)?currentMediaListIndex + 1:0 //loop back
             
@@ -203,8 +203,8 @@ var VideoController = function( ParentControllerObj )
         }
         m_timeline_widget.setVisible( false );
         nextVideoContinueOverlay = new ContinueWidget()
-        nextVideoContinueOverlay.rootNode.x=1920/2 - 610/2
-        nextVideoContinueOverlay.rootNode.y=1080/2-140/2
+        nextVideoContinueOverlay.rootNode.x=1920/2 - 630/2
+        nextVideoContinueOverlay.rootNode.y=1080/2 - 150/2
 
         m_root_node.addChild(nextVideoContinueOverlay.rootNode)
         //position
@@ -359,7 +359,7 @@ var VideoController = function( ParentControllerObj )
             m_crackle_video.setSubtitleContainer(m_subtitle_container)
 
             //check here if next item is show or movie
-            if(currentMediaList != null && MediaDetailsObj.videoContextList){ 
+            if(currentMediaList != null){ 
                 
                 var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length)?currentMediaListIndex+1:0 //Loop back if you need to
                 if(nextIndex !== startingMediaListIndex){
@@ -434,7 +434,7 @@ var VideoController = function( ParentControllerObj )
             nextVideoContinueOverlay.navLeft();
             return;
         }
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             m_last_seek_timer = engine.getTimer();
             m_seek_direction = VideoController.SEEK_DIRECTION.RW;
 
@@ -463,7 +463,7 @@ var VideoController = function( ParentControllerObj )
             return;
         }
 
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             m_last_seek_timer = engine.getTimer();
             m_seek_direction = VideoController.SEEK_DIRECTION.FW;
 
@@ -573,6 +573,8 @@ var VideoController = function( ParentControllerObj )
             //
             // store video progress
             VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_crackle_video.getResumeTime() );
+            closeNextVideoOverlay()
+            closeNextVideoContinueOverlay()
             VideoManagerInstance.stop();
             VideoManagerInstance.close();
 
@@ -589,7 +591,7 @@ var VideoController = function( ParentControllerObj )
     this.trianglePressed = function()
     {
 
-        if(m_is_focussed && VideoManagerInstance.getCurrentJSVideo() == m_crackle_video){
+        if(m_is_focussed && VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             if(m_crackle_video.isPlaying() )
             {
                 m_timeline_widget.setVisible(false)
@@ -619,7 +621,7 @@ var VideoController = function( ParentControllerObj )
     }
     this.navUp = function(){
         Logger.log( 'navUp' );
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null){
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             if( !m_timeline_widget.isVisible() ){
                 m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
                 m_timeline_widget.showCursor();

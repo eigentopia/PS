@@ -77,13 +77,13 @@ var Http = function(){
         var authorization   = hmac + "|" + timestamp + "|" + PARTNER_ID + "|1";
         var resp            = {'Authorization': authorization.toUpperCase() };
 
-        Logger.log( "********" );
+        Logger.log( "HTTP ********" );
         Logger.log( "Authorization: " + authorization.toUpperCase() );
 
-           Logger.log( '*** BEGIN OF ' + url );
-           Logger.log( encrypt_url );
-           Logger.logObj( resp );
-           Logger.log( '*** END OF ' + url );
+        Logger.log( '*** BEGIN OF ' + url );
+        Logger.log( encrypt_url );
+        Logger.logObj( resp );
+        Logger.log( '*** END OF ' + url );
         
         return resp;
     }
