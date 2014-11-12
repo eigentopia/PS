@@ -480,8 +480,13 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 }
             }
         }
-        if( last_ad > 0 && !m_playlists[ last_ad ].hasPlayed() && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
+        var currentVideoEndCreditMark = m_media_details_obj.data.EndCreditStartMarkInMilliSeconds/1000;
+        if(m_media_details_obj.data.EndCreditStartMarkInMilliSeconds == null){
+            currentVideoEndCreditMark = m_media_details_obj.data.DurationInSeconds - 10
+        }
+        if( last_ad > 0 && !m_playlists[ last_ad ].hasPlayed() && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && m_current_time < currentVideoEndCreditMark){
             Logger.log("CrackleVideo.setCurrentTime() - playing ad at: " + last_ad);
+            m_is_playing = false;
             playAd( last_ad );
         }
     };
@@ -516,7 +521,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         
     };
     function playAd( adIndex ){
-        Logger.log("play add called: index" + adIndex);
+        Logger.log("play ad called: index " + adIndex);
         if( typeof m_playlists[ adIndex ] !== "undefined" ){
             if(adIndex == 0){
                 //ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
@@ -644,10 +649,11 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         Logger.log("event type: " + playbackEventObj.getEventType());
         Logger.log("number of listeners: " + m_playback_listeners.length );
 
-        if(playbackEventObj.getEventType() == 9){
-            PlaybackErrorListener.notifyPlaybackError( This );
-            return;
-        }
+        // if(playbackEventObj.getEventType() == 9){
+        //     console.log("*****ERROR TOWN")
+        //     PlaybackErrorListener.notifyPlaybackError( This );
+        //     return;
+        // }
         
         if(playbackEventObj.getEventType() == 7){
             console.log("GOT PLAY EVBENT PODCOMPLETE TO FALSE")

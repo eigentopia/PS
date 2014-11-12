@@ -61,7 +61,7 @@ var FreewheelVideo = function( adHeaderObj, FreewheelEventCallbackHelperObj, Fre
         Logger.log( 'FreewheelVideo.play()' );
         VideoManagerInstance.play( this );
         currentAdBreak = adBreak
-        return true;
+        //return true;
         // if( VideoManagerInstance.play( this ) === true )
         // {
         //     AnalyticsManagerInstance.fireAdStartEvent(mediaObj);

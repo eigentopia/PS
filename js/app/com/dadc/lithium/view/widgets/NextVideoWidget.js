@@ -9,12 +9,12 @@ var NextVideoWidget = function(MediaObj){
 	var self = this
 
 	function getFullTitle(data){
-		var title = data.Title;
+		var title = (data.Title)?data.Title:data.data.Title;
 
 		if(data.Season && data.Season != ""){
 			title = data.ParentChannelName +", S"+data.Season;
 			if(data.Episode && data.Episode != ""){ //because yes- we get an empty string sometimes.
-				title+="E"+data.Episode
+				title+=" E"+data.Episode
 			}
 			title +=": "+ data.Title
 		}
@@ -34,15 +34,15 @@ var NextVideoWidget = function(MediaObj){
 	rootNode.addChild(background)
 	rootNode.addChild(pressForNextSlate)
 
-	var pfnt = (StorageManagerInstance.get( 'geocode' ) == 'en')? FontLibraryInstance.PLAYNEXTDETAILS:FontLibraryInstance.PLAYNEXTDETAILSALT
-	var pressForNextText = engine.createTextBlock( pfnText, pfnt, containerWidth -( imageWidth + padding));
+	var pressForNextText = engine.createTextBlock( pfnText, FontLibraryInstance.PLAYNEXTDETAILSALT, containerWidth -( imageWidth + padding));
     	pressForNextText.x = (containerWidth/2 - pressForNextText.naturalWidth/2) + imageWidth/2 
         pressForNextText.y = pressForNextSlate.y + (padding + 5);
     
     rootNode.addChild( pressForNextText );
 	
-	var upNext = Dictionary.getText( Dictionary.TEXT.UPNEXT) + getFullTitle(MediaObj);
-	var upNextText = engine.createTextBlock( upNext, FontLibraryInstance.PLAYNEXTDETAILS, containerWidth - (imageWidth + padding*2 ));
+	var upNext = Dictionary.getText( Dictionary.TEXT.UPNEXT)
+	var title = getFullTitle(MediaObj);
+	var upNextText = engine.createTextBlock( [upNext, title], [FontLibraryInstance.PLAYNEXTDETAILSBOLD,FontLibraryInstance.PLAYNEXTDETAILS] , containerWidth - (imageWidth + padding*3 ));
 	upNextText.y =  (containerHeight/2 - upNextText.naturalHeight/2) 
 	upNextText.x =  ((containerWidth+imageWidth)/2 - upNextText.naturalWidth/2)// + imageWidth
 

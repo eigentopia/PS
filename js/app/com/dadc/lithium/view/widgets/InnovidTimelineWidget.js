@@ -261,7 +261,7 @@ var InnovidTimelineWidget = function( current_time, total_video_length ) {
         UtilLibraryInstance.garbageCollect();
         
         m_cursor_time_text_container = getCursorTimeTextContainer();
-        m_cursor_time_text_container.x = 1188 * ( offset === undefined ? 0 : offset ) - 114 / 2 + m_cursor_time_text_container.width / 4 - 13;
+        m_cursor_time_text_container.x = 1188 * ( offset === undefined ? 0 : offset ) - 114 / 2 + m_cursor_time_text_container.width / 4;
         m_cursor_time_text_container.y = -107+25+7;        
         
         if( visible ){

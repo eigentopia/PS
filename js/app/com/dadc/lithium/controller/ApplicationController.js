@@ -1060,15 +1060,23 @@ var ApplicationController = function( screenObj ){
                                                         StorageManagerInstance.get( 'geocode' ), 
                                                         10, 
                                                         function( FeaturedObj, status ){
-                        //SAMPLE URL
-                        //http://api.crackle.com/Service.svc/featured/movies/all/us/30?format=json
-                            var boo = FeaturedObj;
 
-                                 // Folderlist> playlist> medialist
-                            videoContextList = FeaturedObj.m_data.Items
-                            //Add it to the object we are passing videoController
-                            json_data_args.MediaDetailsObj.videoContextList = videoContextList
+                            if ( status != 200 ){
+                                //something broke- just play the movie
 
+                            }
+                            else{
+                                //SAMPLE URL
+                                //http://api.crackle.com/Service.svc/featured/movies/all/us/30?format=json
+                                    var boo = FeaturedObj;
+
+                                         // Folderlist> playlist> medialist
+                                    videoContextList = FeaturedObj.m_data.Items
+                                    videoContextList.splice(0,0,json_data_args.MediaDetailsObj)
+                                    //Add it to the object we are passing videoController
+                                    json_data_args.MediaDetailsObj.videoContextList = videoContextList
+
+                            }
                             // Wey: This fixes timeline bug where pending focused controller
                             // would still be set causing abnormal behaviors
                             m_pending_focused_controller = null;

@@ -79,10 +79,8 @@ var FreewheelPlaylist = function( AdManager_TemporalAdSlot, CrackleVideoObj )
         m_ad_ix++;
         
         var freewheel_ad_video = m_ads[ m_ad_ix ];
-        if(freewheel_ad_video && freewheel_ad_video.getVideoURL() != null){
-            if(!freewheel_ad_video.play(adBreak) ){
-                this.onEnded( freewheel_ad_video );
-            }
+        if(freewheel_ad_video){
+            freewheel_ad_video.play(adBreak)
         }
         else{
             ADForgivenessInstance.startTimer();
@@ -175,12 +173,9 @@ var FreewheelPlaylist = function( AdManager_TemporalAdSlot, CrackleVideoObj )
         m_ad_ix = 0;
         var freewheel_ad_video = m_ads[ m_ad_ix ];
 
-        if ( freewheel_ad_video && freewheel_ad_video.getVideoURL() != null )
+        if ( freewheel_ad_video )
         {
-            if( !freewheel_ad_video.play(adBreak))
-            {
-                This.onEnded( freewheel_ad_video );
-            }
+            freewheel_ad_video.play(adBreak)
         }
         else{
             clearAdResolvedListener();

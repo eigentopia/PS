@@ -291,17 +291,20 @@ VastModel.MediaFilesList = function( data )
         for( var i = 0; i < this.m_jsonData.MediaFile.length; i++ )
         {
             Logger.log("VastModel.MediaFilesList() - pushing iteration: " + i);
-            if(this.m_jsonData.MediaFile[ i ].type == "video/mp4"){
+            //if(this.m_jsonData.MediaFile[ i ].type == "video/mp4"){
                 this.m_mediaFileList.push( new VastModel.MediaFile( this.m_jsonData.MediaFile[ i ] ) );
-            }
+            //}
         }
     }
     else
     {
         Logger.log("VastModel.MediaFilesList() - pushing 1 mediaFile");
-        if(this.m_jsonData.MediaFile[ i ] && this.m_jsonData.MediaFile[ i ].type && this.m_jsonData.MediaFile[ i ].type == "video/mp4"){
+        //if(this.m_jsonData.MediaFile && 
+          //  this.m_jsonData.MediaFile.attributes&&
+           // this.m_jsonData.MediaFile.attributes.type && 
+            //t/his.m_jsonData.MediaFile.attributes.type == "video/mp4"){
             this.m_mediaFileList.push( new VastModel.MediaFile( this.m_jsonData.MediaFile ) );
-        }
+        //}
     }
 };
 VastModel.MediaFilesList.prototype = 

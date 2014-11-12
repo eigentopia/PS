@@ -341,13 +341,6 @@ FreeWheelModel.EventCallbackList = function( data )
             for( var i = 0; i < data.eventCallback.length; i++ )
             {
                 eventCallbackList.push( new FreeWheelModel.EventCallback( data.eventCallback[ i ] ) );
-                if(data.eventCallback[i].trackingURLs && data.eventCallback[i].trackingURLs.url && data.eventCallback[i].trackingURLs.url.length){
-                    for(z=0;z<data.eventCallback[i].trackingURLs.url.length;z++){
-                        var newData = data.eventCallback[ i ].trackingURLs.url[z]
-                        newData.attributes.url = newData.attributes.value
-                        eventCallbackList.push( new FreeWheelModel.EventCallback( newData ) );
-                    }
-                }
                 
             }
         }
@@ -390,6 +383,7 @@ FreeWheelModel.EventCallbackList = function( data )
 
 FreeWheelModel.EventCallback = function( data )
 {
+    this.data = data
     this.getName = function()
     {
         if( typeof data.attributes !== "undefined" )

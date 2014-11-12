@@ -63,7 +63,7 @@ var InnovidInternalVideo = function( video_url, mediaGalleryAdViewObj )
 //        m_interactive_layer = new InteractiveAdWidget( adHeaderObj.getInnovidData(), This );
 //        FreewheelPlaylistObj.notifyIGAdVideoStarted( This );
 
-        return VideoManagerInstance.play( This );
+        VideoManagerInstance.play( This );
     }
     
     this.stop = function()

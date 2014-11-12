@@ -176,7 +176,8 @@ var VideoController = function( ParentControllerObj )
             m_timeline_widget.update( engine_timer );
         }
 
-        if ( m_crackle_video && m_crackle_video.isPlaying() && VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.getCurrentTime() >= currentVideoEndCreditMark){
+        if ( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying() &&
+            m_crackle_video.getCurrentTime() >= currentVideoEndCreditMark){
             //Show the overlay- remember the conditions in enterpressed.
             var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length)?currentMediaListIndex + 1:0 //loop back
             
@@ -212,15 +213,18 @@ var VideoController = function( ParentControllerObj )
     }
 
     function closeNextVideoContinueOverlay(){
-        m_root_node.removeChild(nextVideoContinueOverlay.rootNode)
+        if(nextVideoContinueOverlay != null){
+            m_root_node.removeChild(nextVideoContinueOverlay.rootNode)
 
-        nextVideoContinueOverlay = null;
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying() ){
-            m_crackle_video.togglePause();
+            nextVideoContinueOverlay = null;
+            if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying() ){
+                m_crackle_video.togglePause();
+            }
         }
     }
 
     function openNextVideoOverlay(){
+
         m_timeline_widget.setVisible( false );
         nextVideoOverlay = new NextVideoWidget(nextVideo)
         nextVideoOverlay.x = 1920 - 730 - 10
@@ -229,8 +233,10 @@ var VideoController = function( ParentControllerObj )
     }
 
     function closeNextVideoOverlay(){
-        m_root_node.removeChild(nextVideoOverlay)
-        nextVideoOverlay = null
+        if(nextVideoOverlay != null){
+            m_root_node.removeChild(nextVideoOverlay)
+            nextVideoOverlay = null
+        }
     }    
 
     var currentAudioVideoUrl=null; 
@@ -346,11 +352,14 @@ var VideoController = function( ParentControllerObj )
                 currentMediaList = MediaDetailsObj.videoContextList
                 for (var i=0; i<MediaDetailsObj.videoContextList.length;i++){
                     if (MediaDetailsObj.data.ID == MediaDetailsObj.videoContextList[i].ID){
+                        console.log("FOUNNF "+ MediaDetailsObj.data.ID+ " AT "+ i)
                         startingMediaListIndex = i
                         currentMediaListIndex = i;
                     }
                 }
             }
+
+            console.log("startingMediaListIndex "+ startingMediaListIndex)
 
             totalVideosPlayed ++
             continueCalled = false;
@@ -488,7 +497,7 @@ var VideoController = function( ParentControllerObj )
 
     this.navDown = function(){
         Logger.log( 'navDown' );
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             if( !m_timeline_widget.isVisible() ){
                 m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
                 m_timeline_widget.showCursor();
@@ -553,7 +562,7 @@ var VideoController = function( ParentControllerObj )
 
     this.startPressed = function(){
 
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying() ){
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying()  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             m_crackle_video.togglePause();
             m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
             m_timeline_widget.showCursor();
