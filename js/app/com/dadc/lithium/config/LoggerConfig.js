@@ -41,7 +41,14 @@ LoggerConfig.GeocodeConfig = {
 LoggerConfig.PSN = {
     //US
     PS4: "US0007-CUSA00059_00",
-    PS3: "US0007-NPUP00077_00"
+    //US
+    PS3: "US0007-NPUP00077_00",
+    //LATAM
+    //PS3: "US0007-NPUP00074_00",
+    //CA
+    //PS3: "US0007-NPUP00072_00",   
+    //AU
+    //PS3: "US0007-NPUP00074_00",
 }
 
 // PRODUCTION

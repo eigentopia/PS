@@ -649,11 +649,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         Logger.log("event type: " + playbackEventObj.getEventType());
         Logger.log("number of listeners: " + m_playback_listeners.length );
 
-        // if(playbackEventObj.getEventType() == 9){
-        //     console.log("*****ERROR TOWN")
-        //     PlaybackErrorListener.notifyPlaybackError( This );
-        //     return;
-        // }
+        if(playbackEventObj.getEventType() == 9){
+            console.log("*****ERROR TOWN")
+            PlaybackErrorListener.notifyPlaybackError( This );
+        }
         
         if(playbackEventObj.getEventType() == 7){
             console.log("GOT PLAY EVBENT PODCOMPLETE TO FALSE")

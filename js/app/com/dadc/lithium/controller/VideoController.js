@@ -179,7 +179,7 @@ var VideoController = function( ParentControllerObj )
         if ( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying() &&
             m_crackle_video.getCurrentTime() >= currentVideoEndCreditMark){
             //Show the overlay- remember the conditions in enterpressed.
-            var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length)?currentMediaListIndex + 1:0 //loop back
+            var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length -1)?currentMediaListIndex + 1:0 //loop back
             
             if(nextIndex !== startingMediaListIndex){ //have we finished the whole list?
 
@@ -204,8 +204,8 @@ var VideoController = function( ParentControllerObj )
         }
         m_timeline_widget.setVisible( false );
         nextVideoContinueOverlay = new ContinueWidget()
-        nextVideoContinueOverlay.rootNode.x=1920/2 - 630/2
-        nextVideoContinueOverlay.rootNode.y=1080/2 - 150/2
+        nextVideoContinueOverlay.rootNode.x=1920/2 - 920/2
+        nextVideoContinueOverlay.rootNode.y=1080/2 - 325/2
 
         m_root_node.addChild(nextVideoContinueOverlay.rootNode)
         //position
@@ -370,12 +370,12 @@ var VideoController = function( ParentControllerObj )
             //check here if next item is show or movie
             if(currentMediaList != null){ 
                 
-                var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length)?currentMediaListIndex+1:0 //Loop back if you need to
+                var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length-1)?currentMediaListIndex+1:0 //Loop back if you need to
                 if(nextIndex !== startingMediaListIndex){
                     nextVideo = currentMediaList[nextIndex]
                     
                     //if show, get list splice in to existing list.
-                    if(nextVideo.Season == "" && 
+                    if(nextVideo.Season && nextVideo.Season == "" && 
                         (nextVideo.RootChannelID == 114 || nextVideo.RootChannelID == 46)){
                         CrackleApi.Collections.showEpisodeList(currentVideo.ID,
                             function(showList, status){
@@ -681,7 +681,7 @@ var VideoController = function( ParentControllerObj )
 
     this.playNext = function(){
         currentMediaListIndex ++
-        if(currentMediaListIndex > currentMediaList.length){
+        if(currentMediaListIndex > currentMediaList.length -1){
             currentMediaListIndex = 0;
         }
         m_last_time = 0;

@@ -6,17 +6,17 @@ var ContinueWidget = function( ) {
 
     var bg_slate = getBackgroundSlate();
 
-    var tblock = engine.createTextBlock( message, FontLibraryInstance.PLAYNEXTDETAILS, 630 );
+    var tblock = engine.createTextBlock( message, FontLibraryInstance.PLAYNEXTCONTINUE, 920 );
 
     this.yesButton = Button(Dictionary.getText( Dictionary.TEXT.YES), true);
     this.noButton = Button(Dictionary.getText( Dictionary.TEXT.NO), false);
     
     tblock.x = ( bg_slate.width / 2 ) - ( tblock.naturalWidth / 2 );
-    tblock.y = 10;
+    tblock.y = 70;
 
     this.yesButton.rootNode.x = (bg_slate.width/2) - ((this.yesButton.rootNode.getChildAt(0).width *2) + spacing) /2
     this.noButton.rootNode.x = this.yesButton.rootNode.x + this.yesButton.rootNode.getChildAt(0).width + spacing
-    this.yesButton.rootNode.y = this.noButton.rootNode.y = tblock.y + 65
+    this.yesButton.rootNode.y = this.noButton.rootNode.y = tblock.y + 100
 
     this.rootNode.addChild( bg_slate );
     this.rootNode.addChild( tblock );
@@ -27,8 +27,8 @@ var ContinueWidget = function( ) {
         var tmp_slate = engine.createSlate();
         
         tmp_slate.shader            = ShaderCreatorInstance.createSolidColorShader( RGBLibraryInstance.getDARKGRAY(.9) );
-        tmp_slate.width             = 630
-        tmp_slate.height            = 150
+        tmp_slate.width             = 920
+        tmp_slate.height            = 325
 
         return tmp_slate;
     }
@@ -41,8 +41,8 @@ var ContinueWidget = function( ) {
         var selectedSlate = ShaderCreatorInstance.create9SliceShader( AssetLoaderInstance.getImage( "Artwork/subnav_button_orange.png" ), 14, 14, RGBLibraryInstance.getWHITE( 1 ) );
         var notSelectedSlate = ShaderCreatorInstance.create9SliceShader( AssetLoaderInstance.getImage( "Artwork/subnav_button_gray.png" ), 14, 14, RGBLibraryInstance.getWHITE( 1 ) );  
    
-        selectedSlate.width = notSelectedSlate.width = 100
-        selectedSlate.height = notSelectedSlate.height = 50
+        selectedSlate.width = notSelectedSlate.width = 170
+        selectedSlate.height = notSelectedSlate.height = 65
 
         if(state == true ){
             rootNode.addChild( selectedSlate );

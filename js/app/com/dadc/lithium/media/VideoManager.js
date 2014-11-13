@@ -62,6 +62,7 @@ VideoManager = function(){
         
         // retain a reference to the current JSVideo object
         m_current_jsvideo = JSVideoObj;
+
          // remove the video from the screen
         while( m_root_node.numChildren > 0 )
             m_root_node.removeChildAt( 0 );

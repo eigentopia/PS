@@ -72,7 +72,8 @@ var FontLibrary = function(){
     this.PLAYNEXTDETAILS = {font: FontLibrary.FONT.NORMAL, size: 30, color: [0,0,0, 1.0], alignment: 'center', preserveSpaces: true, lineSpacing: -10, maxLines: 3, continueMark: '...' };
     this.PLAYNEXTDETAILSBOLD = {font: FontLibrary.FONT.BOLD, size: 30, color: [0,0,0, 1.0], alignment: 'center', preserveSpaces: true, lineSpacing: -10, maxLines: 3, continueMark: '...' };
     this.PLAYNEXTDETAILSALT = {font: FontLibrary.FONT.NORMAL, size: 22, color: [1,1,1, 1.0], alignment: 'center', preserveSpaces: true, lineSpacing: -10, maxLines: 3, continueMark: '...' };
-    this.PLAYNEXTDETAILSBUTTON =  {font: FontLibrary.FONT.NORMAL, size: 30, color: [0,0,0, 1.0], alignment: 'center', preserveSpaces: true };
+    this.PLAYNEXTDETAILSBUTTON =  {font: FontLibrary.FONT.NORMAL, size: 36, color: [1,1,1, 1.0], alignment: 'center', preserveSpaces: true };
+    this.PLAYNEXTCONTINUE = {font: FontLibrary.FONT.NORMAL, size: 36, color: [1,1,1, 1.0], alignment: 'center', preserveSpaces: true, lineSpacing: -10, maxLines: 3, continueMark: '...' };
     
     this.getFont_EPISODEMENUBUTTON = function(){
         return {font: FontLibrary.FONT.NORMAL, size: 32, color: [255/255, 255/255, 255/255, 1.0], preserveSpaces: true};
