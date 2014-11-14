@@ -1031,10 +1031,13 @@ var ApplicationController = function( screenObj ){
                     //Keep the context if coming from a list so we can next video
                     if(m_controller_before_video_started.getControllerName() =='RecommendedWatchlistController' ||
                         m_controller_before_video_started.getControllerName() == "ShowDetailsController"||
-                        m_controller_before_video_started.getControllerName() == "MyWatchlistController"){
-
-                        // Folderlist> playlist> medialist
-                        videoContextList = m_controller_before_video_started.getItemList();
+                        m_controller_before_video_started.getCallingController().getControllerName() == "MyWatchlistController"){
+                        if(m_controller_before_video_started.getCallingController().getControllerName() == "MyWatchlistController"){
+                            videoContextList= m_controller_before_video_started.getCallingController().getItemList().m_data
+                        }else{
+                            // Folderlist> playlist> medialist
+                            videoContextList = m_controller_before_video_started.getItemList();
+                        }
                         //Add it to the object we are passing videoController
                         json_data_args.MediaDetailsObj.videoContextList = videoContextList
 

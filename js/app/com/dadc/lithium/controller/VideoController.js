@@ -579,6 +579,14 @@ var VideoController = function( ParentControllerObj )
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
             // TODO: Maybe check if resume time is equal to movie's length and then restart the movie?
             //
+            if(nextVideoOverlay != null){
+                closeNextVideoContinueOverlay();
+                return;
+            }
+        
+            if(nextVideoContinueOverlay != null){
+                return;
+            }
             //
             // store video progress
             VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_crackle_video.getResumeTime() );
