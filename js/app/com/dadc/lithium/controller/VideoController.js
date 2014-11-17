@@ -48,6 +48,7 @@ var VideoController = function( ParentControllerObj )
     var currentMediaListIndex = 0;
     var startingMediaListIndex = 0;
     var continueCalled = false
+    var userOptOut = false
 
     this.audioVideoUrlSwitch = false;
 
@@ -109,6 +110,7 @@ var VideoController = function( ParentControllerObj )
         currentMediaListIndex = 0;
         startingMediaListIndex = 0;
         continueCalled = false
+        userOptOut = false
     };
 
 
@@ -185,13 +187,13 @@ var VideoController = function( ParentControllerObj )
 
                 nextVideo = currentMediaList[nextIndex];
     
-                if (continueCalled == false && !nextVideoContinueOverlay && totalVideosPlayed == 5){
+                if (continueCalled == false && !nextVideoContinueOverlay && totalVideosPlayed == 5 ){
                     //show would you like to continue
                     openNextVideoContinueOverlay();
                     return;
                 }
 
-                if(!nextVideoOverlay && totalVideosPlayed < 5){ //More to play? If the tvp hasn't been reset we skip this part.
+                if(!nextVideoOverlay && totalVideosPlayed < 5){//} && userOptOut == false){ //More to play? If the tvp hasn't been reset we skip this part.
                     openNextVideoOverlay();       
                 }
             }
@@ -345,7 +347,7 @@ var VideoController = function( ParentControllerObj )
 
         if ( m_media_details_obj )
         {
-
+            userOptOut = false;
             Logger.log("currentAudioVideoUrl: " + currentAudioVideoUrl);
             //This should keep the context of the list.
             if(currentMediaList == null && MediaDetailsObj.videoContextList){
@@ -579,14 +581,15 @@ var VideoController = function( ParentControllerObj )
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
             // TODO: Maybe check if resume time is equal to movie's length and then restart the movie?
             //
-            if(nextVideoOverlay != null){
-                closeNextVideoContinueOverlay();
-                return;
-            }
+            // if(nextVideoOverlay != null){
+            //     userOptOut = true;
+            //     closeNextVideoOverlay();
+            //     return;
+            // }
         
-            if(nextVideoContinueOverlay != null){
-                return;
-            }
+            // if(nextVideoContinueOverlay != null){
+            //     return;
+            // }
             //
             // store video progress
             VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_crackle_video.getResumeTime() );

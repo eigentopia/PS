@@ -9,7 +9,7 @@ include( "js/app/thirdparty/streamsense.trilithium.4.1408.01.js");
 
 var Comscore = function(){
     var platform = engine.stats.device.platform
-    var hashedDeviceID = platform+"_TEST_DEVICE"// CryptoJS.MD5( engine.stats.device.id );
+    var hashedDeviceID = CryptoJS.MD5( engine.stats.device.id );
     var comscoreId = '3000012';
     var streamsense = null;
     var contentPart = 0;
