@@ -27,6 +27,7 @@ LoggerConfig.GeocodeConfig = {
 LoggerConfig.PSN = {
     //ALL
     PS4: "US0007-CUSA00059_00",
+    //passcode for gp4 == dgBwZnlECk7SyGlI913xtlnmHRzKfNnk
     //US
     PS3: "US0007-NPUP00077_00",
     //LATAM
