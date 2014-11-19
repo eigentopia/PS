@@ -27,7 +27,18 @@ LoggerConfig.GeocodeConfig = {
 LoggerConfig.PSN = {
     //ALL
     PS4: "US0007-CUSA00059_00",
-    //passcode for gp4 == dgBwZnlECk7SyGlI913xtlnmHRzKfNnk
+    //Name: US0007-CUSA00059_00-CRACKLEPS4TRILIT
+    
+    //PKG builder settings:
+    //passcode == dgBwZnlECk7SyGlI913xtlnmHRzKfNnk
+    //demo app
+    //TV Video service native app
+    //if PATCH- point to PKG in PS4 directory
+    //
+    //PARAMSFO
+    //cross button enter.
+    //Display location; TV & Video
+
     //US
     PS3: "US0007-NPUP00077_00",
     //LATAM
