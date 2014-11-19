@@ -182,7 +182,7 @@ var VideoController = function( ParentControllerObj )
             m_crackle_video.getCurrentTime() >= currentVideoEndCreditMark){
             //Show the overlay- remember the conditions in enterpressed.
             var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length -1)?currentMediaListIndex + 1:0 //loop back
-            
+            console.log("NEXT I: "+nextIndex+" startingMediaListIndex: "+ startingMediaListIndex)
             if(nextIndex !== startingMediaListIndex){ //have we finished the whole list?
 
                 nextVideo = currentMediaList[nextIndex];
@@ -385,7 +385,8 @@ var VideoController = function( ParentControllerObj )
                                     Array.prototype.splice.apply(currentMediaList, [(currentMediaListIndex+1), 1].concat(showList));
                                 }
                             })
-
+                        //this little shuffle will put the index 
+                        //back to where it was because we've removed the offender
                         nextVideo = currentMediaList[currentMediaListIndex]
                     }
                     if(nextVideo.ItemType && nextVideo.ItemType == "Channel"){
@@ -695,6 +696,9 @@ var VideoController = function( ParentControllerObj )
         if(currentMediaListIndex > currentMediaList.length -1){
             currentMediaListIndex = 0;
         }
+
+        //prevents hopping to the end if user pressed x before
+        VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), 0 );
         m_last_time = 0;
         m_playback_ready = false;
         currentVideo = null;
@@ -728,14 +732,17 @@ var VideoController = function( ParentControllerObj )
         {
             VideoManagerInstance.stop();
             VideoManagerInstance.close();
-            VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_media_details_obj.getDurationInSeconds() );
 
             //Is there more in the list?
-            if(currentMediaListIndex< currentMediaList.length && totalVideosPlayed<5){
-                //have we played it already
+            var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length-1)?currentMediaListIndex+1:0 //Loop back if you need to
+            if(nextIndex !== startingMediaListIndex && totalVideosPlayed<5){
+
                 this.playNext();
             }
             else{
+                
+                VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), 0);
+                
                 m_parent_controller_obj.requestingParentAction(
                     {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: this}
                 );
