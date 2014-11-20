@@ -1032,7 +1032,7 @@ var ApplicationController = function( screenObj ){
                     if(m_controller_before_video_started.getControllerName() =='RecommendedWatchlistController' ||
                         m_controller_before_video_started.getControllerName() == "ShowDetailsController"||
                         m_controller_before_video_started.getCallingController().getControllerName() == "MyWatchlistController"){
-                        if(m_controller_before_video_started.getCallingController().getControllerName() == "MyWatchlistController"){
+                        if(m_controller_before_video_started.getCallingController && m_controller_before_video_started.getCallingController().getControllerName() == "MyWatchlistController"){
                             videoContextList= m_controller_before_video_started.getCallingController().getItemList().m_data
                         }else{
                             // Folderlist> playlist> medialist

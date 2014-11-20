@@ -42,7 +42,11 @@ var FreewheelConfig = function()
 	   Logger.log("getFreeWheelURL() - mediaType: " + freewheelMediaType + ", location: " + m_geoLocation.countryName);
 	
     	// build the site section value
+
     	var csid = "crackle_ps_app_" + m_geoLocation.value;
+        if(engine.stats.device.platform == "ps4"){
+            csid = "crackle_playstation4_app_" + m_geoLocation.value;
+        }
     	csid += (m_geoLocation === MRMLocation.UnitedStates || m_geoLocation === MRMLocation.Null) ? "" : "_";
     	csid += freewheelMediaType;
 

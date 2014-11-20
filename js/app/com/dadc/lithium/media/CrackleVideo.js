@@ -461,12 +461,12 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
         m_current_time = time_pos;
         VideoManagerInstance.setCurrentTime( time_pos );
-        m_current_time = time_pos;
 
         m_is_paused = false;
         Logger.log( 'CrackleVideo.SETCURRENTTIME ' +time_pos);
+        Logger.log( 'CrackleVideo.DURATION' +m_media_details_obj.getDurationInSeconds());
 
-        if( time_pos === m_media_details_obj.getDurationInSeconds() ){
+        if( time_pos === m_media_details_obj.getDurationInSeconds() || time_pos > m_media_details_obj.getDurationInSeconds() ){
             PlaybackReadyListener.notifyPlaybackEnded();
             return;
         }

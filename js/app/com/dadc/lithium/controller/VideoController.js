@@ -182,7 +182,6 @@ var VideoController = function( ParentControllerObj )
             m_crackle_video.getCurrentTime() >= currentVideoEndCreditMark){
             //Show the overlay- remember the conditions in enterpressed.
             var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length -1)?currentMediaListIndex + 1:0 //loop back
-            console.log("NEXT I: "+nextIndex+" startingMediaListIndex: "+ startingMediaListIndex)
             if(nextIndex !== startingMediaListIndex){ //have we finished the whole list?
 
                 nextVideo = currentMediaList[nextIndex];
@@ -728,6 +727,8 @@ var VideoController = function( ParentControllerObj )
     this.notifyPlaybackEnded = function()
     {
         subsLoaded = false
+            closeNextVideoOverlay()
+            closeNextVideoContinueOverlay();
         try
         {
             VideoManagerInstance.stop();
