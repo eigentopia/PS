@@ -63,7 +63,7 @@ var FreewheelConfig = function()
     	    "&caid=" +	    media_id +
     	    "&vprn=" +	    rand(0, 9999999999) +
     	    "&pvrn=" +	    rand(0, 9999999999) +
-    	    "&flag=" +     "+vicb+qtcb+slcb+sltp;k1=" +engine.storage.local.age +"&k2="+ engine.storage.local.gender +";";
+    	    "&flag=" +     "+exvt+qtcb+slcb+sltp&metr=1;k1=" +engine.storage.local.age +"&k2="+ engine.storage.local.gender +";";
 
 	   Logger.log("FreewheelConfig.getFreeWheelURL() - url: " + output);
 
