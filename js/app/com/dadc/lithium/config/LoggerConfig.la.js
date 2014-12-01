@@ -7,7 +7,7 @@ LoggerConfig.CONFIG = {
     UPDATE_DEBUG: false,
     EXTRA_KEYINPUTS: false, //No idea.
     SKIP_ADS: false,
-    PSN_CHECK: false, 
+    PSN_CHECK: true, 
     DISABLE_LOGS: false,
     SHOW_SUBTITLES: true,
     SECURE:false
