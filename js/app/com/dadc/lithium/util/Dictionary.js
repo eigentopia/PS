@@ -5,21 +5,18 @@ var Dictionary = function()
     
     this.getText = function( LOCALE_MESSAGE )
     {
-        if( StorageManagerInstance === null ) 
-    {
-        Logger.log("StorageManagerInstance not yet defined");
-        return null;
-    }
-    
-        var message = LOCALE_MESSAGE[ StorageManagerInstance.get( 'lang' ).toLowerCase() ];
+        if( StorageManagerInstance === null ) {
+            Logger.log("StorageManagerInstance not yet defined");
+            return null;
+        }
 
-        if( !message || typeof message === "undefined" )
-    {
-            message = LOCALE_MESSAGE[ 'en' ];
+        var message= null;
+        try{
+            message = LOCALE_MESSAGE[ StorageManagerInstance.get('lang').toLowerCase() ];
             return message;
         }
-    else
-    {
+        catch(e){
+            message = LOCALE_MESSAGE[ 'en' ];
             return message;
         }
     };
