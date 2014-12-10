@@ -184,31 +184,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         Logger.log("CrackleVideo.playCrackleVideo()");
 
         VideoManagerInstance.play( This )
-
-        //ConvivaIntegration.attachStreamer()
-        /*try
-        {
-            if ( VideoManagerInstance.play( This ) === false )
-            {
-                Logger.log("CrackleVideo.play() - couldn't open the video");
-                PlaybackErrorListener.notifyPlaybackError( This );
-                m_disposed = true;
-                VideoManagerInstance.stop();
-                VideoManagerInstance.close();
-            }
-            else{
-                //Comscore.sendClip(m_current_time)
-                ConvivaIntegration.createSession(VideoManagerInstance.getCoreVideo(), m_video_url, m_media_details_obj)
-            }
-        }
-        catch( e )
-        {
-            Logger.log("CrackleVideo.play() - EXCEPTION RAISED");
-            PlaybackErrorListener.notifyPlaybackError( This );
-            m_disposed = true;
-            VideoManagerInstance.stop();
-            VideoManagerInstance.close();
-        }*/
     };
 
     // onResolved
@@ -350,14 +325,14 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         if( m_playlists[ m_media_details_obj.getDurationInSeconds() ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
             playAd( m_media_details_obj.getDurationInSeconds() );
         }else{
-            ConvivaIntegration.cleanUpSession();
+            //ConvivaIntegration.cleanUpSession();
             PlaybackReadyListener.notifyPlaybackEnded();
         }
     };
 
     this.onError = function(){
         m_disposed = true;
-        ConvivaIntegration.cleanUpSession();
+        //ConvivaIntegration.cleanUpSession();
         VideoManagerInstance.stop();
         VideoManagerInstance.close();
         notifyListeners( new PlaybackError( VideoManagerInstance.getPlaybackTimePTS() ) );
@@ -485,12 +460,12 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
         m_current_time = time_pos;
         VideoManagerInstance.setCurrentTime( time_pos );
-        m_current_time = time_pos;
 
         m_is_paused = false;
-        Logger.log( 'CrackleVideo.SETCURRENTTIME' );
+        Logger.log( 'CrackleVideo.SETCURRENTTIME ' +time_pos);
+        Logger.log( 'CrackleVideo.DURATION' +m_media_details_obj.getDurationInSeconds());
 
-        if( time_pos === m_media_details_obj.getDurationInSeconds() ){
+        if( time_pos === m_media_details_obj.getDurationInSeconds() || time_pos > m_media_details_obj.getDurationInSeconds() ){
             PlaybackReadyListener.notifyPlaybackEnded();
             return;
         }
@@ -504,8 +479,13 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 }
             }
         }
-        if( last_ad > 0 && !m_playlists[ last_ad ].hasPlayed() && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
+        var currentVideoEndCreditMark = m_media_details_obj.data.EndCreditStartMarkInMilliSeconds/1000;
+        if(m_media_details_obj.data.EndCreditStartMarkInMilliSeconds == null){
+            currentVideoEndCreditMark = m_media_details_obj.data.DurationInSeconds - 10
+        }
+        if( last_ad > 0 && !m_playlists[ last_ad ].hasPlayed() && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && m_current_time < currentVideoEndCreditMark){
             Logger.log("CrackleVideo.setCurrentTime() - playing ad at: " + last_ad);
+            m_is_playing = false;
             playAd( last_ad );
         }
     };
@@ -540,7 +520,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         
     };
     function playAd( adIndex ){
-        Logger.log("play add called: index" + adIndex);
+        Logger.log("play ad called: index " + adIndex);
         if( typeof m_playlists[ adIndex ] !== "undefined" ){
             if(adIndex == 0){
                 ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
@@ -668,13 +648,15 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         Logger.log("event type: " + playbackEventObj.getEventType());
         Logger.log("number of listeners: " + m_playback_listeners.length );
 
+        if(playbackEventObj.getEventType() == 9){
+            console.log("*****ERROR TOWN")
+            PlaybackErrorListener.notifyPlaybackError( This );
+        }
+        
         if(playbackEventObj.getEventType() == 7){
             console.log("GOT PLAY EVBENT PODCOMPLETE TO FALSE")
             ADForgiveness.podComplete = false;
         }
-
-    //if( playbackEventObj instanceof PlaybackError )   //DAN: no listeners are here, error event doesn't do anything, I'm trying this
-    //    PlaybackErrorListener.notifyPlaybackError( playbackEventObj, This );
 
         for( var i = 0; i < m_playback_listeners.length; i++ ){
             try

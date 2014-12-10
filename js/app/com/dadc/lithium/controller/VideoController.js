@@ -15,7 +15,7 @@ var VideoController = function( ParentControllerObj )
     var m_timeline_widget           = new TimelineWidget();
         m_timeline_widget.setVisible( false );
         m_timeline_widget.getDisplayNode().x = 0;
-        m_timeline_widget.getDisplayNode().y = 850;
+        m_timeline_widget.getDisplayNode().y = 870;
 
     var m_subtitle_container        = engine.createContainer();
     m_subtitle_container.y = 900;
@@ -38,6 +38,17 @@ var VideoController = function( ParentControllerObj )
     var INTERVAL_INCREMENT = .08;
     var m_seek_interval = INITIAL_SEEK_INTERVAL;
     var m_last_time = 0;
+
+    //stuff for UpNext
+    var totalVideosPlayed= 0;
+    var currentVideoEndCreditMark= null;
+    var nextVideoOverlay = null
+    var nextVideoContinueOverlay = null
+    var currentMediaList = null
+    var currentMediaListIndex = 0;
+    var startingMediaListIndex = 0;
+    var continueCalled = false
+    var userOptOut = false
 
     this.audioVideoUrlSwitch = false;
 
@@ -87,8 +98,19 @@ var VideoController = function( ParentControllerObj )
     this.open = function( )
     {
         m_root_node.addChild( m_master_container );
+        totalVideosPlayed = 0
         m_last_time = 0;
         m_playback_ready = false;
+
+        totalVideosPlayed= 0;
+        currentVideoEndCreditMark= null;
+        nextVideoOverlay = null
+        nextVideoContinueOverlay = null
+        currentMediaList = null
+        currentMediaListIndex = 0;
+        startingMediaListIndex = 0;
+        continueCalled = false
+        userOptOut = false
     };
 
 
@@ -155,11 +177,79 @@ var VideoController = function( ParentControllerObj )
             }
             m_timeline_widget.update( engine_timer );
         }
+
+        if ( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying() &&
+            m_crackle_video.getCurrentTime() >= currentVideoEndCreditMark){
+            //Show the overlay- remember the conditions in enterpressed.
+            var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length -1)?currentMediaListIndex + 1:0 //loop back
+            if(nextIndex !== startingMediaListIndex){ //have we finished the whole list?
+
+                nextVideo = currentMediaList[nextIndex];
+    
+                if (continueCalled == false && !nextVideoContinueOverlay && totalVideosPlayed == 5 ){
+                    //show would you like to continue
+                    openNextVideoContinueOverlay();
+                    return;
+                }
+
+                if(!nextVideoOverlay && totalVideosPlayed < 5){//} && userOptOut == false){ //More to play? If the tvp hasn't been reset we skip this part.
+                    openNextVideoOverlay();       
+                }
+            }
+         }
     };
+
+    function openNextVideoContinueOverlay(){
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying() ){
+            m_crackle_video.togglePause();
+        }
+        m_timeline_widget.setVisible( false );
+        nextVideoContinueOverlay = new ContinueWidget()
+        nextVideoContinueOverlay.rootNode.x=1920/2 - 920/2
+        nextVideoContinueOverlay.rootNode.y=1080/2 - 325/2
+
+        m_root_node.addChild(nextVideoContinueOverlay.rootNode)
+        //position
+
+    }
+
+    function closeNextVideoContinueOverlay(){
+        if(nextVideoContinueOverlay != null){
+            m_root_node.removeChild(nextVideoContinueOverlay.rootNode)
+
+            nextVideoContinueOverlay = null;
+            if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying() ){
+                m_crackle_video.togglePause();
+            }
+        }
+    }
+
+    function openNextVideoOverlay(){
+
+        m_timeline_widget.setVisible( false );
+        nextVideoOverlay = new NextVideoWidget(nextVideo)
+        nextVideoOverlay.x = 1920 - 730 - 10
+        nextVideoOverlay.y = 10
+        m_root_node.addChild(nextVideoOverlay)
+    }
+
+    function closeNextVideoOverlay(){
+        if(nextVideoOverlay != null){
+            m_root_node.removeChild(nextVideoOverlay)
+            nextVideoOverlay = null
+        }
+    }    
 
     var currentAudioVideoUrl=null; 
     var currentSubtitleUrl=null;
     var subsLoaded = false
+
+    //should be called before prepareToOpen
+    this.setMediaList = function (mediaList){
+
+        currentMediaList = mediaList
+    }
+    var nextvideo
 
     this.prepareToOpen = function( MediaDetailsObj, audioVideoUrl, subtitleUrl )
     {
@@ -183,6 +273,12 @@ var VideoController = function( ParentControllerObj )
         // console.log("2 prepareToOpen with")
         // console.log(currentAudioVideoUrl)
         // console.log(subtitleUrl)
+        console.log("EndCreditStartMarkInMilliSeconds "+ MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds)
+        currentVideoEndCreditMark = MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds/1000;
+        if(MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds == null){
+            currentVideoEndCreditMark = MediaDetailsObj.data.DurationInSeconds - 10
+        }
+        console.log("END CREDIT MARK "+currentVideoEndCreditMark)
 
         if(currentSubtitleUrl != subtitleUrl){
 
@@ -199,12 +295,7 @@ var VideoController = function( ParentControllerObj )
             }
             else{
                 AnalyticsManagerInstance.subTitleOffEvent(  );
-                // if(m_master_container.contains(m_subtitle_container)){
-                //     m_master_container.removeChild(m_subtitle_container)
-                // }
-                // while ( m_subtitle_container.numChildren > 0 ){
-                //     m_subtitle_container.removeChildAt( 0 );
-                // }
+
                 if(m_crackle_video){
                     m_crackle_video.setSubtitleContainer(null)
                 }
@@ -255,10 +346,89 @@ var VideoController = function( ParentControllerObj )
 
         if ( m_media_details_obj )
         {
-
+            userOptOut = false;
             Logger.log("currentAudioVideoUrl: " + currentAudioVideoUrl);
+            //This should keep the context of the list.
+            if(currentMediaList == null && MediaDetailsObj.videoContextList){
+                currentMediaList = MediaDetailsObj.videoContextList
+                for (var i=0; i<MediaDetailsObj.videoContextList.length;i++){
+                    if (MediaDetailsObj.data.ID == MediaDetailsObj.videoContextList[i].ID){
+                        console.log("FOUNNF "+ MediaDetailsObj.data.ID+ " AT "+ i)
+                        startingMediaListIndex = i
+                        currentMediaListIndex = i;
+                    }
+                }
+            }
+
+            console.log("startingMediaListIndex "+ startingMediaListIndex)
+
+            totalVideosPlayed ++
+            continueCalled = false;
+            
             m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, This, This );
             m_crackle_video.setSubtitleContainer(m_subtitle_container)
+
+            //check here if next item is show or movie
+            if(currentMediaList != null){ 
+                
+                var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length-1)?currentMediaListIndex+1:0 //Loop back if you need to
+                if(nextIndex !== startingMediaListIndex){
+                    nextVideo = currentMediaList[nextIndex]
+                    
+                    //if show, get list splice in to existing list.
+                    if(nextVideo.Season && nextVideo.Season == "" && 
+                        (nextVideo.RootChannelID == 114 || nextVideo.RootChannelID == 46)){
+                        CrackleApi.Collections.showEpisodeList(currentVideo.ID,
+                            function(showList, status){
+                                if(showList != false && showList.length){
+                                    Array.prototype.splice.apply(currentMediaList, [(currentMediaListIndex+1), 1].concat(showList));
+                                }
+                            })
+                        //this little shuffle will put the index 
+                        //back to where it was because we've removed the offender
+                        nextVideo = currentMediaList[currentMediaListIndex]
+                    }
+                    if(nextVideo.ItemType && nextVideo.ItemType == "Channel"){
+                            var channel_details_request = new ChannelDetailsRequest( nextVideo.ID, StorageManagerInstance.get( 'geocode' ), function( ChannelDetailsObj, status ){
+                            if ( status != 200 ){
+                //                // inform our parent controller our request failed
+                                ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );                    
+                            }else{
+                                var channelId = ChannelDetailsObj.getID();
+                                var channel_folder_list_request = new ChannelFolderListRequest( channelId, StorageManagerInstance.get( 'geocode' ), function( ChannelFolderListObj, status ){
+                                    if ( status != 200 ){
+                                        // inform our parent controller our request failed
+                                        ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );                    
+                                    }else{
+
+                                        var folder_obj  = ChannelFolderListObj.getItem( 0);
+                                        var folder_name = folder_obj.getName();
+                                        var playlistListObj = folder_obj.getPlaylistList();
+
+                                        if( playlistListObj.getTotalLockedToChannel() > 0 ){
+                                            var playlistObj = playlistListObj.getLockedToChannelItem( 0 );
+                                            var item =playlistObj.getMediaList().getItem( 0 );
+                                            //console.log("**** iiiget"+item.getID())
+                                            //if( ChannelDetailsObj.getFeaturedMedia() == null ){
+                                            currentMediaList.splice((currentMediaListIndex+1), 1, item.data)
+                                           // }else{
+                                           //     doMediaRequest( channelId );
+            //                                }
+                                        }
+
+                                    }
+
+                                })
+                                channel_folder_list_request.startRequest();
+                                
+                            
+                            }
+                        });
+                        channel_details_request.startRequest();
+                    }
+                }
+            }
+
             
             if(m_last_time>0){
                 m_crackle_video.setCurrentTime(m_last_time)
@@ -271,7 +441,11 @@ var VideoController = function( ParentControllerObj )
 
 
     this.navLeft = function(){
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
+        if(nextVideoContinueOverlay){
+            nextVideoContinueOverlay.navLeft();
+            return;
+        }
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             m_last_seek_timer = engine.getTimer();
             m_seek_direction = VideoController.SEEK_DIRECTION.RW;
 
@@ -295,8 +469,12 @@ var VideoController = function( ParentControllerObj )
         Logger.log('VideoController navRight' );
 
         Logger.log( 'VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ' + ( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ) );
+        if(nextVideoContinueOverlay){
+            nextVideoContinueOverlay.navRight();
+            return;
+        }
 
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             m_last_seek_timer = engine.getTimer();
             m_seek_direction = VideoController.SEEK_DIRECTION.FW;
 
@@ -321,7 +499,7 @@ var VideoController = function( ParentControllerObj )
 
     this.navDown = function(){
         Logger.log( 'navDown' );
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             if( !m_timeline_widget.isVisible() ){
                 m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
                 m_timeline_widget.showCursor();
@@ -341,6 +519,28 @@ var VideoController = function( ParentControllerObj )
     }
     this.enterPressed = function(){
         Logger.log( 'VideoController enterPressed' );
+        
+        if(nextVideoOverlay){
+                        // store video progress
+            VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_crackle_video.getResumeTime() );
+            VideoManagerInstance.stop();
+            VideoManagerInstance.close();
+            this.playNext()
+            return;
+        }
+        
+        if(nextVideoContinueOverlay){
+            if(nextVideoContinueOverlay.yesButton.selected()){
+                totalVideosPlayed = 0;
+                continueCalled = false
+            }
+            else{
+                continueCalled = true;
+            }
+
+            closeNextVideoContinueOverlay()
+        }
+
         if( m_seek_direction && m_crackle_video.isPlaying() ){
             toggleTimeline();
             m_seek_direction = null;
@@ -364,7 +564,7 @@ var VideoController = function( ParentControllerObj )
 
     this.startPressed = function(){
 
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying() ){
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying()  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             m_crackle_video.togglePause();
             m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
             m_timeline_widget.showCursor();
@@ -381,9 +581,20 @@ var VideoController = function( ParentControllerObj )
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
             // TODO: Maybe check if resume time is equal to movie's length and then restart the movie?
             //
+            // if(nextVideoOverlay != null){
+            //     userOptOut = true;
+            //     closeNextVideoOverlay();
+            //     return;
+            // }
+        
+            // if(nextVideoContinueOverlay != null){
+            //     return;
+            // }
             //
             // store video progress
             VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_crackle_video.getResumeTime() );
+            closeNextVideoOverlay()
+            closeNextVideoContinueOverlay()
             VideoManagerInstance.stop();
             VideoManagerInstance.close();
 
@@ -400,7 +611,7 @@ var VideoController = function( ParentControllerObj )
     this.trianglePressed = function()
     {
 
-        if(m_is_focussed && VideoManagerInstance.getCurrentJSVideo() == m_crackle_video){
+        if(m_is_focussed && VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             if(m_crackle_video.isPlaying() )
             {
                 m_timeline_widget.setVisible(false)
@@ -430,7 +641,7 @@ var VideoController = function( ParentControllerObj )
     }
     this.navUp = function(){
         Logger.log( 'navUp' );
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
+        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             if( !m_timeline_widget.isVisible() ){
                 m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
                 m_timeline_widget.showCursor();
@@ -479,6 +690,32 @@ var VideoController = function( ParentControllerObj )
         this.circlePressed();
     }
 
+    this.playNext = function(){
+        currentMediaListIndex ++
+        if(currentMediaListIndex > currentMediaList.length -1){
+            currentMediaListIndex = 0;
+        }
+
+        //prevents hopping to the end if user pressed x before
+        VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), 0 );
+        m_last_time = 0;
+        m_playback_ready = false;
+        currentVideo = null;
+        var media_details_request = new MediaDetailsRequest( currentMediaList[currentMediaListIndex].ID, StorageManagerInstance.get( 'geocode' ), function( MediaDetailsObj, status ){
+            if ( status != 200 ){
+                // inform our parent controller our request failed
+                ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );                    
+            }else{
+                if(nextVideoOverlay){
+                    closeNextVideoOverlay()
+                }
+                This.prepareToOpen(MediaDetailsObj);
+            }
+        });
+
+        media_details_request.startRequest();
+    }
+
 
     /// potentially an issue
     this.notifyPlaybackReady = function()
@@ -490,14 +727,27 @@ var VideoController = function( ParentControllerObj )
     this.notifyPlaybackEnded = function()
     {
         subsLoaded = false
+            closeNextVideoOverlay()
+            closeNextVideoContinueOverlay();
         try
         {
             VideoManagerInstance.stop();
             VideoManagerInstance.close();
-            VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_media_details_obj.getDurationInSeconds() );
-            m_parent_controller_obj.requestingParentAction(
-                {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: this}
-            );
+
+            //Is there more in the list?
+            var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length-1)?currentMediaListIndex+1:0 //Loop back if you need to
+            if(nextIndex !== startingMediaListIndex && totalVideosPlayed<5){
+
+                this.playNext();
+            }
+            else{
+                
+                VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), 0);
+                
+                m_parent_controller_obj.requestingParentAction(
+                    {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: this}
+                );
+            }
         }
         catch( e )
         {

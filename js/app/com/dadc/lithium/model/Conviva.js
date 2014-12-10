@@ -60,6 +60,7 @@ var ConvivaIntegration = {
 
  		ConvivaIntegration.sessionId = Conviva.LivePass.createSession( videoObj, convivaMetadata );
  	},
+ 	
  	attachStreamer:function(video){
  		Logger.log("attachStreamer")
  		if(ConvivaIntegration.attached == false){
@@ -93,6 +94,7 @@ var ConvivaIntegration = {
  	cleanUpSession: function() {
 		Logger.log("Cleanup")
 	 		if ( ConvivaIntegration.sessionId != null ) {
+
 			Logger.log("Cleanup - activate")
 	 			Conviva.LivePass.cleanupSession(ConvivaIntegration.sessionId );
 	

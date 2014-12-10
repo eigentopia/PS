@@ -81,6 +81,8 @@ include( "js/app/com/dadc/lithium/media/InnovidInternalVideo.js" );
 include( "js/app/com/dadc/lithium/model/InteractiveAdModel.js" );
 include( "js/app/com/dadc/lithium/view/widgets/InteractiveAdWidget.js" );
 
+include("js/app/crackleApi.js")
+
 
 // THIS CONTROLLER WILL HANDLE THE FLOW OF THE APPLICATION
 var ApplicationController = function( screenObj ){
@@ -865,8 +867,8 @@ var ApplicationController = function( screenObj ){
                 closeAllVisibleControllers();
                 unsetFocusAllControllers();
                 m_focused_controller.close();
-//                showNavigation();
-
+    //                showNavigation();
+                //ConvivaIntegration.cleanUpSession()
                 destroyDetailsControllers();
                 m_movie_details_controller = new MovieDetailsController( this );
                 m_movie_details_controller.getDisplayNode().x = 96+374+52;
@@ -1025,19 +1027,76 @@ var ApplicationController = function( screenObj ){
                 
                 repeatPSNCheck( function(){
                     m_controller_before_video_started = m_focused_controller;
-                    // Wey: This fixes timeline bug where pending focused controller
-                    // would still be set causing abnormal behaviors
-                    m_pending_focused_controller = null;
+                    var videoContextList = []
+                    //Keep the context if coming from a list so we can next video
+                    if(m_controller_before_video_started.getControllerName() =='RecommendedWatchlistController' ||
+                        m_controller_before_video_started.getControllerName() == "ShowDetailsController"||
+                        m_controller_before_video_started.getCallingController().getControllerName() == "MyWatchlistController"){
+                        if(m_controller_before_video_started.getCallingController && m_controller_before_video_started.getCallingController().getControllerName() == "MyWatchlistController"){
+                            videoContextList= m_controller_before_video_started.getCallingController().getItemList().m_data
+                        }else{
+                            // Folderlist> playlist> medialist
+                            videoContextList = m_controller_before_video_started.getItemList();
+                        }
+                        //Add it to the object we are passing videoController
+                        json_data_args.MediaDetailsObj.videoContextList = videoContextList
 
-                    m_focused_controller = m_video_controller;
-                    m_video_controller.setFocus();
+                                            // Wey: This fixes timeline bug where pending focused controller
+                        // would still be set causing abnormal behaviors
+                        m_pending_focused_controller = null;
 
-                    // NOTE: CALLING OPEN BEFORE PREPARE. WHY? FOR THE DISPLAY NODE? SHOULDN'T BE NEEDED THEORETICALLY
-                    m_video_controller.open();
-                    screenObj.addChild( m_video_controller.getDisplayNode() );
+                        m_focused_controller = m_video_controller;
+                        m_video_controller.setFocus();
 
-                    // NOTE: CALLING PREPARE AFTER OPEN, WHY?
-                    m_video_controller.prepareToOpen( json_data_args.MediaDetailsObj, null, null);
+                        // NOTE: CALLING OPEN BEFORE PREPARE. WHY? FOR THE DISPLAY NODE? SHOULDN'T BE NEEDED THEORETICALLY
+                        m_video_controller.open();
+                        screenObj.addChild( m_video_controller.getDisplayNode() );
+
+                        // NOTE: CALLING PREPARE AFTER OPEN, WHY?
+                        m_video_controller.prepareToOpen( json_data_args.MediaDetailsObj, null, null);
+
+
+                    }
+                    else{ //get featured of MediaDetailsObj type
+                        var request = new FeaturedRequest( FeaturedRequest.CATEGORY.MOVIES, 
+                                                        FeaturedRequest.FILTER_TYPE.ALL, 
+                                                        StorageManagerInstance.get( 'geocode' ), 
+                                                        10, 
+                                                        function( FeaturedObj, status ){
+
+                            if ( status != 200 ){
+                                //something broke- just play the movie
+
+                            }
+                            else{
+                                //SAMPLE URL
+                                //http://api.crackle.com/Service.svc/featured/movies/all/us/30?format=json
+                                    var boo = FeaturedObj;
+
+                                         // Folderlist> playlist> medialist
+                                    videoContextList = FeaturedObj.m_data.Items
+                                    videoContextList.splice(0,0,json_data_args.MediaDetailsObj)
+                                    //Add it to the object we are passing videoController
+                                    json_data_args.MediaDetailsObj.videoContextList = videoContextList
+
+                            }
+                            // Wey: This fixes timeline bug where pending focused controller
+                            // would still be set causing abnormal behaviors
+                            m_pending_focused_controller = null;
+
+                            m_focused_controller = m_video_controller;
+                            m_video_controller.setFocus();
+
+                            // NOTE: CALLING OPEN BEFORE PREPARE. WHY? FOR THE DISPLAY NODE? SHOULDN'T BE NEEDED THEORETICALLY
+                            m_video_controller.open();
+                            screenObj.addChild( m_video_controller.getDisplayNode() );
+
+                            // NOTE: CALLING PREPARE AFTER OPEN, WHY?
+                            m_video_controller.prepareToOpen( json_data_args.MediaDetailsObj, null, null);
+                        })
+                        
+                        request.startRequest();
+                    }
                 })
 
                 break;
@@ -1045,7 +1104,7 @@ var ApplicationController = function( screenObj ){
             //console.log("****STOPPPPINGINGNGINGINGNG")
                 closeAllVisibleControllers();
                 unsetFocusAllControllers();
-                ConvivaIntegration.cleanUpSession();
+                //ConvivaIntegration.cleanUpSession();
 //                showNavigation();
 
                 m_video_controller.unsetFocus();
@@ -1078,6 +1137,7 @@ var ApplicationController = function( screenObj ){
                 closeAllVisibleControllers();
                 unsetFocusAllControllers();
 
+                //ConvivaIntegration.cleanUpSession();
 //                showNavigation();
 
                 try{
@@ -1155,6 +1215,7 @@ var ApplicationController = function( screenObj ){
                             screenObj.removeChild( m_video_controller.getDisplayNode() );
                             m_video_controller.stop();
                             m_video_controller.close();
+                            //ConvivaIntegration.cleanUpSession();
                         }catch( e ){
                             Logger.log( '!!! EXCEPTION CLOSE_ERROR_CONTROLLER' );
                             Logger.logObj( e );
@@ -2367,24 +2428,28 @@ var ApplicationController = function( screenObj ){
         return crackleUser;
     }
 
-    ApplicationController.setUserInfo= function(id, email, pass, cb){
-        if(!id){
+    ApplicationController.setUserInfo= function(user, cb){
+        if(user == null || user.userId == undefined){
             crackleUser.id = null
             crackleUser.email = null;
             crackleUser.watchlist = [];
+            localStorage.age = "";
+            localStorage.gender = "";
             localStorage.userPass = "";
             localStorage.userEmailAddress = "";
             localStorage.userId = ""
             return;
         }
 
-        crackleUser.id = id;
-        crackleUser.email = email;
+        crackleUser.id = user.userId;
+        crackleUser.email = user.email;
         crackleUser.watchlist = [];
 
-        localStorage.userPass = pass;
-        localStorage.userEmailAddress = email;
-        localStorage.userId = id;
+        localStorage.age = user.userAge;
+        localStorage.gender = user.userGender;
+        localStorage.userPass = user.password;
+        localStorage.userEmailAddress = user.email;
+        localStorage.userId = user.userId;
 
                     
 
@@ -2397,7 +2462,7 @@ var ApplicationController = function( screenObj ){
     }
 
     //Watchlist stuff here because it can be called from many different places.
-    var watchListDirty = false;
+
     ApplicationController.isInUserWatchlist = function(id){
 
         //return false if not logged
@@ -2522,24 +2587,15 @@ var ApplicationController = function( screenObj ){
         }
     }
 
-    ApplicationController.setPauseResumePoint = function(id, duration, callback){
+    ApplicationController.setPauseResumePoint = function(id, duration){
         if(crackleUser.id){
             var d  = parseInt(duration)
             var url =  ModelConfig.getServerURLRoot() + "pauseresume/media/"+id+"/set/"+ d+"/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json";
             Http.request(url, "GET", null, null, function(data, status){
-                if(data != null && status ==200){
-                    StorageManagerInstance.set( 'video_progress_' + id, duration)
-                    callback&&callback(true)
-                }
-                else{
-                    callback&&callback(false, status)
-                }
+                Logger.log("setPauseResumePoint returned status - " + status)
             })
-        }
-        else{
-            callback&&callback(false, null)
-        }
         //HttpRequest.startRequest()
+        }
     }
 
 
@@ -2552,12 +2608,12 @@ var ApplicationController = function( screenObj ){
         complete();
     }
     //Initialize all the tracking.
-    Conviva.LivePass.toggleTraces(true)
+    //Conviva.LivePass.toggleTraces(true)
     //Conviva.LivePass.init( ConvivaIntegration.customerKey );
 
-    var settings = {}
-    settings.gatewayUrl = "https://testonly.conviva.com"
-    Conviva.LivePass.init( ConvivaIntegration.customerKey, settings )
+    //var settings = {}
+    //settings.gatewayUrl = "https://testonly.conviva.com"
+    //Conviva.LivePass.init( ConvivaIntegration.customerKey, settings )
 
 
     Comscore.sendStartup();

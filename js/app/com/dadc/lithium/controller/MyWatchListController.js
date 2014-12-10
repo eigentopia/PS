@@ -138,6 +138,19 @@ var MyWatchlistController = function( ParentControllerObj ){
         ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_READY );
             
     };
+
+    this.getItemList = function(){ 
+        var list = [];
+        var channelMediaList =  m_movie_data_obj;//m_channel_folder_list_obj.m_data.FolderList[0].PlaylistList[0].MediaList
+
+        if(channelMediaList){
+            list = channelMediaList;
+        }
+
+        return list;
+       
+    }
+    
     this.requestParentAction = function( json_data_args ){};
     this.notifyPreparationStatus = function( controller_id ){};
     this.getUniqueID = function(){return m_unique_id;};

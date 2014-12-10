@@ -70,7 +70,8 @@ var ADManager = function( mediaDetailsObj, crackleVideoObj )
             {
                 Logger.log("ADManager.onFreewheelResponded() - adList not valid")
                 crackleVideoObj.notifyAdManagerUpdated( ADManager.EVENT.NOADS );
-                //return;
+
+                return;
             }
             else{
 
@@ -310,21 +311,22 @@ var ADManager = function( mediaDetailsObj, crackleVideoObj )
     function getPrerollTemporalAdSlot()
     {
         Logger.log( 'ADManager.getPrerollTemporalAdSlot()' );
-
-        for( var i = 0; i < m_temporal_ad_slots.length; i++ )
-    {
-            var slot = m_temporal_ad_slots[ i ];
-        if( typeof slot.isPreroll === "function" )
-        {
-        if( slot.isPreroll() === true )
-        {
-            return slot;
+        if(m_temporal_ad_slots && m_temporal_ad_slots.length){
+            for( var i = 0; i < m_temporal_ad_slots.length; i++ ){
+                var slot = m_temporal_ad_slots[ i ];
+                if( typeof slot.isPreroll === "function" ){
+                    if( slot.isPreroll() === true ){
+                        return slot;
+                    }
+                }
+            }
         }
+        else {
+            Logger.log("ADManager.getPrerollTemporalAdSlot() - slot found without isPreroll() API");
         }
-        else Logger.log("ADManager.getPrerollTemporalAdSlot() - slot found without isPreroll() API");
-        }
+            
     
-    Logger.log("ADManager.getPrerollTemporalAdSlot() - unable to find ad slot, returning null");
+        Logger.log("ADManager.getPrerollTemporalAdSlot() - unable to find ad slot, returning null");
         return null;
     }
 

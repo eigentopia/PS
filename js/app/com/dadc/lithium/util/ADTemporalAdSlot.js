@@ -415,8 +415,9 @@ ADManager.TemporalAdSlot = function( temporalAdSlotNode, ADManagerObj )
     this.getSlotImpression = function()
     {
         var ec = temporalAdSlotNode.getEventCallbacks();
-        if( isValid( ec ) === true )
+        if( isValid( ec ) === true ){
             return ec.getEventCallbackList();
+        }
         return null;
     };
 

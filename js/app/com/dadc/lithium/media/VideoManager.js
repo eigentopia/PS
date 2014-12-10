@@ -62,6 +62,7 @@ VideoManager = function(){
         
         // retain a reference to the current JSVideo object
         m_current_jsvideo = JSVideoObj;
+
          // remove the video from the screen
         while( m_root_node.numChildren > 0 )
             m_root_node.removeChildAt( 0 );
@@ -82,6 +83,7 @@ VideoManager = function(){
             default:
                 m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_PROGRESSIVE );
                 m_core_video_obj.streamType = "m3u8"
+                m_core_video_obj.resetMemoryContainer()
                 Logger.log( 'm3u8' );
                 break;
         }
@@ -106,15 +108,14 @@ VideoManager = function(){
 
             ConvivaIntegration.attachStreamer(m_core_video_obj)
         }
+
         // add the video to the screen
         m_root_node.addChild( m_core_video_obj );
         m_core_video_obj.open( m_current_jsvideo.getVideoURL(), 
             {"video-starttimeoffset": m_current_jsvideo.getResumeTime()} 
         );
         Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
-        Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime() + " "+ m_current_jsvideo.getVideoConfig());
-        
-        
+        Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime());
         Logger.log("core play called");
         
     }
@@ -174,8 +175,8 @@ VideoManager = function(){
         return m_current_jsvideo;
     }
 
-    function onOpened(){
-        Logger.log("core onOpened called");
+    function onOpened(foo){
+        Logger.log("core onOpened called " + foo);
         m_video_time_on_play_before_timeupdate = engine.getTimer();
 
         m_core_video_obj.play();
@@ -204,6 +205,7 @@ VideoManager = function(){
     }
     
     function onStalled(){
+        Logger.log("core stalled called");
         if( m_current_jsvideo != null )
             m_current_jsvideo.onStalled();
         

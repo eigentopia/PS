@@ -9,6 +9,10 @@ include( "js/app/com/dadc/lithium/model/MediaDetails.js" );
 include( "js/app/com/dadc/lithium/model/ChannelDetails.js" );
 include( "js/app/com/dadc/lithium/model/ChannelFolderList.js" );
 
+
+
+include( "js/app/com/dadc/lithium/view/widgets/NextVideoWidget.js" );
+
 var ShowDetailsController = function( ParentControllerObj ){
     var m_unique_id                             = Controller.reserveUniqueID();
     var m_parent_controller_obj                 = ParentControllerObj;
@@ -26,6 +30,7 @@ var ShowDetailsController = function( ParentControllerObj ){
     var m_media_details_timer;
     var media_details_request                   = null;
     var self = this;
+    var media_objs = [];
     
     var showChannelId;
     var currentMediaDetails; //for tracking. note this only loads on a second call to the API?!?!
@@ -34,6 +39,22 @@ var ShowDetailsController = function( ParentControllerObj ){
     this.getParentController = function(){return m_parent_controller_obj;};
     this.getDisplayNode = function( ){return m_root_node;};
     this.getControllerName = function(){return 'ShowDetailsController';};
+
+        //God, really?
+    this.getItemList = function(){ 
+        var list = [];
+        var channelMediaList =  media_objs
+
+        if(channelMediaList){
+            for(var i=0;i<channelMediaList.length;i++){
+                list.push(channelMediaList[i].data)
+            }
+        }
+
+        return list;
+
+       
+    }
 
     function checkUserWatchList(){
         ApplicationController.getUserPauseResumeList(function(){
@@ -118,7 +139,6 @@ var ShowDetailsController = function( ParentControllerObj ){
                     var folder_obj  = ChannelFolderListObj.getItem( i );
                     var folder_name = folder_obj.getName();
                     var playlistListObj = folder_obj.getPlaylistList();
-                    var media_objs = [];
                     
                     if( playlistListObj.getTotalLockedToChannel() > 0 ){
                         for( var ii = 0; ii < playlistListObj.getTotalLockedToChannel(); ii++ ){
@@ -153,6 +173,11 @@ var ShowDetailsController = function( ParentControllerObj ){
                         // Update widgets with data
                         m_show_detail_thumb_widget.refreshWidget( ChannelDetailsObj );
                         ChannelDetailsObj = null;
+
+        // var nvWidget = new NextVideoWidget( m_show_details_menu_widgets[ 0 ].getSelectedObj())
+        // nvWidget.x = 100
+        // nvWidget.y = 100
+        // m_master_container.addChild(nvWidget)
                     }
                 });
                 m_http_requests.push( channel_details_request );
@@ -270,7 +295,7 @@ var ShowDetailsController = function( ParentControllerObj ){
             }            
         }
     }
-    
+    var m_ad_manager;
     this.enterPressed = function(){
                 
             if ( m_is_focussed && getVisibleMenuWidgetIndex() >= 0 && m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].isActive() && m_media_details_request === undefined ){
@@ -288,6 +313,9 @@ var ShowDetailsController = function( ParentControllerObj ){
                                 ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );                    
                             }else{
                                 // Request from the application controller to start the video playback
+                                // m_ad_manager = new ADManager( MediaDetailsObj, self );
+                                // m_ad_manager.prepare();        
+                                // m_ad_manager.addListener( self);
                                 m_parent_controller_obj.requestingParentAction(
                                     {action: ApplicationController.OPERATIONS.START_VIDEO_PLAYBACK, MediaDetailsObj: MediaDetailsObj, calling_controller: this}
                                 );
@@ -316,6 +344,19 @@ var ShowDetailsController = function( ParentControllerObj ){
                 })
             }
     
+    }
+
+    var m_playlists = []
+    this.notifyAdManagerUpdated = function( ADManager_EVENT ){
+        for( var i = 0; i < m_ad_manager.getTotalTemporaAdSlots(); i++ ){
+            var temporal_ad_slot = m_ad_manager.getTemporaAdSlot( i );
+            var time_position = parseInt( temporal_ad_slot.getTimePosition() );
+
+            m_playlists[ time_position ] = new FreewheelPlaylist( temporal_ad_slot, self );
+        }
+
+        console.log("playlists")
+        console.dir(m_playlists)
     }
     
     // MILAN-BEN HACK: ALLOW FOR THE SHOW DETAILS RESPONSE TO BE ABANDONED (EG: USER PRESSES PLAY & CIRCLE *BEFORE* MEDIA DETAILS ARE RETURNED, PUTTING THE APP INTO A WEIRD STATE)

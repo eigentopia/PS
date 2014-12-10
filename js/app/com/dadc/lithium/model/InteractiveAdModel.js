@@ -161,7 +161,7 @@ var InteractiveAdConfig = function( jsonData )
 	    break;
     }
 
-
+    this.data = jsonData;
     // Accessors
     this.getId = function() { return jsonData["id"]; }
     this.getName = function() { return jsonData["campaign-name"]; }
@@ -239,6 +239,7 @@ var InteractiveAdVideoConfig = function( jsonData )
     var m_decidedSource = null;
 
     // Accessors
+    this.data = jsonData
     this.getSources = function() { return m_sources; }
     this.getDuration = function() { return jsonData["duration"]; }
     this.setDecidedSource = function( interactiveAdVideoSource ) { m_decidedSource = interactiveAdVideoSource; }

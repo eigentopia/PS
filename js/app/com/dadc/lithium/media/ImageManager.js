@@ -103,7 +103,7 @@ var JSImage = function( image_url ){
             },
             function( error_msg ){ // ON FAILURE
                 // TRY AGAIN
-                Logger.log("* * * * * ERROR LOADING IMAGE! " + error_msg );
+                Logger.log("* * * * * ERROR LOADING IMAGE! " + image_url );
                 if( m_request_attempts < MAX_REQUEST_ATTEMPTS ){
                     This.queueImageRequest();
                 // IF ALREADY TRIED ENOUGH, THEN KNOCK IT OFF

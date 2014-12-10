@@ -34,6 +34,24 @@ var Dictionary = function()
 var Dictionary = new Dictionary();
 
 Dictionary.TEXT = {
+    WANTTOCONTINE:{
+        'en': 'Are you still watching?',
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
+    },
+    PRESSFORNEXT:{
+        'en': 'Press X or ENTER to start next video',
+        'pt': 'Pressione X ou Enter para iniciar o próximo vídeo',
+        'es': 'Presiona X o ENTER para empezar el siguiente video',
+        'fr': 'Appuyez sur X ou la touche entrée pour voir la vidéo suivante' 
+    },
+    UPNEXT:{
+        'en': 'Up Next: ',
+        'pt': 'Em Seguida: ',
+        'es': 'Siguiente: ',
+        'fr': 'À suivre: '
+    },
     WATCHLISTS: {
         'en': 'Watchlists',
         'pt': 'Filas',
@@ -222,10 +240,10 @@ Dictionary.TEXT = {
 		'fr': 'AVERTISSEMENT'
     },
     DISCLAIMER_2: {
-        'en': "CRACKLE(™) contains age-restricted material.",
-        'pt': 'CRACKLE(™) contêm material restrito para menores de idade.',
-        'es': 'CRACKLE(™) contiene material restringido por edad.',
-		'fr': "Le contenu de CRACKLE(™) peut être soumis à des restrictions d'âge."
+        'en': "CRACKLE™ contains age-restricted material.",
+        'pt': 'CRACKLE™ contêm material restrito para menores de idade.',
+        'es': 'CRACKLE™ contiene material restringido por edad.',
+		'fr': "Le contenu de CRACKLE™ peut être soumis à des restrictions d'âge."
     },
     DISCLAIMER_3: {
         'en': "The following program may contain mature/suggestive themes, simulated gambling, profanity or crude humor, fantasy or realistic violence, sexual content or nudity, horror/fear themes, strong language, alcohol, tobacco, drug use or references.",
@@ -244,6 +262,18 @@ Dictionary.TEXT = {
         'pt': 'Sobre',
         'es': 'Sobre',
 		'fr': 'Informations'
+    },
+    YES: {
+        'en': 'Yes',
+        'pt': 'Si',
+        'es': 'Si',
+        'fr': 'Oui'        
+    },
+    NO: {
+        'en': 'No',
+        'pt': 'No',
+        'es': 'No',
+        'fr': 'Non'
     },
     ABOUT_TEXT: {
         'en': 'Say hello to Crackle, a new kind of network for a new kind of viewer. We handpick the most compelling selection of full-length Hollywood movies, TV shows and originals for you to enjoy wherever, whenever you want. No hassles, no subscription, no commitment required. Ever. Crackle. It’s On. \n\nFor more information, terms of service and privacy policy please visit: \n\nwww.crackle.com/privacy.aspx \nwww.crackle.com/tos',

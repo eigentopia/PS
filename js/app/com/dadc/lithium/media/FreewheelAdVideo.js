@@ -24,6 +24,7 @@ var FreewheelVideo = function( adHeaderObj, FreewheelEventCallbackHelperObj, Fre
     var m_25hasFired            = false;
     var m_50hasFired            = false;
     var m_75hasFired            = false;
+    var currentAdBreak = null
     
     this.getResumeTime = function() { return m_current_time; };
     this.getWidth = function() { return 1920; };
@@ -59,7 +60,8 @@ var FreewheelVideo = function( adHeaderObj, FreewheelEventCallbackHelperObj, Fre
     {
         Logger.log( 'FreewheelVideo.play()' );
         VideoManagerInstance.play( this );
-        return true;
+        currentAdBreak = adBreak
+        //return true;
         // if( VideoManagerInstance.play( this ) === true )
         // {
         //     AnalyticsManagerInstance.fireAdStartEvent(mediaObj);
@@ -80,6 +82,7 @@ var FreewheelVideo = function( adHeaderObj, FreewheelEventCallbackHelperObj, Fre
             Logger.log("FreewheelVideo.stop() - will stop");
             VideoManagerInstance.stop();
             VideoManagerInstance.close();
+            currentAdBreak = null;
         }
         else{
             Logger.log("FreewheelVideo.stop() - will not stop");
@@ -130,14 +133,21 @@ var FreewheelVideo = function( adHeaderObj, FreewheelEventCallbackHelperObj, Fre
     };
 
     this.onOpened = function(){
-        
+        AnalyticsManagerInstance.fireAdStartEvent(mediaObj);
+        FreewheelEventCallbackHelperObj.postSlotImpressionUrls();
+        adHeaderObj.postImpressionUrls();
+        FreewheelEventCallbackHelperObj.postImpressionUrls();
+        Comscore.sendClip(currentAdBreak); 
     }
     
     this.onEnded = function(){
+
+        //This is the true ending point- everything terminates here.
         Logger.log( 'FreewheelAdVideo.onEnded()' );
         Logger.shout("FreewheelAdVideo - FIRING COMPLETE");
         adHeaderObj.postCompleteTrackingUrls();
         FreewheelEventCallbackHelperObj.postCompleteTrackingUrls();
+        currentAdBreak = null;
     
         if( typeof ImpressionTracker !== "undefined" ){
             ImpressionTracker.report();

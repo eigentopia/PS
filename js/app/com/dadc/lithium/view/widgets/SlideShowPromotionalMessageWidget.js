@@ -25,9 +25,9 @@ var SlideShowPromotionalMessageWidget = function( SlideShowItemObj ) {
     }
     
     function addImageToContainer( js_image ){
-        if(js_image){
-           m_image_container.addChild( js_image.getRawImage() );
-        }
+       // if(js_image){
+         //  m_image_container.addChild( js_image.getRawImage() );
+       // }
     }    
     function loadImage( url ){
         var js_image = ImageManagerInstance.requestImage( url );

@@ -2,6 +2,8 @@ include( "js/app/com/dadc/lithium/view/widgets/MovieDetailTextWidget.js" );
 include( "js/app/com/dadc/lithium/view/widgets/MovieDetailThumbWidget.js" );
 //include( "js/app/com/dadc/lithium/view/widgets/MovieDetailsMenuWidget.js" );
 include( "js/app/com/dadc/lithium/view/widgets/PlaylistMenuButtonWidget.js" );
+include( "js/app/com/dadc/lithium/view/widgets/NextVideoContinueWidget.js" );
+include( "js/app/com/dadc/lithium/view/widgets/NextVideoWidget.js" );
 include( "js/app/com/dadc/lithium/view/widgets/VideoProgressWidget.js" );
 
 //include( "js/app/com/dadc/lithium/model/MenuItem.js" );
@@ -38,7 +40,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
 
     var watchListItem; //Because now we have arbitrary channels or media itemtypes in the watchlist.
     var watchListItemType;
-    
+
     this.getParentController = function(){return m_parent_controller_obj;};
     this.getDisplayNode = function( ){return m_root_node;};
     this.getControllerName = function(){return 'MovieDetailsController';};
@@ -191,11 +193,9 @@ var MovieDetailsController = function ( ParentControllerObj ){
         while( m_master_container.numChildren > 0 ){
             m_master_container.removeChildAt( 0 );
         }
-        
+      
         mediaObj = MediaDetailsObj;
         mediaId = MediaDetailsObj.getID();
-        
-        //Comscore.startPlaylist(MediaDetailsObj)
         
         var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST)
         if (ApplicationController.isInUserWatchlist(watchListItem) ){
@@ -232,6 +232,14 @@ var MovieDetailsController = function ( ParentControllerObj ){
         m_movie_detail_text_widget.refreshWidget( channelObj );
         progressWidget.refreshWidget( MediaDetailsObj.getDurationInSeconds(), VideoProgressManagerInstance.getProgress( mediaId ) );
         currentFocus = watchNowButton;
+
+        // var nvcWidget = new ContinueWidget();
+        // nvcWidget.rootNode.y = 400
+        // m_master_container.addChild(nvcWidget.rootNode)
+
+        // var nvWidget = new NextVideoWidget(MediaDetailsObj)
+        // m_master_container.addChild(nvWidget)
+
 
     }
 

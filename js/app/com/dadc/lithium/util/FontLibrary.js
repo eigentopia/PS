@@ -68,6 +68,13 @@ var FontLibrary = function(){
     this.getFont_EPISODEMENU = function(){
         return {font: FontLibrary.FONT.NORMAL, size: 26, color: [0/255, 0/255, 0/255, 1.0], preserveSpaces: true, lineSpacing: -10, maxLines: 1, continueMark: '...' };
     }
+    
+    this.PLAYNEXTDETAILS = {font: FontLibrary.FONT.NORMAL, size: 30, color: [0,0,0, 1.0], alignment: 'center', preserveSpaces: true, lineSpacing: -10, maxLines: 3, continueMark: '...' };
+    this.PLAYNEXTDETAILSBOLD = {font: FontLibrary.FONT.BOLD, size: 30, color: [0,0,0, 1.0], alignment: 'center', preserveSpaces: true, lineSpacing: -10, maxLines: 3, continueMark: '...' };
+    this.PLAYNEXTDETAILSALT = {font: FontLibrary.FONT.NORMAL, size: 22, color: [1,1,1, 1.0], alignment: 'center', preserveSpaces: true, lineSpacing: -10, maxLines: 3, continueMark: '...' };
+    this.PLAYNEXTDETAILSBUTTON =  {font: FontLibrary.FONT.NORMAL, size: 36, color: [1,1,1, 1.0], alignment: 'center', preserveSpaces: true };
+    this.PLAYNEXTCONTINUE = {font: FontLibrary.FONT.NORMAL, size: 36, color: [1,1,1, 1.0], alignment: 'center', preserveSpaces: true, lineSpacing: -10, maxLines: 3, continueMark: '...' };
+    
     this.getFont_EPISODEMENUBUTTON = function(){
         return {font: FontLibrary.FONT.NORMAL, size: 32, color: [255/255, 255/255, 255/255, 1.0], preserveSpaces: true};
     }
@@ -112,7 +119,7 @@ var FontLibrary = function(){
                         color: [255/255, 255/255, 0/255, 1.0], 
                         preserveSpaces: true, 
                         dynamic:true, 
-                        align:'justify',
+                        alignment:'center',
                         maxLines:4};
             if(localStorage["subFontConfig"]){
                 var subFontConfig = JSON.parse(localStorage["subFontConfig"])
@@ -148,8 +155,8 @@ var FontLibrary = function(){
                 font.color[2] = subFontConfig.fontColor[2]/255 *100
                 font.color[3] = subFontConfig.fontColor[3]
                 font.preserveSpaces= true
-                font.dynamic = true
-                font.align = 'justify'
+                //font.dynamic = true
+                font.alignment = 'center'
 
                 font.maxLines = 4;
             }
@@ -170,7 +177,7 @@ var FontLibrary = function(){
                         color: [0/255, 0/255, 0/255, 1.0], 
                         preserveSpaces: true, 
                         dynamic:true, 
-                        align:'justify',
+                        alignment:'center',
                         maxLines:4};
             if(localStorage["subFontConfig"]){
                 var subFontConfig = JSON.parse(localStorage["subFontConfig"])
@@ -207,8 +214,8 @@ var FontLibrary = function(){
                 font.color[2] = 0/255//subFontShadowConfig.fontColor[2]/255 *100
                 font.color[3] = alpha
                 font.preserveSpaces= true
-                font.dynamic = true
-                font.align = 'justify'
+                //font.dynamic = true
+                font.alignment = 'center'
                 font.maxLines = 4;
 
             }

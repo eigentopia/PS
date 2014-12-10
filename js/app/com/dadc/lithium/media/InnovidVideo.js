@@ -78,7 +78,7 @@ var InnovidVideo = function( adHeaderObj, FreewheelEventCallbackHelperObj, Freew
             FreewheelPlaylistObj.notifyIGAdVideoStarted( This );
         }
 
-        return VideoManagerInstance.play( This );
+        VideoManagerInstance.play( This );
     };
     
     this.stop = function()

@@ -162,12 +162,21 @@ var LoginController = function( ParentControllerObj ){
     this.startLogin = function(){
         Logger.log("STARTING LOGIN");
         var url = ModelConfig.getServerURLRoot() + "login?format=json";
+        var moreUserDataUrl= ModelConfig.getServerURLRoot() +"profile/"
         var geoCode = StorageManagerInstance.get( 'geocode' )
         var creds = {"emailAddress":emailField,"password":passwordField,"geoCode":geoCode}
-        //if(LoggerConfig.CONFIG.WEBGL){
-          //  creds = {"emailAddress":'eigenstates@yahoo.com',"password":'solid5',"geoCode":geoCode}
-        //}
+
+        //creds = {"emailAddress":'eigenstates@yahoo.com',"password":'solid5',"geoCode":geoCode}
+
         var sendbody = {data:JSON.stringify(creds), dataType:'Application/Json'}
+
+        var user = {
+                    email:creds.emailAddress, 
+                    password:creds.password,
+                    userId:null,
+                    userAge:null,
+                    userGender:null
+                    }
 
         //m_login_widget.unsetFocus();
 
@@ -181,21 +190,28 @@ var LoginController = function( ParentControllerObj ){
                 var userData = JSON.parse(data)
                 if(userData.status.messageCode == 0){
 
-                    var userId = userData.userID;
-                    ApplicationController.setUserInfo(userId, emailField, passwordField);
+                    user.userId = userData.userID;
+                    
+                    Http.request(moreUserDataUrl + userData.userID+"?format=json", "GET", null, null, function(data, status){
+                        var moreData = JSON.parse(data)
+                        if(moreData && moreData.status.messageCode == 0){
+                            user.userAge = moreData.age;
+                            user.userGender = moreData.gender;
+                        }
+                            
+                        ApplicationController.setUserInfo(user, function(sucessGettingWatchlist){
+                            if(previousScreen){
 
-                    if(previousScreen){
-                        ApplicationController.setUserInfo(userId, emailField, passwordField, function(success){
-                            if(success){
                                 m_parent_controller_obj.requestingParentAction(previousScreen);
+                                                            
                             }
-                        }); //TODO: Proper control of watchlist fetching
-                    }
-                    else{
-                        m_login_widget.showLoggedInScreen();
-                        m_login_widget.setActive();
-                    }
-                    AnalyticsManagerInstance.loginEvent(  );
+                            else{
+                                m_login_widget.showLoggedInScreen();
+                                m_login_widget.setActive();
+                            }
+                            AnalyticsManagerInstance.loginEvent(  );
+                        });
+                    })
                 }
                 else if(userData.status.messageCode == 105 || userData.status.messageCode == 110){
                     m_parent_controller_obj.requestingParentAction(

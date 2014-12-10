@@ -42,24 +42,28 @@ var FreewheelConfig = function()
 	   Logger.log("getFreeWheelURL() - mediaType: " + freewheelMediaType + ", location: " + m_geoLocation.countryName);
 	
     	// build the site section value
+
     	var csid = "crackle_ps_app_" + m_geoLocation.value;
+        if(engine.stats.device.platform == "ps4"){
+            csid = "crackle_playstation4_app_" + m_geoLocation.value;
+        }
     	csid += (m_geoLocation === MRMLocation.UnitedStates || m_geoLocation === MRMLocation.Null) ? "" : "_";
     	csid += freewheelMediaType;
 
 	   Logger.log("getFreeWheelURL() | CSID: " + csid);
 
     	// build the url
-    	var output =	    LoggerConfig.FREEWHEEL.FREEWHEEL_URL +
-    	    "?nw=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID +
-    	    "&prof=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID + "%3a" + LoggerConfig.FREEWHEEL.FREEWHEEL_PROFILE +
-    	    "&asnw=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID +
-    	    "&ssnw=" +	    LoggerConfig.FREEWHEEL.FREEWHEEL_NETWORK_ID +
+    	var output =	    CONFIG.FREEWHEEL_URL +
+    	    "?nw="   +	    CONFIG.FREEWHEEL_NETWORK_ID +
+            "&prof=" +      CONFIG.FREEWHEEL_NETWORK_ID + "%3a" + CONFIG.FREEWHEEL_PROFILE +
+    	    "&asnw=" +	    CONFIG.FREEWHEEL_NETWORK_ID +
+    	    "&ssnw=" +	    CONFIG.FREEWHEEL_NETWORK_ID +
     	    "&resp=" +	    "smrx" +
     	    "&csid=" +	    csid +
     	    "&caid=" +	    media_id +
     	    "&vprn=" +	    rand(0, 9999999999) +
     	    "&pvrn=" +	    rand(0, 9999999999) +
-    	    "&flag=" +     "+vicb+qtcb+slcb+sltp;;";
+    	    "&flag=" +     "+vicb+qtcb+slcb+sltp;k1=" +engine.storage.local.age +"&k2="+ engine.storage.local.gender +";";
 
 	   Logger.log("FreewheelConfig.getFreeWheelURL() - url: " + output);
 
@@ -72,8 +76,20 @@ var FreewheelMediaType =
 {
     MOVIE:	 "movies",
     SHOW:	 "shows",
-    UNKNOWN:	 "home"	    // should not be used - will be used for null-pattern default
+    UNKNOWN: "home"	    // should not be used - will be used for null-pattern default
 };
+
+var CONFIG= {
+       // TEST
+    // FREEWHEEL_URL: "http://23adc.v.fwmrm.net/ad/g/1",
+    // FREEWHEEL_NETWORK_ID: 146140,
+    // FREEWHEEL_PROFILE: "crackle_ps3_test"
+
+       // PRODUCTION
+    FREEWHEEL_URL: "http://2517d.v.fwmrm.net/ad/g/1",
+    FREEWHEEL_NETWORK_ID: 151933,
+    FREEWHEEL_PROFILE: "crackle_ps3_live"
+}
 
 // DAN: MRM site sections update
 var MRMLocation =

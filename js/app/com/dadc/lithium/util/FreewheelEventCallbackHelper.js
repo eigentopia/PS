@@ -74,16 +74,23 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
         var output = [];
         for( var i = 0; i < m_allEventCallbacks.length; i++ )
         {
-            // if( m_allEventCallbacks[i].getType() === "GENERIC" )
-            // output.push( m_allEventCallbacks[i].getUrl() );
-            // else 
-            if( m_allEventCallbacks[i].getName() === "defaultImpression" )
+            if(  m_allEventCallbacks[i].getName() === "defaultImpression" ){
+
                 output.push( m_allEventCallbacks[i].getUrl() );
+                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
+                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
+                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
+                        output.push( newData.attributes.value );
+                    }
+                }
+            }
+
         }
     
-        Logger.shout("FreewheelEventCallbackHelper.postImpressionUrls() - " + output.length + " impression/generic/defaultImpression events to fire out of " + m_allEventCallbacks.length);
-        if( output.length !== 0 )
+        Logger.shout("FreewheelEventCallbackHelper.postImpressionUrls() - Total impressions of generic or defaultImpression: " + output.length);
+        if( output.length !== 0 ){
             Logger.logObj( output );
+        }
     
         for( var i = 0; i < output.length; i++ )
         {
@@ -97,8 +104,16 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
         var output = [];
         for( var i = 0; i < m_allEventCallbacks.length; i++ )
         {
-            if( m_allEventCallbacks[i].getType() === "play" || m_allEventCallbacks[i].getName() === "start" )
-            output.push( m_allEventCallbacks[i].getUrl() );
+            if( m_allEventCallbacks[i].getType() === "play" || m_allEventCallbacks[i].getName() === "start" ){
+                output.push( m_allEventCallbacks[i].getUrl() );
+
+                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
+                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
+                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
+                        output.push( newData.attributes.value );
+                    }
+                }
+            }
         }
     
         Logger.shout("FreewheelEventCallbackHelper.postPlayUrls() - " + output.length + " start/play events to fire out of " + m_allEventCallbacks.length);
@@ -121,7 +136,13 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
         {
             if( m_allEventCallbacks[i].getName() === "firstQuartile" )
             {
-            output.push( m_allEventCallbacks[i].getUrl() );
+                output.push( m_allEventCallbacks[i].getUrl() );
+                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
+                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
+                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
+                        output.push( newData.attributes.value );
+                    }
+                }
             }
         }
     
@@ -145,7 +166,13 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
         {
             if( m_allEventCallbacks[i].getName() === "midPoint" || m_allEventCallbacks[i].getName() === "midpoint" )
             {
-            output.push( m_allEventCallbacks[i].getUrl() );
+                output.push( m_allEventCallbacks[i].getUrl() );
+                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
+                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
+                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
+                        output.push( newData.attributes.value );
+                    }
+                }
             }
         }
     
@@ -169,7 +196,13 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
         {
             if( m_allEventCallbacks[i].getName() === "thirdQuartile" )
             {
-            output.push( m_allEventCallbacks[i].getUrl() );
+                output.push( m_allEventCallbacks[i].getUrl() );
+                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
+                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
+                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
+                        output.push( newData.attributes.value );
+                    }
+                }            
             }
         }
         
@@ -193,13 +226,20 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
         {
             if( m_allEventCallbacks[i].getName() === "complete" )
             {
-            output.push( m_allEventCallbacks[i].getUrl() );
+                output.push( m_allEventCallbacks[i].getUrl() );
+                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
+                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
+                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
+                        output.push( newData.attributes.value );
+                    }
+                }
             }
         }
     
         Logger.shout("FreewheelEventCallbackHelper.postCompleteTrackingUrls() - " + output.length + " complete events to fire out of " + m_allEventCallbacks.length);
-        if( output.length !== 0 )
+        if( output.length !== 0 ){
             Logger.logObj( output );
+        }
         
         for( var i = 0; i < output.length; i++ )
         {
