@@ -72,7 +72,6 @@ var ConvivaIntegration = {
  				Conviva.LivePass.adEnd(ConvivaIntegration.sessionId );
  			}
 			Logger.log("attachStreamer video")
-			console.dir(video)
 			Conviva.LivePass.attachStreamer(ConvivaIntegration.sessionId, video )
 		}
  	}, 

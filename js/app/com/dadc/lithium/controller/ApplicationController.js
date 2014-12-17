@@ -868,7 +868,7 @@ var ApplicationController = function( screenObj ){
                 unsetFocusAllControllers();
                 m_focused_controller.close();
     //                showNavigation();
-                //ConvivaIntegration.cleanUpSession()
+                ConvivaIntegration.cleanUpSession()
                 destroyDetailsControllers();
                 m_movie_details_controller = new MovieDetailsController( this );
                 m_movie_details_controller.getDisplayNode().x = 96+374+52;
@@ -1104,7 +1104,7 @@ var ApplicationController = function( screenObj ){
             //console.log("****STOPPPPINGINGNGINGINGNG")
                 closeAllVisibleControllers();
                 unsetFocusAllControllers();
-                //ConvivaIntegration.cleanUpSession();
+                ConvivaIntegration.cleanUpSession();
 //                showNavigation();
 
                 m_video_controller.unsetFocus();
@@ -1137,7 +1137,7 @@ var ApplicationController = function( screenObj ){
                 closeAllVisibleControllers();
                 unsetFocusAllControllers();
 
-                //ConvivaIntegration.cleanUpSession();
+                ConvivaIntegration.cleanUpSession();
 //                showNavigation();
 
                 try{
@@ -1215,7 +1215,7 @@ var ApplicationController = function( screenObj ){
                             screenObj.removeChild( m_video_controller.getDisplayNode() );
                             m_video_controller.stop();
                             m_video_controller.close();
-                            //ConvivaIntegration.cleanUpSession();
+                            ConvivaIntegration.cleanUpSession();
                         }catch( e ){
                             Logger.log( '!!! EXCEPTION CLOSE_ERROR_CONTROLLER' );
                             Logger.logObj( e );
@@ -2608,12 +2608,14 @@ var ApplicationController = function( screenObj ){
         complete();
     }
     //Initialize all the tracking.
-    //Conviva.LivePass.toggleTraces(true)
+//TODO REMOVE THIS
+    Conviva.LivePass.toggleTraces(true)
+    var Csettings = {}
+    Csettings.gatewayUrl = "https://testonly.conviva.com"
+    Conviva.LivePass.init( ConvivaIntegration.customerKey, Csettings )
+//
+    //PROD
     //Conviva.LivePass.init( ConvivaIntegration.customerKey );
-
-    //var settings = {}
-    //settings.gatewayUrl = "https://testonly.conviva.com"
-    //Conviva.LivePass.init( ConvivaIntegration.customerKey, settings )
 
 
     Comscore.sendStartup();

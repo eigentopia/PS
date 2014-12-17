@@ -325,14 +325,14 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         if( m_playlists[ m_media_details_obj.getDurationInSeconds() ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
             playAd( m_media_details_obj.getDurationInSeconds() );
         }else{
-            //ConvivaIntegration.cleanUpSession();
+            ConvivaIntegration.cleanUpSession();
             PlaybackReadyListener.notifyPlaybackEnded();
         }
     };
 
     this.onError = function(){
         m_disposed = true;
-        //ConvivaIntegration.cleanUpSession();
+        ConvivaIntegration.cleanUpSession();
         VideoManagerInstance.stop();
         VideoManagerInstance.close();
         notifyListeners( new PlaybackError( VideoManagerInstance.getPlaybackTimePTS() ) );
@@ -343,12 +343,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         var CCSettings = parentVideo.getCCSystemSettings();
         engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
         console.log("GOT ME CC")
-        // if(ConvivaIntegration.sessionId == null){
-        //     ConvivaIntegration.createSession(parentVideo, m_video_url, m_media_details_obj)
-        // }
-            
-        // ConvivaIntegration.attachStreamer(parentVideo)
-        //ConvivaIntegration.attachStreamer()
+        
+        ConvivaIntegration.attachStreamer(parentVideo)
+        
         //Comscore.sendClip(m_current_time)
         // var video_config = VideoManagerInstance.getCurrentJSVideo().getVideoConfig()
         // if(video_config["content-type"] == "video/m3u8"){
@@ -364,7 +361,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //Comscore.sendPlay(m_current_time * 1000)
         // DAN & MILAN: videoView analytic call
         m_ad_manager.sendVideoViewCallback();
-        //ConvivaIntegration.attachStreamer()
     };
 
     this.onStalled = function(){
