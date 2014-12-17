@@ -2357,10 +2357,10 @@ var ApplicationController = function( screenObj ){
 
             if( ! m_psn.userHasAccount() ){
                 // User doesn't have a PSN account
-                // var psnSignupController = new PSNSignupController( this );
-                // screenObj.addChild( psnSignupController.getDisplayNode() );
-                // psnSignupController.prepareToOpen();
-                // psnSignupController.open();
+                var psnSignupController = new PSNSignupController( this );
+                screenObj.addChild( psnSignupController.getDisplayNode() );
+                psnSignupController.prepareToOpen();
+                psnSignupController.open();
                 return false;
             }else{
                 // User has a PSN account, invoke ticket request

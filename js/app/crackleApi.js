@@ -10,10 +10,10 @@ include("js/app/com/dadc/lithium/util/HTTP.js")
                 var items = data.Items;
                 crackleUser.watchlist = items.slice(0);
 
-                callback && callback(data, status)
+                cb && cb(data, status)
             }
             else{
-                callback && callback(null, status)
+                cb && cb(null, status)
             }
         })
 	},

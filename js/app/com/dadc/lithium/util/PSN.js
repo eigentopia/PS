@@ -107,7 +107,7 @@ var PSN = function( )
          else if (event == npPlugin.np.SERVICE_UNAVAILABLE)
          {
              Logger.log( "PSN::ticketRequestCallback() - service unavailable" );
-             m_callback( false );
+             m_callback( true );
              return;
          }
          else if (event == npPlugin.np.USER_ABORTED)
