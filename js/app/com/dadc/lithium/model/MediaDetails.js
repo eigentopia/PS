@@ -187,7 +187,10 @@ var MediaDetails = function( json_data ){
 
     this.getMediaURLs = function(){
         var mediaUrls =[]
-        var defaultMediaUrl = getVideoURLFromList(this.m_data.MediaURLs);
+        
+        //Uplynk change the url
+        //var defaultMediaUrl = getVideoURLFromList(this.m_data.MediaURLs);
+        var defaultMediaUrl = getUplynkURLFromList(this.m_data.MediaURLs);
         //LL must be here for text display
         defaultMediaUrl.LocalizedLanguage = this.m_data.LocalizedLanguage;
 
@@ -203,7 +206,9 @@ var MediaDetails = function( json_data ){
             var relatedItems = this.m_data.RelatedItemsByMPM;
             for(var item = 0; item< relatedItems.length;item++){
                 if(relatedItems[item].MediaURLs && relatedItems[item].MediaURLs.length > 0){
-                    var url = getVideoURLFromList( relatedItems[item].MediaURLs);
+                    //Uplynk url
+                    //var url = getVideoURLFromList(this.m_data.MediaURLs);
+                    var url = getUplynkURLFromList( relatedItems[item].MediaURLs);
                     //LL must be here for text display
                     url.LocalizedLanguage = relatedItems[item].LocalizedLanguage
                     mediaUrls.push(url);
@@ -251,6 +256,18 @@ var MediaDetails = function( json_data ){
         for( var i=0;i<list.length;i++ ){
             var video_urls = list[ i ];
             if ( video_urls && video_urls.Type && video_urls.Type === 'iPad_Wifi.m3u8' ){
+               return video_urls;
+            }
+        }
+
+        return null;
+    }
+
+    function getUplynkURLFromList( list ){
+        var urlArray = []
+        for( var i=0;i<list.length;i++ ){
+            var video_urls = list[ i ];
+            if ( video_urls && video_urls.Type && video_urls.Type === 'AppleTV.m3u8' ){
                return video_urls;
             }
         }

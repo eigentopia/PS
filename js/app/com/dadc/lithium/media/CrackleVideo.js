@@ -1,6 +1,7 @@
 include( "js/app/com/dadc/lithium/media/FreewheelAdVideo.js" );
 include( "js/app/com/dadc/lithium/media/FreewheelPlaylist.js" );
 include( "js/app/com/dadc/lithium/util/ADManager.js" );
+include( "js/app/com/dadc/lithium/util/Uplynk.js" );
 include( "js/app/com/dadc/lithium/view/widgets/SubtitleWidget.js" );
 include( "js/app/com/dadc/lithium/parsers/TTMLSubtitle.js" );
 include( "js/app/com/dadc/lithium/model/TTMLSubtitleModel.js" );
@@ -33,6 +34,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     var m_ad_manager;
     var m_disposed              = false;
 
+    //Uplynk
+    var adManager = Uplynk;
+
     if( !m_video_url ){
         PlaybackErrorListener.notifyPlaybackError( This );
         return;
@@ -56,32 +60,35 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
 
     this.notifyAdManagerUpdated = function( ADManager_EVENT ){
-        Logger.log( 'notifyAdManagerUpdated called in CrackleVideo' );
+        //Uplynk bring in ads
+        //Logger.log( 'notifyAdManagerUpdated called in CrackleVideo' );
         Logger.log( 'ADManager_EVENT = ' + ADManager_EVENT );
+                processAdSlots();
+                PlaybackReadyListener.notifyPlaybackReady();
 
-        switch( ADManager_EVENT ){
-            case ADManager.EVENT.FREEWHEEL_READY:
-                Logger.log( 'CrackleVideo.notifyAdManagerUpdated: FREEWHEEL READY' );
-                processAdSlots();
-                PlaybackReadyListener.notifyPlaybackReady();
-//                // if we don't have preroll ads, we can start video playback
-                   if ( ! m_ad_manager.hasPreroll() ){
-                       PlaybackReadyListener.notifyPlaybackReady();
-                   }
-                break;
-            case ADManager.EVENT.NOADS:
-                processAdSlots();
-                PlaybackReadyListener.notifyPlaybackReady();
-                //PlaybackErrorListener.notifyPlaybackError();    //DAN: changed to this, originally was calling the wrong listener, and the app would hang infinitely
-                break;
-            case ADManager.EVENT.PREROLL_SLOT_READY:
-                Logger.log( 'CrackleVideo.notifyAdManagerUpdated: PREROLL READY' );
-//                PlaybackReadyListener.notifyPlaybackReady();
-                break;
-            case ADManager.EVENT.AD_SLOT_READY:
-                Logger.log( 'CrackleVideo.notifyAdManagerUpdated: AD SLOT READY' );
-                break;
-        }
+//         switch( ADManager_EVENT ){
+//             case ADManager.EVENT.FREEWHEEL_READY:
+//                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: FREEWHEEL READY' );
+//                 processAdSlots();
+//                 PlaybackReadyListener.notifyPlaybackReady();
+// //                // if we don't have preroll ads, we can start video playback
+//                    if ( ! m_ad_manager.hasPreroll() ){
+//                        PlaybackReadyListener.notifyPlaybackReady();
+//                    }
+//                 break;
+//             case ADManager.EVENT.NOADS:
+//                 processAdSlots();
+//                 PlaybackReadyListener.notifyPlaybackReady();
+//                 //PlaybackErrorListener.notifyPlaybackError();    //DAN: changed to this, originally was calling the wrong listener, and the app would hang infinitely
+//                 break;
+//             case ADManager.EVENT.PREROLL_SLOT_READY:
+//                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: PREROLL READY' );
+// //                PlaybackReadyListener.notifyPlaybackReady();
+//                 break;
+//             case ADManager.EVENT.AD_SLOT_READY:
+//                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: AD SLOT READY' );
+//                 break;
+//         }
     };
 
     this.addPlaybackListener = function( playbackListener ){
@@ -143,24 +150,25 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         
         // Forced preroll to play
         // MILAN: ON CHANGE SUBTITLE AD FORGIVENESS
-        if ( m_ad_manager.hasPreroll() === true &&
-            m_playlists[ 0 ].hasPlayed() === false &&
-            ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) === true &&
-            ADSubtitleForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness(), m_video_url ) === true )
-        {
-            Logger.log( 'CrackleVideo.play() - calling PlayAd(0)' + PlaybackReadyListener.audioVideoUrlSwitch );
-            if( PlaybackReadyListener.audioVideoUrlSwitch ||  playAd( 0 ) === false )
-            {
-                if(PlaybackReadyListener.audioVideoUrlSwitch){
-                    PlaybackReadyListener.audioVideoUrlSwitch = false
-                }
-                Logger.log("CrackleVideo.play() - there is no ad at index 0 - will play crackle video");
-                playCrackleVideo()
-            }
-        }
+        // uplynk- do we need any of this?
+        // if ( m_ad_manager.hasPreroll() === true &&
+        //     m_playlists[ 0 ].hasPlayed() === false &&
+        //     ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) === true &&
+        //     ADSubtitleForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness(), m_video_url ) === true )
+        // {
+        //     Logger.log( 'CrackleVideo.play() - calling PlayAd(0)' + PlaybackReadyListener.audioVideoUrlSwitch );
+        //     if( PlaybackReadyListener.audioVideoUrlSwitch ||  playAd( 0 ) === false )
+        //     {
+        //         if(PlaybackReadyListener.audioVideoUrlSwitch){
+        //             PlaybackReadyListener.audioVideoUrlSwitch = false
+        //         }
+        //         Logger.log("CrackleVideo.play() - there is no ad at index 0 - will play crackle video");
+        //         playCrackleVideo()
+        //     }
+        // }
                 // if no preroll or forgiven, play feature
-        else
-        {
+        //else
+        //{
             // IF SUBS ARE NEEDED && SUBS ARE *NOT* RESOLVED YET RESOLVE THEM. onResoved: ACTUALLY PLAY
             Logger.log("SUBS URL: " + m_subtitle_url)
             if( m_subtitle_url && ! m_subtitle_widget.subtitlesObjectReady() )
@@ -174,7 +182,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 Logger.log("subtitles are not required OR are already resolved");
                 playCrackleVideo()
             }
-        }
+       //}
     };
 
 
@@ -364,7 +372,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         notifyListeners( new PlayingEvent( VideoManagerInstance.getPlaybackTimePTS() ) );
         //Comscore.sendPlay(m_current_time * 1000)
         // DAN & MILAN: videoView analytic call
-        m_ad_manager.sendVideoViewCallback();
+        //m_ad_manager.sendVideoViewCallback();
         //ConvivaIntegration.attachStreamer()
     };
 
@@ -378,13 +386,16 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     
     this.checkIsPlaybackReady = function(){
         Logger.log("checkIsPlaybackReady called in CrackleVideo");
-        if ( ! m_ad_manager.hasPreroll() ){
+        // if ( ! m_ad_manager.hasPreroll() ){
+        //     PlaybackReadyListener.notifyPlaybackReady();
+        // }else{
+        //     if ( m_ad_manager.isPrerollReady() ){
+        //         PlaybackReadyListener.notifyPlaybackReady();
+        //     }
+        // }
+
+        //if(adManager.receivedAds)
             PlaybackReadyListener.notifyPlaybackReady();
-        }else{
-            if ( m_ad_manager.isPrerollReady() ){
-                PlaybackReadyListener.notifyPlaybackReady();
-            }
-        }
     };
 
     this.notifyPlaylistEnded = function(){
@@ -425,6 +436,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         m_subtitle_widget.displaySubtitleLine( null );
     };
     this.getAdTimePositions = function(){
+        //Uplynk- this is used to set marks I think
+
+        //M_playlists should be uplynk time data 
         var time_pos = [];
 
         //Logger.log( 'getAdTimePositions' );
@@ -521,6 +535,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         
     };
     function playAd( adIndex ){
+        //Uplynk- pause for innovid, hide timeline for everything else.
         Logger.log("play ad called: index " + adIndex);
         if( typeof m_playlists[ adIndex ] !== "undefined" ){
             if(adIndex == 0){
@@ -623,11 +638,28 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     }
 
     function processAdSlots(){
+
+        //Uplynk - if an innovid go get the ad and put it in the slot.
         for( var i = 0; i < m_ad_manager.getTotalTemporaAdSlots(); i++ ){
             var temporal_ad_slot = m_ad_manager.getTemporaAdSlot( i );
             var time_position = parseInt( temporal_ad_slot.getTimePosition() );
 
             m_playlists[ time_position ] = new FreewheelPlaylist( temporal_ad_slot, This );
+            //Logger.log( 'creating ad slot at ' + time_position );
+            if( time_position > 0 && time_position < parseInt( m_media_details_obj.getDurationInSeconds() ) ){
+                This.addPlaybackMark( time_position );
+            }
+        }
+    }
+
+    function adUplynkMarks(){
+        var slots = adManager.adsData.slots
+        //Uplynk - if an innovid go get the ad and put it in the slot.
+        for( var i = 0; i < slots.length; i++ ){
+            var slot = slots[i]
+            var time_position = parseInt(slot.start_time );
+
+            m_playlists[ time_position ] = slot[i]
             //Logger.log( 'creating ad slot at ' + time_position );
             if( time_position > 0 && time_position < parseInt( m_media_details_obj.getDurationInSeconds() ) ){
                 This.addPlaybackMark( time_position );
@@ -711,13 +743,17 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             }
         }
     }
+    //Uplynk - adManager should now be uplynk data
+    // m_ad_manager = new ADManager( MediaDetailsObj, this );
 
-    m_ad_manager = new ADManager( MediaDetailsObj, this );
+    // var ep = MediaDetailsObj.getEpisode();
 
-    var ep = MediaDetailsObj.getEpisode();
+    // // DAN says: "I've always wondered if theres a better way to decide if its a movie or show"
+    // m_ad_manager.prepare( ep ? FreewheelMediaType.SHOW : FreewheelMediaType.MOVIE );
 
-    // DAN says: "I've always wondered if theres a better way to decide if its a movie or show"
-    m_ad_manager.prepare( ep ? FreewheelMediaType.SHOW : FreewheelMediaType.MOVIE );
+    var uplynkUrl = MediaDetailsObj.getUplynkURLFromList()
+
+    adManager.getAds(this.notifyAdManagerUpdated)
 
     addMarks();
 
