@@ -35,7 +35,9 @@ var PSN = function( )
 
     this.setNpListener = function( callback )
     {
-        npPlugin.np.onNpEvent = callback;
+        if(npPlugin){
+            npPlugin.np.onNpEvent = callback;
+        }
     }
 
     this.userHasAccount = function()

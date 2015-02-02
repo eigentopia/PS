@@ -52,7 +52,7 @@ var Http = function(){
         me.url = url;
         //var d = new Date();
         //me.url = url +"&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
-        console.log(me.url)
+        console.log("request" + me.url)
         me.method = method;
         me.callback = callback;
         if(sendbody){
@@ -66,6 +66,28 @@ var Http = function(){
             startRequest();
         }
     }
+    this.requestJSON = function(url, method, sendbody, headers, callback){
+        var me = {};
+        me.config = {};
+        me.url = url;
+        me.json = true;
+        //var d = new Date();
+        //me.url = url +"&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
+        console.log("requestJSON" + me.url)
+        me.method = method;
+        me.callback = callback;
+        if(sendbody){
+            me.sendbody = sendbody
+        }
+        if(headers){
+            me.config.headers = headers.headers;
+        }
+        queue.push(me)
+        if(queue.length === 1){
+            startRequest();
+        }
+    }
+
 
     function authorizationHeader (url) {
 
@@ -146,21 +168,25 @@ var Http = function(){
         else {
             
             try{
-                //var data = JSON.parse(data);
-                if ( ( (data.messageCode && data.messageCode != 0) //because inexpicably, status messages aren't always in the same place
-                    || (data.status && data.status.messageCode != 0))
+                var dataObj = data
+
+                if ( ( (dataObj.messageCode && dataObj.messageCode != 0) //because inexpicably, status messages aren't always in the same place
+                    || (dataObj.status && dataObj.status.messageCode != 0))
                     && api_retries < Config.API_ERROR_RETRY ){
                     api_retries++;
                     initHttpRequest();
                     httpRequestObj.start();
                 }
-                else if ( ( (data.messageCode && data.messageCode != 0)
-                    ||  (data.status && data.status.messageCode != 0) )
+                else if ( ( (dataObj.messageCode && dataObj.messageCode != 0)
+                    ||  (dataObj.status && dataObj.status.messageCode != 0) )
                     && api_retries >= Config.API_ERROR_RETRY ){
                     currentRequest.callback( null, Config.API_ERROR );
                 }
                 else{
-                    currentRequest.callback( data, status );
+                    if(currentRequest.json == true){
+                        dataObj = JSON.parse(dataObj)
+                    }
+                    currentRequest.callback( dataObj, status );
                 }
             }
             catch( e ){
@@ -174,11 +200,11 @@ var Http = function(){
 
     return {
         request:request,
+        requestJSON:requestJSON,
         cancelRequest:cancelRequest
     }
 
 }()
-
 
 /**
  * Authentication class. Used to talk in a secured way with Crackle servers.
