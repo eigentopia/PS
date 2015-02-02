@@ -253,6 +253,8 @@ var ApplicationController = function( screenObj ){
                 m_geo_country_controller.prepareToOpen();
                 m_present_controllers.push( m_geo_country_controller );
 
+                PlaystationConfig.setConfig(function(thing){console.log(thing)})
+
                 if(localStorage.userEmailAddress && localStorage.userId ){
                     crackleUser.email = localStorage.userEmailAddress
                     crackleUser.id =   localStorage.userId
@@ -2486,9 +2488,8 @@ var ApplicationController = function( screenObj ){
             var d = new Date();
             var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
             var url = ModelConfig.getServerURLRoot() + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json"+ord;
-            Http.request(url, "GET", null, null, function(data, status){
+            Http.requestJSON(url, "GET", null, null, function(data, status){
                 if(data != null && status == 200){
-                    var watchListData = JSON.parse(data)
                     crackleUser.watchlist = [];
                     var items = watchListData.Items;
                     crackleUser.watchlist = items.slice(0);
@@ -2524,7 +2525,7 @@ var ApplicationController = function( screenObj ){
     ApplicationController.removeFromUserWatchlist = function(id, type, callback){
         if(id){
             var url =  ModelConfig.getServerURLRoot() + "queue/queue/remove/member/"+ crackleUser.id +"/"+type+"/"+id+"?format=json";
-            Http.request(url, "GET", null, null, function(data, status){
+            Http.requestJSON(url, "GET", null, null, function(data, status){
                 if(data != null && status ==200){
                     ApplicationController.getUserWatchList(function(data, status){
                         callback && callback(true)
@@ -2545,9 +2546,8 @@ var ApplicationController = function( screenObj ){
             var d = new Date();
             var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
             var url =  ModelConfig.getServerURLRoot() + "pauseresume/list/member/"+ crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json"+ord;
-            Http.request(url, "GET", null, null, function(data, status){
+            Http.requestJSON(url, "GET", null, null, function(data, status){
                 if(data != null && status ==200){
-                    var pauseResumeData = JSON.parse(data)
                     if(pauseResumeData.Progress && pauseResumeData.Progress.length>0){
                         for(var i=0; i<pauseResumeData.Progress.length; ++i){
                             var item = pauseResumeData.Progress[i];
