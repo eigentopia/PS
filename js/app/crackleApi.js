@@ -125,19 +125,14 @@ var CrackleApi = {
                         if (data.status.messageCode == "0") {
                             user = data //could be a code or user information- check on the back end
                         }
-                        else { //API sent us an error
-                            user = { "error": data.status.message }
-                        }
                     }
-                } else {
-                    //console.error('Failed to load Authentication Code.');
-                    user = {"error":"Connection error"}
                 }
+                
                 cb && cb(user)
             })
         },
 
-        silentAuth: function (cb) {
+        silentAuth: function (id, cb) {
             var silentUrl = "externaluser/sso/auto?format=json";
             var body = { "AffiliateUserId": PlaystationConfig.hashedDeviceID, "CrackleUserId": parseInt(id) }
             //console.log("SILENT " + deviceId + " " + crackleUserId)

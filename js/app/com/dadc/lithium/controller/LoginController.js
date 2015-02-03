@@ -181,19 +181,21 @@ var LoginController = function( ParentControllerObj ){
         //m_login_widget.unsetFocus();
 
         //var request = new LoginRequest(emailField, passwordField, function(data, status){
-        Http.request(url, "POST", sendbody, null, function(data, status){    
+        Http.requestJSON(url, "POST", sendbody, null, function(data, status){    
             Logger.log("LOGIN DATA")
             Logger.logObj(data)
             Logger.log(status)
 
             if(status == 200 && data != null){
-                var userData = JSON.parse(data)
+                var userData = data
                 if(userData.status.messageCode == 0){
 
                     user.userId = userData.userID;
                     
-                    Http.request(moreUserDataUrl + userData.userID+"?format=json", "GET", null, null, function(data, status){
-                        var moreData = JSON.parse(data)
+                    //never all the user data in one retruned user object. Get more!
+
+                    Http.requestJSON(moreUserDataUrl + userData.userID+"?format=json", "GET", null, null, function(data, status){
+                        var moreData = data
                         if(moreData && moreData.status.messageCode == 0){
                             user.userAge = moreData.age;
                             user.userGender = moreData.gender;

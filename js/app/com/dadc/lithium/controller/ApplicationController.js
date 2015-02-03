@@ -369,7 +369,9 @@ var ApplicationController = function( screenObj ){
                     removeControllerFromPresentControllers( m_loading_screen_controller );
                     m_loading_screen_controller.close();
                     m_loading_screen_controller = null;
-                    onControllersReady();
+
+
+                    onAppStartupReady();
                 }
             }
 
@@ -1034,6 +1036,7 @@ var ApplicationController = function( screenObj ){
                     if(m_controller_before_video_started.getControllerName() =='RecommendedWatchlistController' ||
                         m_controller_before_video_started.getControllerName() == "ShowDetailsController"||
                         m_controller_before_video_started.getCallingController().getControllerName() == "MyWatchlistController"){
+                        //Because the data model in these objects arew just slightly different
                         if(m_controller_before_video_started.getCallingController && m_controller_before_video_started.getCallingController().getControllerName() == "MyWatchlistController"){
                             videoContextList= m_controller_before_video_started.getCallingController().getItemList().m_data
                         }else{
@@ -1486,8 +1489,7 @@ var ApplicationController = function( screenObj ){
             }, true, ErrorWidget.BUTTON_CAPTION.CONTINUE );
         }else{
             m_disclaimer_controller.close();
-            m_focused_controller = m_main_menu_controller;
-            m_main_menu_controller.setFocus();
+
 
             if( screenObj.contains( m_disclaimer_controller.getDisplayNode() ) )
                 screenObj.removeChild( m_disclaimer_controller.getDisplayNode() );
@@ -1495,18 +1497,52 @@ var ApplicationController = function( screenObj ){
             m_disclaimer_controller = null;
 
             AnalyticsManagerInstance.fireHomePageViewEvent();
+            AnalyticsManagerInstance.firePageViewEvent( AnalyticsManager.PAGENAME.HOME );
 
             screenObj.addChild( m_background_widget.getDisplayNode() );
             screenObj.addChild( m_content_container );
             screenObj.addChild( m_menu_container );
             screenObj.addChild( m_logo_widget.getDisplayNode() );
+            
+            var deviceAuth = StorageManagerInstance.get('deviceAuth')
+            if(!deviceAuth){
+                openAuthorization()
+            }
+            else{
+                m_focused_controller = m_main_menu_controller;
+                m_main_menu_controller.setFocus();
+            }
 
-            AnalyticsManagerInstance.firePageViewEvent( AnalyticsManager.PAGENAME.HOME );
 
         }
     }
-    function onControllersReady(){
-        Logger.log( 'onControllersReady' );
+
+    function openAuthorization(){
+        var id = StorageManagerInstance.get('userId')
+        var deviceAuth = StorageManagerInstance.get('deviceAuth')
+        if(id && deviceAuth == undefined){
+            CrackleApi.Config.silentAuth(crackleUser.id, function(user){
+                //setUserInfo()
+                m_focused_controller = m_main_menu_controller;
+                m_main_menu_controller.setFocus();
+            })
+        }
+        else{
+
+            openAuthOverlay()
+        }
+
+
+    }
+
+
+    function openAuthOverlay(){
+        
+    }
+
+
+    function onAppStartupReady(){
+        Logger.log( 'onAppStartupReady' );
 
         m_slide_show_controller.open();
         // set the slideshow controller as the focused controller
@@ -1599,6 +1635,7 @@ var ApplicationController = function( screenObj ){
         destroyLoginController();
         
         if( !m_slide_show_controller ){
+            Logger.warn("openSlideshowController Does this get called?")
             m_slide_show_controller = new SlideShowController( This );
             m_slide_show_controller.getDisplayNode().x = 96+314;
             m_slide_show_controller.getDisplayNode().y = 0;
@@ -1614,10 +1651,13 @@ var ApplicationController = function( screenObj ){
 
                 destroyDetailsControllers();
 
+
                 m_slide_show_controller.open();
                 m_pending_focused_controller = null;
+            
                 m_focused_controller = m_slide_show_controller;
                 m_slide_show_controller.setFocus();
+                
             }
         }
 
