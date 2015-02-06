@@ -57,7 +57,7 @@ include( "js/app/com/dadc/lithium/view/widgets/BackgroundWidget.js" );
 include( "js/app/com/dadc/lithium/view/widgets/LogoWidget.js" );
 include( "js/app/com/dadc/lithium/view/widgets/NavigationControlWidget.js" );
 include( "js/app/com/dadc/lithium/view/widgets/TimelineWidget.js" );
-
+include( "js/app/com/dadc/lithium/view/widgets/AuthScreen.js" );
 //include( "js/app/com/dadc/lithium/view/widgets/HistoryListWidget.js" );
 //include( "js/app/com/dadc/lithium/view/widgets/TestFontWidget.js" );
 //include( "js/app/com/dadc/lithium/view/widgets/SubtitleWidget.js" );
@@ -1537,7 +1537,22 @@ var ApplicationController = function( screenObj ){
 
 
     function openAuthOverlay(){
+        AuthScreen.startAuth(authComplete)
+        screenObj.addChild( AuthScreen.rootNode, 0 );
         
+    }
+
+    function authComplete(status, data){
+
+        if(status == true && data.CrackleUserId){
+            //remove child auth
+            m_focused_controller = m_main_menu_controller;
+            m_main_menu_controller.setFocus();
+        }
+        else{
+            openErrorDialog(Dictionary.getText( Dictionary.TEXT.ERROR_OCCURRED ), function(){}, true,  ErrorWidget.BUTTON_CAPTION.OK)
+        }
+
     }
 
 
