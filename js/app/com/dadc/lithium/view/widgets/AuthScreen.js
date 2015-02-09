@@ -30,8 +30,14 @@ var AuthScreen = (function(){
             else if (ssoResponse.CrackleUserId) {
                	clearInterval(pollTimer);
                 if (!done) {
-                    finishedCallback && finishedCallback(true, ssoResponse);
-                    done = true;
+                	//Because CrackleAPI- that's why.
+                	CrackleApi.User.moreUserInfo(ssoResponse, function(fullUserData){
+	                    finishedCallback && finishedCallback(true, fullUserData);
+	                    done = true;
+                		
+                	})
+                            
+	
                 }
             }
             else if (ssoResponse.error) {

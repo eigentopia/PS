@@ -35,16 +35,38 @@ var CrackleApi = {
        }
     },
     User:{
-    	watchlist: function(cb){
-    		var url = CrackleApi.apiUrl + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' );
-            Http.request(url, "GET", null, null, function(data, status){
-                if(data != null && status == 200){
-                    cb && cb(data, status)
+        moreUserInfo: function(userData, cb){
+            var url = CrackleApi.apiUrl +"profile/"
+            var newUserData = userData;
+            Http.requestJSON(url + userData.CrackleUserId+"?format=json", "GET", null, null, function(data, status){
+                var moreData = data
+                if(moreData && moreData.status.messageCode == 0){
+                    newUserData.userAge = moreData.age;
+                    newUserData.userGender = moreData.gender;
                 }
-                else{
-                    cb && cb(null, status)
-                }
+
+                cb(newUserData)
             })
+        },
+    	watchlist: function(crackleUser, cb){
+    		var url = CrackleApi.apiUrl + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' ) +"?format=json";
+            if(crackleUser.id != null){
+                var d = new Date();
+                var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
+            
+                Http.requestJSON(url+ord, "GET", null, null, function(data, status){
+                    if(data != null && status == 200){
+                        crackleUser.watchlist = [];
+                        var items = data.Items;
+                        crackleUser.watchlist = items.slice(0);
+
+                        cb(data, status)
+                    }
+                    else{
+                        cb(null, status)
+                    }
+                })
+            }
         },
         history: function(cb){
             if(crackleUser.id != ""){

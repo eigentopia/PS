@@ -1258,7 +1258,7 @@ var ApplicationController = function( screenObj ){
 
                 removeControllerFromPresentControllers(myWatchlistController)
                 Logger.log( 'ApplicationController.OPEN_MY_WATCHLIST' );
-                ApplicationController.getUserWatchList(function(data, status){
+                CrackleApi.User.watchlist(crackleUser, function(data, status){
                     openMyWatchlistController(json_data_args);
                 })
                 break
@@ -1520,34 +1520,34 @@ var ApplicationController = function( screenObj ){
     function openAuthorization(){
         var id = StorageManagerInstance.get('userId')
         var deviceAuth = StorageManagerInstance.get('deviceAuth')
-        if(id && deviceAuth == undefined){
-            CrackleApi.Config.silentAuth(crackleUser.id, function(user){
-                //setUserInfo()
-                m_focused_controller = m_main_menu_controller;
-                m_main_menu_controller.setFocus();
+        if(id && (deviceAuth == undefined || deviceAuth == "") ){
+            CrackleApi.Config.silentAuth(crackleUser.id, function(userInfo){
+                CrackleApi.User.moreUserInfo(userInfo, function(fullUserData){
+                    authComplete(true, fullUserData)
+                })
             })
         }
         else{
-
-            openAuthOverlay()
+            AuthScreen.startAuth(authComplete)
+            screenObj.addChild( AuthScreen.rootNode, 0 );
         }
 
 
     }
 
-
-    function openAuthOverlay(){
-        AuthScreen.startAuth(authComplete)
-        screenObj.addChild( AuthScreen.rootNode, 0 );
-        
-    }
 
     function authComplete(status, data){
 
         if(status == true && data.CrackleUserId){
-            //remove child auth
-            m_focused_controller = m_main_menu_controller;
-            m_main_menu_controller.setFocus();
+            ApplicationController.setUserInfo(data, function(sucessGettingWatchlist){
+
+
+                AnalyticsManagerInstance.loginEvent(  );
+                //remove child auth
+                screenObj.removeChild( AuthScreen.rootNode );
+                m_focused_controller = m_main_menu_controller;
+                m_main_menu_controller.setFocus();
+            });
         }
         else{
             openErrorDialog(Dictionary.getText( Dictionary.TEXT.ERROR_OCCURRED ), function(){}, true,  ErrorWidget.BUTTON_CAPTION.OK)
@@ -2486,31 +2486,31 @@ var ApplicationController = function( screenObj ){
     }
 
     ApplicationController.setUserInfo= function(user, cb){
-        if(user == null || user.userId == undefined){
+        if(user == null || user.CrackleUserId == undefined){
             crackleUser.id = null
-            crackleUser.email = null;
+            crackleUser.name = null;
             crackleUser.watchlist = [];
+            //would be better to delete key
             localStorage.age = "";
             localStorage.gender = "";
-            localStorage.userPass = "";
-            localStorage.userEmailAddress = "";
             localStorage.userId = ""
+            localStorage.deviceAuth = ""
             return;
         }
 
-        crackleUser.id = user.userId;
-        crackleUser.email = user.email;
+        crackleUser.id = user.CrackleUserId;
+        crackleUser.name = user.CrackleUserName
         crackleUser.watchlist = [];
 
         localStorage.age = user.userAge;
         localStorage.gender = user.userGender;
-        localStorage.userPass = user.password;
-        localStorage.userEmailAddress = user.email;
-        localStorage.userId = user.userId;
+        localStorage.userId = user.CrackleUserId;
+        localStorage.name = user.CrackleUserName
+        localStorage.deviceAuth = "true"
 
                     
 
-        ApplicationController.getUserWatchList(function(data, status){
+        CrackleApi.User.watchlist(crackleUser, function(data, status){
             if(data != null && status == 200){
             
             }
@@ -2546,10 +2546,10 @@ var ApplicationController = function( screenObj ){
             Http.requestJSON(url, "GET", null, null, function(data, status){
                 if(data != null && status == 200){
                     crackleUser.watchlist = [];
-                    var items = watchListData.Items;
+                    var items = data.Items;
                     crackleUser.watchlist = items.slice(0);
 
-                    callback && callback(watchListData, status)
+                    callback && callback(data, status)
                 }
                 else{
                     callback && callback(null, status)
@@ -2564,7 +2564,7 @@ var ApplicationController = function( screenObj ){
             var url =  ModelConfig.getServerURLRoot() + "queue/queue/add/member/"+ crackleUser.id +"/"+type+"/"+id+"?format=json";;
             Http.request(url, "GET", null, null,function(data, status){
                 if(data != null && status ==200){
-                    ApplicationController.getUserWatchList(function(data, status){
+                    CrackleApi.User.watchList(crackleUser, function(data, status){
                         callback && callback(true)
                     })
                 }
@@ -2582,7 +2582,7 @@ var ApplicationController = function( screenObj ){
             var url =  ModelConfig.getServerURLRoot() + "queue/queue/remove/member/"+ crackleUser.id +"/"+type+"/"+id+"?format=json";
             Http.requestJSON(url, "GET", null, null, function(data, status){
                 if(data != null && status ==200){
-                    ApplicationController.getUserWatchList(function(data, status){
+                     CrackleApi.User.watchList(crackleUser, function(data, status){
                         callback && callback(true)
                     })
                 }

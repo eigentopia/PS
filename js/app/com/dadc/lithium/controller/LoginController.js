@@ -28,6 +28,7 @@ var LoginController = function( ParentControllerObj ){
             previousScreen = nextScreen
         }
         AnalyticsManagerInstance.firePageViewEvent({cc0:'mycrackle', cc1:'login'})
+        m_login_widget.init()
         m_root_node.addChild( m_master_container );
     };
     this.close = function( ){
