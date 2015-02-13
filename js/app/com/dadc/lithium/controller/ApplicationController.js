@@ -1506,6 +1506,8 @@ var ApplicationController = function( screenObj ){
             
             var deviceAuth = StorageManagerInstance.get('deviceAuth')
             if(!deviceAuth){
+                m_focused_controller = null
+                m_pending_focused_controller = null;
                 openAuthorization()
             }
             else{
@@ -2538,26 +2540,26 @@ var ApplicationController = function( screenObj ){
         return false;
     }
 
-    ApplicationController.getUserWatchList = function(callback){
-        if(crackleUser.id != null){
-            var d = new Date();
-            var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
-            var url = ModelConfig.getServerURLRoot() + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json"+ord;
-            Http.requestJSON(url, "GET", null, null, function(data, status){
-                if(data != null && status == 200){
-                    crackleUser.watchlist = [];
-                    var items = data.Items;
-                    crackleUser.watchlist = items.slice(0);
+    // ApplicationController.getUserWatchList = function(callback){
+    //     if(crackleUser.id != null){
+    //         var d = new Date();
+    //         var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
+    //         var url = ModelConfig.getServerURLRoot() + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json"+ord;
+    //         Http.requestJSON(url, "GET", null, null, function(data, status){
+    //             if(data != null && status == 200){
+    //                 crackleUser.watchlist = [];
+    //                 var items = data.Items;
+    //                 crackleUser.watchlist = items.slice(0);
 
-                    callback && callback(data, status)
-                }
-                else{
-                    callback && callback(null, status)
-                }
-            })
-            //HttpRequest.startRequest()
-        }
-    }
+    //                 callback && callback(data, status)
+    //             }
+    //             else{
+    //                 callback && callback(null, status)
+    //             }
+    //         })
+    //         //HttpRequest.startRequest()
+    //     }
+    // }
 
     ApplicationController.addToUserWatchlist = function (id, type, callback){
         if(id){

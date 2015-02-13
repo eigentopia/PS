@@ -322,8 +322,6 @@ var CrackleApi = {
 
         }
     }// End Collections.
-
-    //send whole object? getAPI: function(obj, cb) {var foo = ObjectByType(obj) do stuff return something based on foo}
 }
 
 include( "js/app/com/dadc/lithium/util/UtilLibrary.js" );
