@@ -2,7 +2,7 @@ var NextVideoWidget = function(MediaObj){
 	var rootNode = engine.createContainer();
 	var containerWidth = 300
 	var containerHeight = 200
-	padding = 10
+	var padding = 10
 	var pfnText = Dictionary.getText( Dictionary.TEXT.PRESSFORNEXT );
 
 	var background = engine.createSlate()

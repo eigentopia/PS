@@ -72,12 +72,20 @@ var Engine = function(){
             function goodNetwork(){
                 clearTimeout(timer);
                 screen.removeChild(container)
-                checkStorge(screen);
+                var storage = engine.storage.local;
+        storage.platform = engine.stats.device.platform;
+                            m_application_controller_obj = new ApplicationController( screen );
+            start();
+                //checkStorge(screen);
             }
 
         }
         else{
-            checkStorge(screen);
+            var storage = engine.storage.local;
+        storage.platform = engine.stats.device.platform;
+                        m_application_controller_obj = new ApplicationController( screen );
+            start();
+            //checkStorge(screen);
         }
 
     }

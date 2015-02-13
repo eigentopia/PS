@@ -73,7 +73,7 @@ var Http = function(){
         me.json = true;
         //var d = new Date();
         //me.url = url +"&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
-        console.log("requestJSON" + me.url)
+        console.log("requestJSON " + me.url)
         me.method = method;
         me.callback = callback;
         if(sendbody){

@@ -57,7 +57,7 @@ include( "js/app/com/dadc/lithium/view/widgets/BackgroundWidget.js" );
 include( "js/app/com/dadc/lithium/view/widgets/LogoWidget.js" );
 include( "js/app/com/dadc/lithium/view/widgets/NavigationControlWidget.js" );
 include( "js/app/com/dadc/lithium/view/widgets/TimelineWidget.js" );
-
+include( "js/app/com/dadc/lithium/view/widgets/AuthScreen.js" );
 //include( "js/app/com/dadc/lithium/view/widgets/HistoryListWidget.js" );
 //include( "js/app/com/dadc/lithium/view/widgets/TestFontWidget.js" );
 //include( "js/app/com/dadc/lithium/view/widgets/SubtitleWidget.js" );
@@ -369,7 +369,9 @@ var ApplicationController = function( screenObj ){
                     removeControllerFromPresentControllers( m_loading_screen_controller );
                     m_loading_screen_controller.close();
                     m_loading_screen_controller = null;
-                    onControllersReady();
+
+
+                    onAppStartupReady();
                 }
             }
 
@@ -1034,6 +1036,7 @@ var ApplicationController = function( screenObj ){
                     if(m_controller_before_video_started.getControllerName() =='RecommendedWatchlistController' ||
                         m_controller_before_video_started.getControllerName() == "ShowDetailsController"||
                         m_controller_before_video_started.getCallingController().getControllerName() == "MyWatchlistController"){
+                        //Because the data model in these objects arew just slightly different
                         if(m_controller_before_video_started.getCallingController && m_controller_before_video_started.getCallingController().getControllerName() == "MyWatchlistController"){
                             videoContextList= m_controller_before_video_started.getCallingController().getItemList().m_data
                         }else{
@@ -1255,7 +1258,7 @@ var ApplicationController = function( screenObj ){
 
                 removeControllerFromPresentControllers(myWatchlistController)
                 Logger.log( 'ApplicationController.OPEN_MY_WATCHLIST' );
-                ApplicationController.getUserWatchList(function(data, status){
+                CrackleApi.User.watchlist(crackleUser, function(data, status){
                     openMyWatchlistController(json_data_args);
                 })
                 break
@@ -1486,8 +1489,7 @@ var ApplicationController = function( screenObj ){
             }, true, ErrorWidget.BUTTON_CAPTION.CONTINUE );
         }else{
             m_disclaimer_controller.close();
-            m_focused_controller = m_main_menu_controller;
-            m_main_menu_controller.setFocus();
+
 
             if( screenObj.contains( m_disclaimer_controller.getDisplayNode() ) )
                 screenObj.removeChild( m_disclaimer_controller.getDisplayNode() );
@@ -1495,18 +1497,69 @@ var ApplicationController = function( screenObj ){
             m_disclaimer_controller = null;
 
             AnalyticsManagerInstance.fireHomePageViewEvent();
+            AnalyticsManagerInstance.firePageViewEvent( AnalyticsManager.PAGENAME.HOME );
 
             screenObj.addChild( m_background_widget.getDisplayNode() );
             screenObj.addChild( m_content_container );
             screenObj.addChild( m_menu_container );
             screenObj.addChild( m_logo_widget.getDisplayNode() );
+            
+            var deviceAuth = StorageManagerInstance.get('deviceAuth')
+            if(!deviceAuth){
+                m_focused_controller = null
+                m_pending_focused_controller = null;
+                openAuthorization()
+            }
+            else{
+                m_focused_controller = m_main_menu_controller;
+                m_main_menu_controller.setFocus();
+            }
 
-            AnalyticsManagerInstance.firePageViewEvent( AnalyticsManager.PAGENAME.HOME );
 
         }
     }
-    function onControllersReady(){
-        Logger.log( 'onControllersReady' );
+
+    function openAuthorization(){
+        var id = StorageManagerInstance.get('userId')
+        var deviceAuth = StorageManagerInstance.get('deviceAuth')
+        if(id && (deviceAuth == undefined || deviceAuth == "") ){
+            CrackleApi.Config.silentAuth(crackleUser.id, function(userInfo){
+                CrackleApi.User.moreUserInfo(userInfo, function(fullUserData){
+                    authComplete(true, fullUserData)
+                })
+            })
+        }
+        else{
+            AuthScreen.startAuth(authComplete)
+            screenObj.addChild( AuthScreen.rootNode, 0 );
+        }
+
+
+    }
+
+
+    function authComplete(status, data){
+
+        if(status == true && data.CrackleUserId){
+            ApplicationController.setUserInfo(data, function(sucessGettingWatchlist){
+
+
+                AnalyticsManagerInstance.loginEvent(  );
+                //remove child auth
+                screenObj.removeChild( AuthScreen.rootNode );
+                m_focused_controller = m_main_menu_controller;
+                m_main_menu_controller.setFocus();
+            });
+        }
+        else{
+            openErrorDialog(Dictionary.getText( Dictionary.TEXT.ERROR_OCCURRED ), function(){}, true,  ErrorWidget.BUTTON_CAPTION.OK)
+        }
+
+    }
+
+
+    function onAppStartupReady(){
+        Logger.log( 'onAppStartupReady' );
 
         m_slide_show_controller.open();
         // set the slideshow controller as the focused controller
@@ -1599,6 +1652,7 @@ var ApplicationController = function( screenObj ){
         destroyLoginController();
         
         if( !m_slide_show_controller ){
+            Logger.warn("openSlideshowController Does this get called?")
             m_slide_show_controller = new SlideShowController( This );
             m_slide_show_controller.getDisplayNode().x = 96+314;
             m_slide_show_controller.getDisplayNode().y = 0;
@@ -1614,10 +1668,13 @@ var ApplicationController = function( screenObj ){
 
                 destroyDetailsControllers();
 
+
                 m_slide_show_controller.open();
                 m_pending_focused_controller = null;
+            
                 m_focused_controller = m_slide_show_controller;
                 m_slide_show_controller.setFocus();
+                
             }
         }
 
@@ -2431,31 +2488,31 @@ var ApplicationController = function( screenObj ){
     }
 
     ApplicationController.setUserInfo= function(user, cb){
-        if(user == null || user.userId == undefined){
+        if(user == null || user.CrackleUserId == undefined){
             crackleUser.id = null
-            crackleUser.email = null;
+            crackleUser.name = null;
             crackleUser.watchlist = [];
+            //would be better to delete key
             localStorage.age = "";
             localStorage.gender = "";
-            localStorage.userPass = "";
-            localStorage.userEmailAddress = "";
             localStorage.userId = ""
+            localStorage.deviceAuth = ""
             return;
         }
 
-        crackleUser.id = user.userId;
-        crackleUser.email = user.email;
+        crackleUser.id = user.CrackleUserId;
+        crackleUser.name = user.CrackleUserName
         crackleUser.watchlist = [];
 
         localStorage.age = user.userAge;
         localStorage.gender = user.userGender;
-        localStorage.userPass = user.password;
-        localStorage.userEmailAddress = user.email;
-        localStorage.userId = user.userId;
+        localStorage.userId = user.CrackleUserId;
+        localStorage.name = user.CrackleUserName
+        localStorage.deviceAuth = "true"
 
                     
 
-        ApplicationController.getUserWatchList(function(data, status){
+        CrackleApi.User.watchlist(crackleUser, function(data, status){
             if(data != null && status == 200){
             
             }
@@ -2483,33 +2540,33 @@ var ApplicationController = function( screenObj ){
         return false;
     }
 
-    ApplicationController.getUserWatchList = function(callback){
-        if(crackleUser.id != null){
-            var d = new Date();
-            var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
-            var url = ModelConfig.getServerURLRoot() + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json"+ord;
-            Http.requestJSON(url, "GET", null, null, function(data, status){
-                if(data != null && status == 200){
-                    crackleUser.watchlist = [];
-                    var items = watchListData.Items;
-                    crackleUser.watchlist = items.slice(0);
+    // ApplicationController.getUserWatchList = function(callback){
+    //     if(crackleUser.id != null){
+    //         var d = new Date();
+    //         var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
+    //         var url = ModelConfig.getServerURLRoot() + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json"+ord;
+    //         Http.requestJSON(url, "GET", null, null, function(data, status){
+    //             if(data != null && status == 200){
+    //                 crackleUser.watchlist = [];
+    //                 var items = data.Items;
+    //                 crackleUser.watchlist = items.slice(0);
 
-                    callback && callback(watchListData, status)
-                }
-                else{
-                    callback && callback(null, status)
-                }
-            })
-            //HttpRequest.startRequest()
-        }
-    }
+    //                 callback && callback(data, status)
+    //             }
+    //             else{
+    //                 callback && callback(null, status)
+    //             }
+    //         })
+    //         //HttpRequest.startRequest()
+    //     }
+    // }
 
     ApplicationController.addToUserWatchlist = function (id, type, callback){
         if(id){
             var url =  ModelConfig.getServerURLRoot() + "queue/queue/add/member/"+ crackleUser.id +"/"+type+"/"+id+"?format=json";;
             Http.request(url, "GET", null, null,function(data, status){
                 if(data != null && status ==200){
-                    ApplicationController.getUserWatchList(function(data, status){
+                    CrackleApi.User.watchList(crackleUser, function(data, status){
                         callback && callback(true)
                     })
                 }
@@ -2527,7 +2584,7 @@ var ApplicationController = function( screenObj ){
             var url =  ModelConfig.getServerURLRoot() + "queue/queue/remove/member/"+ crackleUser.id +"/"+type+"/"+id+"?format=json";
             Http.requestJSON(url, "GET", null, null, function(data, status){
                 if(data != null && status ==200){
-                    ApplicationController.getUserWatchList(function(data, status){
+                     CrackleApi.User.watchList(crackleUser, function(data, status){
                         callback && callback(true)
                     })
                 }

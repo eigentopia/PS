@@ -35,16 +35,38 @@ var CrackleApi = {
        }
     },
     User:{
-    	watchlist: function(cb){
-    		var url = CrackleApi.apiUrl + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' );
-            Http.request(url, "GET", null, null, function(data, status){
-                if(data != null && status == 200){
-                    cb && cb(data, status)
+        moreUserInfo: function(userData, cb){
+            var url = CrackleApi.apiUrl +"profile/"
+            var newUserData = userData;
+            Http.requestJSON(url + userData.CrackleUserId+"?format=json", "GET", null, null, function(data, status){
+                var moreData = data
+                if(moreData && moreData.status.messageCode == 0){
+                    newUserData.userAge = moreData.age;
+                    newUserData.userGender = moreData.gender;
                 }
-                else{
-                    cb && cb(null, status)
-                }
+
+                cb(newUserData)
             })
+        },
+    	watchlist: function(crackleUser, cb){
+    		var url = CrackleApi.apiUrl + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' ) +"?format=json";
+            if(crackleUser.id != null){
+                var d = new Date();
+                var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
+            
+                Http.requestJSON(url+ord, "GET", null, null, function(data, status){
+                    if(data != null && status == 200){
+                        crackleUser.watchlist = [];
+                        var items = data.Items;
+                        crackleUser.watchlist = items.slice(0);
+
+                        cb(data, status)
+                    }
+                    else{
+                        cb(null, status)
+                    }
+                })
+            }
         },
         history: function(cb){
             if(crackleUser.id != ""){
@@ -113,36 +135,31 @@ var CrackleApi = {
 
         sso: function(cb) {
             var authUrl = "externaluser/sso?format=json";
-            var user = null;
-            var body = { "AffiliateUserId": PlaystationConfig.hashedDeviceID }
+            var returnData = null;
+            var body = { data:JSON.stringify({"AffiliateUserId": PlaystationConfig.hashedDeviceID}), dataType:"Application/text" }
             //console.log(self.apiUrl + authUrl)
             //HTTP.request(self.apiUrl + authUrl, "POST", body,
-            Http.requestJSON(CrackleApi.apiUrl + authUrl, "GET", null, null, function(data, status){
+            Http.requestJSON(CrackleApi.apiUrl + authUrl, "POST", body, null, function(data, status){
                 if (data !== null) {
                     //console.log("NOT NULL");
                     //console.log(JSON.stringify(data));.
                     if (data.status && data.status.messageCode){
                         if (data.status.messageCode == "0") {
-                            user = data //could be a code or user information- check on the back end
-                        }
-                        else { //API sent us an error
-                            user = { "error": data.status.message }
+                            returnData = data //could be a code or user information- check on the back end
                         }
                     }
-                } else {
-                    //console.error('Failed to load Authentication Code.');
-                    user = {"error":"Connection error"}
                 }
-                cb && cb(user)
+                
+                cb && cb(returnData)
             })
         },
 
-        silentAuth: function (cb) {
+        silentAuth: function (id, cb) {
             var silentUrl = "externaluser/sso/auto?format=json";
-            var body = { "AffiliateUserId": PlaystationConfig.hashedDeviceID, "CrackleUserId": parseInt(id) }
+            var body ={data: JSON.stringify({ "AffiliateUserId": PlaystationConfig.hashedDeviceID, "CrackleUserId": parseInt(id) }), dataType:"Application/text"}
             //console.log("SILENT " + deviceId + " " + crackleUserId)
             //console.log("URL: " + self.apiUrl + silentUrl)
-            Http.requestJSON(CrackleApi.apiUrl + silentUrl, "GET", null, null, function(data, status){
+            Http.requestJSON(CrackleApi.apiUrl + silentUrl, "POST", body, null, function(data, status){
                 if (data !== null) {
                     if (data.status && data.status.messageCode) {
                         //console.log("SILENT 0st" + JSON.stringify(data.status));
@@ -165,9 +182,9 @@ var CrackleApi = {
 
             var deactivateUrl = "externaluser/deactivate?format=json"
             var userId = (usrId) ? usrId : id;
-            var body = { "AffiliateUserId": PlaystationConfig.hashedDeviceID, "CrackleUserId": parseInt(userId) }
+            var body = { data: JSON.stringify({"AffiliateUserId": PlaystationConfig.hashedDeviceID, "CrackleUserId": parseInt(userId) }), dataType:"Application/text"}
             //console.log(self.apiUrl + deactivateUrl)
-            Http.requestJSON(CrackleApi.apiUrl + deactivateUrl, "GET", null, null, function(data, status){
+            Http.requestJSON(CrackleApi.apiUrl + deactivateUrl, "POST", body, null, function(data, status){
                 if (data !== null) {
                     if (data.status && data.status.messageCode) {
                         //console.log("DEACT" + JSON.stringify(data.status));
@@ -305,8 +322,6 @@ var CrackleApi = {
 
         }
     }// End Collections.
-
-    //send whole object? getAPI: function(obj, cb) {var foo = ObjectByType(obj) do stuff return something based on foo}
 }
 
 include( "js/app/com/dadc/lithium/util/UtilLibrary.js" );
@@ -327,7 +342,7 @@ var PlaystationConfig = {
                     
                     CrackleApi.Config.app(function(configdata, status){
                         if(configdata !== null){
-                            var supportedRegions = data.SupportedRegions;
+                            var supportedRegions = configdata.SupportedRegions;
                             var lang = null;
                             var apiUrl = null;
 
@@ -342,11 +357,12 @@ var PlaystationConfig = {
                             if (apiUrl == null){
                                 // error in app config
                                 cb && cb(null)
+                                return;
                             }
                             // should not need this- on CrackleApi now
                             StorageManagerInstance.set( 'api_hostname', apiUrl );
 
-                            CrackleApi.apiUrl = apiUrl
+                            CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
 
                             PlaystationConfig.hashedDeviceID = engine.stats.device.id;
                             
