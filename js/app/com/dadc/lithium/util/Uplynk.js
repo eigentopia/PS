@@ -6,26 +6,24 @@ var Uplynk = (function(){
 
 	self.getAds = function(url, cb){
 		//http://content.uplynk.com/preplay/ext/e8773f7770a44dbd886eee4fca16a66b/2448594.json?ad=&ad.locationDesc=_us_movies&ad.bumper=93731bf8cac142e4b99cf5844a9668dc&ad.preroll=1&extsid=1&ad.metr=7&euid=
-		//"http://content.uplynk.com/preplay/ext/e8773f7770a44dbd886eee4fca16a66b/2491595.json?ad=crackle_live&ad.locationDesc=crackle_apple_tv_us_movies&ad.bumper=&ad.preroll=1&extsid=1&ad.metr=7&euid="
-		//http://content.uplynk.com/ext/e8773f7770a44dbd886eee4fca16a66b/2448594.m3u8?ad=&ad.locationDesc=_us_movies&ad.bumper=93731bf8cac142e4b99cf5844a9668dc&ad.preroll=1&extsid=1&ad.metr=7&euid=
-
-		var preplayUrl = getUplynkUrl(url)
+		//http://content.uplynk.com/preplay/ext/e8773f7770a44dbd886eee4fca16a66b/2491595.json?ad=crackle_live&ad.locationDesc=crackle_apple_tv_us_movies&ad.bumper=&ad.preroll=1&extsid=1&ad.metr=7&euid="
+        //http://content.uplynk.com/preplay/ext/e8773f7770a44dbd886eee4fca16a66b2493775.json?ad=crackle_live&ad.locationDesc=crackle_apple_tv_us_shows&ad.bumper=&ad.preroll=1&extsid=1&ad.metr=7&euid=
+        //http://content.uplynk.com/ext/e8773f7770a44dbd886eee4fca16a66b/2448594.m3u8?ad=&ad.locationDesc=_us_movies&ad.bumper=93731bf8cac142e4b99cf5844a9668dc&ad.preroll=1&extsid=1&ad.metr=7&euid=
+        var preplayUrl = getUplynkUrl(url)
 		Http.request(preplayUrl, "GET", null, null, function(data, status){
-                if(data != null && status == 200){                    
-
-    				self.adsData = data;
-    				self.preProcessAds(cb);
-                    //cb && cb(data, status)
-
-                }
-                else{
-                    cb && cb(null, status)
-                }
-            })
+            if(data != null && status == 200){                    
+                self.adsData = JSON.parse(data);
+				preProcessAds();
+                cb && cb(data, status)
+            }
+            else{
+                cb && cb(null, status)
+            }
+        })
 	}
 
-    function preProcessAds(cb) {
-        var ads = this.adsData.ads;
+    function preProcessAds() {
+        var ads = self.adsData.ad_info.ads;
         
     	var adsInSlot = Array();
     	var slotIndex = 1;
@@ -53,19 +51,43 @@ var Uplynk = (function(){
     	}
 
     	self.receivedAds = true;
-    	cb();
     }
 
     function getUplynkUrl(url){
     	var urlArray = url.split('/')
 
-		var newUrl = urlArray[2] +"/preplay/"+ urlArray[3] +"/"+ urlArray[4]
+		var newUrl = urlArray[2] +"/preplay/"+ urlArray[3] +"/"+ urlArray[4]+"/"
 
 		var urlToJson = urlArray[5].replace(".m3u8?", ".json?")
 
-		newUrl += urlToJson
+        var idJson = urlToJson.substring(0, urlToJson.indexOf("?")+1)
 
-    	return newUrl
+        var qs = urlToJson.substring(urlToJson.indexOf("?")+1).split('&');
+        var newQs ="" ; 
+        var pair;
+        for (var i = qs.length - 1; i >= 0; i--) {
+            pair = qs[i].split('=');
+            if(pair[0] == "ad"){
+                pair[1] = "crackle_live"
+            }
+            else if (pair[0] == "ad.locationDesc"){
+                pair[1] = "crackle_apple_tv"+pair[1]
+            }
+
+            if(i==0){
+                newQs += pair[0]+"="+pair[1]
+            }
+            else{
+                newQs += pair[0]+"="+pair[1]+"&"
+            }
+            //qsParams[d(pair[0])] = d(pair[1]);
+        }
+
+		newUrl += idJson + newQs;
+
+    	return "http://" + newUrl
+
+        //return "http://content.uplynk.com/preplay/ext/e8773f7770a44dbd886eee4fca16a66b/2493775.json?ad=crackle_live&ad.locationDesc=crackle_apple_tv_us_shows&ad.bumper=&ad.preroll=1&extsid=1&ad.metr=7&euid="
     }
 
     return self

@@ -63,8 +63,34 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //Uplynk bring in ads
         //Logger.log( 'notifyAdManagerUpdated called in CrackleVideo' );
         Logger.log( 'ADManager_EVENT = ' + ADManager_EVENT );
-                processAdSlots();
-                PlaybackReadyListener.notifyPlaybackReady();
+        //processAdSlots();
+        adUplynkMarks()
+        var baseurl = m_video_url.substring(0, m_video_url.indexOf("?")+1)
+
+        var qs = m_video_url.substring(m_video_url.indexOf("?")+1).split('&');
+        var newQs ="" ; 
+        var pair;
+        for (var i = qs.length - 1; i >= 0; i--) {
+            pair = qs[i].split('=');
+            if(pair[0] == "ad"){
+                pair[1] = "crackle_live"
+            }
+            else if (pair[0] == "ad.locationDesc"){
+                pair[1] = "crackle_apple_tv"+pair[1]
+            }
+            if(i==0){
+                newQs += pair[0]+"="+pair[1]
+            }
+            else{
+                newQs += pair[0]+"="+pair[1]+"&"
+            }
+            //qsParams[d(pair[0])] = d(pair[1]);
+        }
+
+        m_video_url= baseurl + newQs
+
+        //m_video_url = adManager.adsData.playURL + "&sid="+adManager.adsData.sid
+        PlaybackReadyListener.notifyPlaybackReady();
 
 //         switch( ADManager_EVENT ){
 //             case ADManager.EVENT.FREEWHEEL_READY:
@@ -327,16 +353,17 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
 
     this.onEnded = function(){
+        //Uplynk
         Logger.log( 'CrackleVideo onEnded()' );
         m_video_ended = true;
         //Comscore.sendEnd(m_current_time * 1000)
         // DO we have a postroll?
-        if( m_playlists[ m_media_details_obj.getDurationInSeconds() ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
-            playAd( m_media_details_obj.getDurationInSeconds() );
-        }else{
+        // if( m_playlists[ m_media_details_obj.getDurationInSeconds() ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
+        //     playAd( m_media_details_obj.getDurationInSeconds() );
+        // }else{
             //ConvivaIntegration.cleanUpSession();
             PlaybackReadyListener.notifyPlaybackEnded();
-        }
+        //}
     };
 
     this.onError = function(){
@@ -348,6 +375,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
 
     this.onOpened = function(){
+        //This is very bad. Fix.
         var parentVideo = VideoManagerInstance.getCoreVideo()
         var CCSettings = parentVideo.getCCSystemSettings();
         engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
@@ -498,11 +526,11 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         if(m_media_details_obj.data.EndCreditStartMarkInMilliSeconds == null){
             currentVideoEndCreditMark = m_media_details_obj.data.DurationInSeconds - 10
         }
-        if( last_ad > 0 && !m_playlists[ last_ad ].hasPlayed() && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && m_current_time < currentVideoEndCreditMark){
-            Logger.log("CrackleVideo.setCurrentTime() - playing ad at: " + last_ad);
-            m_is_playing = false;
-            playAd( last_ad );
-        }
+        // if( last_ad > 0 && !m_playlists[ last_ad ].hasPlayed() && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && m_current_time < currentVideoEndCreditMark){
+        //     Logger.log("CrackleVideo.setCurrentTime() - playing ad at: " + last_ad);
+        //     m_is_playing = false;
+        //     playAd( last_ad );
+        // }
     };
     this.togglePause = function(){
         m_is_paused = !m_is_paused;
@@ -548,7 +576,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             //ConvivaIntegration.detachStreamer();
 
             PlaybackReadyListener.notifyAdPlaybackStarting();
-            m_playlists[ adIndex ].play(adIndex);
+            //m_playlists[ adIndex ].play(adIndex);
             
             
             return true;
@@ -653,13 +681,13 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     }
 
     function adUplynkMarks(){
-        var slots = adManager.adsData.slots
+        var slots = adManager.adsData.ad_info.slots
         //Uplynk - if an innovid go get the ad and put it in the slot.
         for( var i = 0; i < slots.length; i++ ){
             var slot = slots[i]
             var time_position = parseInt(slot.start_time );
 
-            m_playlists[ time_position ] = slot[i]
+            m_playlists[ time_position ] = slot
             //Logger.log( 'creating ad slot at ' + time_position );
             if( time_position > 0 && time_position < parseInt( m_media_details_obj.getDurationInSeconds() ) ){
                 This.addPlaybackMark( time_position );
@@ -751,9 +779,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     // // DAN says: "I've always wondered if theres a better way to decide if its a movie or show"
     // m_ad_manager.prepare( ep ? FreewheelMediaType.SHOW : FreewheelMediaType.MOVIE );
 
-    var uplynkUrl = MediaDetailsObj.getUplynkURLFromList()
+    //var uplynkUrl = MediaDetailsObj.getUplynkURLFromList()
 
-    adManager.getAds(this.notifyAdManagerUpdated)
+    adManager.getAds(m_video_url, this.notifyAdManagerUpdated)
 
     addMarks();
 

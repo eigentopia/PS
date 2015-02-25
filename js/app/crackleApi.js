@@ -136,7 +136,7 @@ var CrackleApi = {
         sso: function(cb) {
             var authUrl = "externaluser/sso?format=json";
             var returnData = null;
-            var body = { data:JSON.stringify({"AffiliateUserId": PlaystationConfig.hashedDeviceID}), dataType:"Application/text" }
+            var body = { data:JSON.stringify({"AffiliateUserId": PlaystationConfig.hashedDeviceID}), dataType:"Application/Json" }
             //console.log(self.apiUrl + authUrl)
             //HTTP.request(self.apiUrl + authUrl, "POST", body,
             Http.requestJSON(CrackleApi.apiUrl + authUrl, "POST", body, null, function(data, status){
@@ -156,7 +156,7 @@ var CrackleApi = {
 
         silentAuth: function (id, cb) {
             var silentUrl = "externaluser/sso/auto?format=json";
-            var body ={data: JSON.stringify({ "AffiliateUserId": PlaystationConfig.hashedDeviceID, "CrackleUserId": parseInt(id) }), dataType:"Application/text"}
+            var body ={data: JSON.stringify({ "AffiliateUserId": PlaystationConfig.hashedDeviceID, "CrackleUserId": parseInt(id) }), dataType:"Application/Json"}
             //console.log("SILENT " + deviceId + " " + crackleUserId)
             //console.log("URL: " + self.apiUrl + silentUrl)
             Http.requestJSON(CrackleApi.apiUrl + silentUrl, "POST", body, null, function(data, status){
@@ -362,7 +362,9 @@ var PlaystationConfig = {
                             // should not need this- on CrackleApi now
                             StorageManagerInstance.set( 'api_hostname', apiUrl );
 
-                            CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
+                            //CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
+
+                            CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
 
                             PlaystationConfig.hashedDeviceID = engine.stats.device.id;
                             

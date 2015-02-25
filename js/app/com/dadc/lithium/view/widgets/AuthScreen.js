@@ -16,7 +16,7 @@ var AuthScreen = (function(){
 	function pollActivation() {
 	    var done = false;
         CrackleApi.User.sso(function (ssoResponse) {
-            //console.log("GOT something in poll " + JSON.stringify(ssoResponse))
+            console.log("GOT something in poll " + JSON.stringify(ssoResponse))
             if (ssoResponse.ActivationCode) {
                 if (ssoResponse.ActivationCode != authCode) {
                 	authCode = ssoResponse.ActivationCode
@@ -26,9 +26,14 @@ var AuthScreen = (function(){
 					self.rootNode.addChild(activationText)
 
                 }
+
+                pollTimer = setTimeout(function () {
+					pollActivation()
+	    		}, 3000);
+
             }
             else if (ssoResponse.CrackleUserId) {
-               	clearInterval(pollTimer);
+               	clearTimeout(pollTimer);
                 if (!done) {
                 	//Because CrackleAPI- that's why.
                 	CrackleApi.User.moreUserInfo(ssoResponse, function(fullUserData){
@@ -42,7 +47,7 @@ var AuthScreen = (function(){
             }
             else if (ssoResponse.error) {
                 if (ssoResponse.error != 'authing') {
-                    clearInterval(pollTimer);
+                    clearTimeout(pollTimer);
                     if (!done) {
                         finishedCallback && finishedCallback( false, ssoResponse.error)
                         done = true;
@@ -78,7 +83,7 @@ var AuthScreen = (function(){
 		finishedCallback = cb
 		drawScreen()
 		pollActivation()
-		pollTimer = setInterval(function () {
+		pollTimer = setTimeout(function () {
 			pollActivation()
 	    }, 3000);
 
