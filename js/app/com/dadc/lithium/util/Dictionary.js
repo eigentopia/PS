@@ -31,6 +31,37 @@ var Dictionary = function()
 var Dictionary = new Dictionary();
 
 Dictionary.TEXT = {
+    NOW_WITH:{
+        'en': 'Now with more you',
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
+    },
+    ACTIVATE:{
+        'en': 'Activate your device to personalize your Crackle experience.',
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
+    },
+    LOGIN_TO:{
+        'en': 'Log in to ',
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
+    },
+    ENTER_CODE:{
+        'en': 'Enter this activation code:',
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
+    },
+    VALID_ACCOUNT:{
+        'en': 'You will need a valid Crackle account to activate your device.',
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
+    },
+
     WANTTOCONTINE:{
         'en': 'Are you still watching?',
         'pt': 'Você ainda está assistindo?',

@@ -1503,38 +1503,37 @@ var ApplicationController = function( screenObj ){
             screenObj.addChild( m_content_container );
             screenObj.addChild( m_menu_container );
             screenObj.addChild( m_logo_widget.getDisplayNode() );
-            
+
+            var id = StorageManagerInstance.get('userId')
             var deviceAuth = StorageManagerInstance.get('deviceAuth')
-            if(!deviceAuth){
-                m_focused_controller = null
-                m_pending_focused_controller = null;
-                openAuthorization()
-            }
-            else{
-                m_focused_controller = m_main_menu_controller;
-                m_main_menu_controller.setFocus();
-            }
 
-
+            CrackleApi.User.sso(function(data){
+                if(data.ActivationCode !=null || data.ActivationCode !=undefined){
+                    if(id && (deviceAuth == undefined || deviceAuth == "") ){
+                        CrackleApi.User.silentAuth(crackleUser.id, function(userInfo){
+                            CrackleApi.User.moreUserInfo(userInfo, function(fullUserData){
+                                authComplete(true, fullUserData)
+                            })
+                        })
+                    }
+                    else{
+                        localStorage.deviceAuth = ""
+                        openAuthorization()
+                    }
+                    
+                }
+                else{
+                    m_focused_controller = m_main_menu_controller;
+                    m_main_menu_controller.setFocus();
+                }
+   
+            })
         }
     }
 
     function openAuthorization(){
-        var id = StorageManagerInstance.get('userId')
-        var deviceAuth = StorageManagerInstance.get('deviceAuth')
-        if(id && (deviceAuth == undefined || deviceAuth == "") ){
-            CrackleApi.Config.silentAuth(crackleUser.id, function(userInfo){
-                CrackleApi.User.moreUserInfo(userInfo, function(fullUserData){
-                    authComplete(true, fullUserData)
-                })
-            })
-        }
-        else{
-            AuthScreen.startAuth(authComplete)
-            screenObj.addChild( AuthScreen.rootNode, 0 );
-        }
-
-
+        AuthScreen.startAuth(authComplete)
+        screenObj.addChild( AuthScreen.rootNode, 0 );
     }
 
 

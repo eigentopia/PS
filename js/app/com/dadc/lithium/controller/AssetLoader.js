@@ -83,7 +83,7 @@ var AssetLoader = function(){
 
 // create a "static" instance of the AssetLoader object
 var AssetLoaderInstance = new AssetLoader();
-
+AssetLoaderInstance.requireAsset( "Artwork/activationScreen.png" ); 
 AssetLoaderInstance.requireAsset( "Artwork/crackle_loading.png" ); 
 AssetLoaderInstance.requireAsset( "Artwork/concrete_bg.png" );
 
