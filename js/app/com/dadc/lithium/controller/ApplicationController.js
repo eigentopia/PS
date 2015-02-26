@@ -1504,22 +1504,22 @@ var ApplicationController = function( screenObj ){
             screenObj.addChild( m_menu_container );
             screenObj.addChild( m_logo_widget.getDisplayNode() );
 
-            var id = StorageManagerInstance.get('userId')
+            var usrid = StorageManagerInstance.get('userId')
             var deviceAuth = StorageManagerInstance.get('deviceAuth')
 
             CrackleApi.User.sso(function(data){
                 if(data.ActivationCode !=null || data.ActivationCode !=undefined){
-                    if(id && (deviceAuth == undefined || deviceAuth == "") ){
-                        CrackleApi.User.silentAuth(crackleUser.id, function(userInfo){
-                            CrackleApi.User.moreUserInfo(userInfo, function(fullUserData){
-                                authComplete(true, fullUserData)
-                            })
-                        })
-                    }
-                    else{
+                //     if(usrid && (deviceAuth == undefined || deviceAuth == "") ){
+                //         CrackleApi.User.silentAuth(usrid, function(userInfo){
+                //             CrackleApi.User.moreUserInfo(userInfo, function(fullUserData){
+                //                 authComplete(true, fullUserData)
+                //             })
+                //         })
+                //     }
+                //     else{
                         localStorage.deviceAuth = ""
                         openAuthorization()
-                    }
+                    //}
                     
                 }
                 else{
