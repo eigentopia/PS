@@ -2602,8 +2602,8 @@ var ApplicationController = function( screenObj ){
             var d = new Date();
             var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
             var url =  ModelConfig.getServerURLRoot() + "pauseresume/list/member/"+ crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json"+ord;
-            Http.requestJSON(url, "GET", null, null, function(data, status){
-                if(data != null && status ==200){
+            Http.requestJSON(url, "GET", null, null, function(pauseResumeData, status){
+                if(pauseResumeData != null && status ==200){
                     if(pauseResumeData.Progress && pauseResumeData.Progress.length>0){
                         for(var i=0; i<pauseResumeData.Progress.length; ++i){
                             var item = pauseResumeData.Progress[i];
