@@ -22,6 +22,15 @@ var AnalyticsRequest = function( AnalyticsModelObj, callback ){
     var http_retries;
     var m_analytics_obj = AnalyticsModelObj;
 
+    var extra_headers =
+          {
+//            'Keep-Alive': 'timeout=15',
+              'Connection': 'Close',
+              'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.162 Safari/535.19',
+              //'X-Forwarded-For': StorageManagerInstance.get( 'IPADDRESS' )
+              'X-Forwarded-For': StorageManagerInstance.get( StorageManager.STORAGE_KEYS.IPADDRESS )
+          };
+
     this.startRequest = function(){
         http_retries = 0;
         initHttpRequest();
@@ -36,6 +45,10 @@ var AnalyticsRequest = function( AnalyticsModelObj, callback ){
         } else{
             Logger.log( 'onRequestComplete AnalyticsRequest' );
             Logger.log( data );
+
+            //send the Audience Manager
+            sendAM();
+
             var json = XMLParser_DAC.XMLToJSON( data );
             if ( json ){
                 Logger.logObj( json );
@@ -53,20 +66,23 @@ var AnalyticsRequest = function( AnalyticsModelObj, callback ){
     function initHttpRequest(){
         ModelConfig.httpClientObj.disableCertValidation( true );
         ModelConfig.httpClientObj.disablePipelining();
-        var extra_headers =
-          {
-//            'Keep-Alive': 'timeout=15',
-              'Connection': 'Close',
-              'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.162 Safari/535.19',
-              //'X-Forwarded-For': StorageManagerInstance.get( 'IPADDRESS' )
-              'X-Forwarded-For': StorageManagerInstance.get( StorageManager.STORAGE_KEYS.IPADDRESS )
-          };
 
         // TL 1.3.3 UPDATE
         httpRequestObj = ModelConfig.httpClientObj.createRequest( "POST", url );
         httpRequestObj.onComplete = This.onRequestComplete;
         httpRequestObj.onResponse = This.onResponse;
         httpRequestObj.sendBody( m_analytics_obj.getXml(), 'Application/xml'  );
+    }
+
+    function sendAM(){
+
+        var AM_ID = "13381"
+        var url = 'http://crackle.demdex.net/event?d_dpid='+AM_ID+"&d_dpuuid="+ApplicationController.crackleUser.id
+        url+= m_analytics_obj.getQS()
+        Http.requestJSON(url, "POST", null, extra_headers, function(data, status){
+            console.log("AM responded with "+ sttaus)
+        })
+
     }
 }
 
@@ -120,6 +136,24 @@ var Analytics = function( key_values ){
         xml += "</request>";
 
         return xml;
+    }
+    this.getQS = function(){
+        var all_kvs = m_general_kvs;
+        var qs=""
+        for( var i in m_key_values ){
+            all_kvs[ i ] = m_key_values[ i ];
+        }
+
+        for( var i in all_kvs ){
+            var kv = all_kvs[ i ];
+            if( kv )    // DAN: added this validation, we were getting null and created a full-crash
+            {
+
+                qs += '&'+i+'='+kv
+            }
+        }
+
+        return qs;
     }
 }
 
