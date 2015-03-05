@@ -47,7 +47,7 @@ var AnalyticsRequest = function( AnalyticsModelObj, callback ){
             Logger.log( data );
 
             //send the Audience Manager
-            sendAM();
+            sendAM(m_analytics_obj);
 
             var json = XMLParser_DAC.XMLToJSON( data );
             if ( json ){
@@ -74,15 +74,45 @@ var AnalyticsRequest = function( AnalyticsModelObj, callback ){
         httpRequestObj.sendBody( m_analytics_obj.getXml(), 'Application/xml'  );
     }
 
-    function sendAM(){
+    function sendAM(analObj){
+        var headers =
+        {
+            //'Connection': 'Close',
+            //'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.162 Safari/535.19',
+            //'X-Forwarded-For': StorageManagerInstance.get( 'IPADDRESS' )
+            //'X-Forwarded-For': StorageManagerInstance.get( StorageManager.STORAGE_KEYS.IPADDRESS),
+            'Content-Type': 'application/x-www-form-urlencoded'
+        };
 
+//         There are some params that need to be in a certain order.  Please have the
+// dpid/dpuuid directly after the event?.
+
+// Also, the end of the call should have the platform keys:
+// d_stuff=1&d_dst=1&d_rtbd=json&d_cts=1&d_cb=pt_callback
+
+// In between these would be all of the key-values for data collection.
+
+//Could you try URL encoding and see if that solves our problem?
         var AM_ID = "13381"
-        var url = 'http://crackle.demdex.net/event?d_dpid='+AM_ID+"&d_dpuuid="+ApplicationController.crackleUser.id
-        url+= m_analytics_obj.getQS()
-        Http.requestJSON(url, "POST", null, extra_headers, function(data, status){
-            console.log("AM responded with "+ sttaus)
+        //This looks this way because the params must be in a certain order?
+        var _url = 'http://crackle.demdex.net/event?'
+
+        var qs = 'd_dpid='+AM_ID+"&d_dpuuid=TEST"//+ApplicationController.crackleUser.id
+        qs+= analObj.getQS()
+        qs+= "&d_stuff=1&d_dst=1&d_rtbd=json&d_cts=1&d_cb=pt_callback"
+
+        //_url+=encodeURIComponent(qs)
+        _url+=qs
+        console.log(_url)
+
+        Http.request(_url, "POST", null, headers, function(data, status){
+            console.log("AM responded with "+ status)
         })
 
+    }
+
+    function PT_callback(data){
+        console.log(JSON.stringify(data))
     }
 }
 
@@ -148,6 +178,9 @@ var Analytics = function( key_values ){
             var kv = all_kvs[ i ];
             if( kv )    // DAN: added this validation, we were getting null and created a full-crash
             {
+
+                kv  = kv.replace(':', '')
+                kv = kv.split(' ').join('_')
 
                 qs += '&'+i+'='+kv
             }
