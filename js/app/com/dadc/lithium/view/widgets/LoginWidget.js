@@ -16,6 +16,8 @@ var LoginWidget = function( ) {
     var activeField;
     var self = this;
 
+    var user = ApplicationController.getUserInfo();
+    
     var loginNode = engine.createContainer();
     var logOutNode = engine.createContainer();
 
@@ -78,20 +80,23 @@ var LoginWidget = function( ) {
     }
 
     this.showLoggedInScreen = function(){
+
+        var whichScreen;
+
+        if(PlaystationConfig.forcedRegistration == true && user.email !==null){
+            whichScreen =  showHome()
+        }
+        else{
+            whichScreen =  showDisclaimer()
+        }
+        
+
+        //DISCLAIMER SCREEN CLONE
+        //DISCLAIMER_AUTHSCREEN
         currentScreen = "logOut"
         if(m_master_container.contains(loginNode)){
             m_master_container.removeChild(loginNode);
         }
-
-        var user = ApplicationController.getUserInfo();
-
-        var logOutInfo = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.LOGOUT_SCREEN_TEXT ), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 500 );
-        logOutInfo.x=( 1200 / 2 ) - ( logOutInfo.naturalWidth / 2 );
-        logOutInfo.y=150;
-
-        var logOutEmail = engine.createTextBlock( user.name, FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 500 );
-        logOutEmail.x=( 1200 / 2 ) - ( logOutEmail.naturalWidth / 2 );
-        logOutEmail.y=200;
 
         // logOutButton = new PlaylistMenuButtonWidget(Dictionary.getText( Dictionary.TEXT.LOGOUT_BUTTON_TEXT ));
         // logOutButtonNode =  logOutButton.getDisplayNode();
@@ -99,15 +104,72 @@ var LoginWidget = function( ) {
         // logOutButtonNode.y = 350;
        
         // logOutNode.addChild( logOutButtonNode );
-        logOutNode.addChild(logOutInfo);
-        logOutNode.addChild(logOutEmail);
+        logOutNode.addChild(whichScreen);
         
         m_master_container.addChild( logOutNode );
         activeField = "logOutButton"
         m_master_container.width = logOutNode.naturalWidth;
         m_master_container.height = logOutNode.naturalHeight;
+
+        //HELLO
+        //DEVICE_ACTIVE
+        //
+    }
+
+    function showHome(){
+        var homeScreen = engine.createContainer()
+
+        var logOutInfo = engine.createTextBlock( [Dictionary.getText( Dictionary.TEXT.HELLO ), "placeholder"], 
+            [FontLibraryInstance.getFont_DISCLAIMERBUTTON(),FontLibraryInstance.getFont_DISCLAIMERBUTTON()], 500 );
+        logOutInfo.x=( 1200 / 2 ) - ( logOutInfo.naturalWidth / 2 );
+        logOutInfo.y=150;
+        homeScreen.addChild(logOutInfo)
+
+        var deviceActiveText = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DEVICE_ACTIVE), FontLibraryInstance.getFont_DISCLAIMERBUTTON(), 900 );
+        deviceActiveText.x=( 1200 / 2 ) - ( deviceActiveText.naturalWidth / 2 );
+        deviceActiveText.y=220;
+        homeScreen.addChild(deviceActiveText)
+
+        var deactivateText = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DEACTIVATE_HOW), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 1100 );
+        deactivateText.x=( 1200 / 2 ) - ( deactivateText.naturalWidth / 2 );
+        deactivateText.y=400;
+        homeScreen.addChild(deactivateText)
+
+        return homeScreen
+
     }
     
+    function showDisclaimer(){
+        var tmp_container;
+        var tblock;
+
+        tmp_container = engine.createContainer();
+        tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_1 ), FontLibraryInstance.getFont_DISCLAIMERTITLE(), 1400 );
+        tmp_container.addChild( tblock );
+        tblock.x = ( 1250 / 2 ) - ( tblock.naturalWidth / 2 );
+        tblock.y = 150;
+
+        tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_2), FontLibraryInstance.getFont_DISCLAIMERTEXT(), 1100 );
+        tmp_container.addChild( tblock );
+        tblock.x = ( 1200 / 2 ) - ( tblock.naturalWidth / 2 );
+        tblock.y = 250;
+
+        tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_3 ), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 1100 );
+        tmp_container.addChild( tblock );
+        tblock.x = ( 1200 / 2 ) - ( tblock.naturalWidth / 2 );
+        tblock.y = 350;
+        
+        var last_height = tblock.naturalHeight;
+        var last_y = tblock.y;
+
+        tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_AUTHSCREEN ), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 1100);
+        tmp_container.addChild( tblock );
+        tblock.x = ( 1200 / 2 ) - ( tblock.naturalWidth / 2 );
+        tblock.y = last_y + last_height + 50;
+        
+        return tmp_container;
+    }
+
     this.showLoginScreen = function(){
         currentScreen = "login"
         if(m_master_container.contains(logOutNode)){

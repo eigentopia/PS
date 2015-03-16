@@ -1506,28 +1506,34 @@ var ApplicationController = function( screenObj ){
 
             var usrid = StorageManagerInstance.get('userId')
             var deviceAuth = StorageManagerInstance.get('deviceAuth')
-
-            CrackleApi.User.sso(function(data){
-                if(data.ActivationCode !=null || data.ActivationCode !=undefined){
-                //     if(usrid && (deviceAuth == undefined || deviceAuth == "") ){
-                //         CrackleApi.User.silentAuth(usrid, function(userInfo){
-                //             CrackleApi.User.moreUserInfo(userInfo, function(fullUserData){
-                //                 authComplete(true, fullUserData)
-                //             })
-                //         })
-                //     }
-                //     else{
-                        localStorage.deviceAuth = ""
-                        openAuthorization()
-                    //}
-                    
-                }
-                else{
-                    m_focused_controller = m_main_menu_controller;
-                    m_main_menu_controller.setFocus();
-                }
+            if(PlaystationConfig.forcedRegistration == true){
+                CrackleApi.User.sso(function(data){
+                    if(data && (data.ActivationCode !=null || data.ActivationCode !=undefined)){
+                    //     if(usrid && (deviceAuth == undefined || deviceAuth == "") ){
+                    //         CrackleApi.User.silentAuth(usrid, function(userInfo){
+                    //             CrackleApi.User.moreUserInfo(userInfo, function(fullUserData){
+                    //                 authComplete(true, fullUserData)
+                    //             })
+                    //         })
+                    //     }
+                    //     else{
+                            localStorage.deviceAuth = ""
+                            openAuthorization()
+                        //}
+                        
+                    }
+                    else{
+                        m_focused_controller = m_main_menu_controller;
+                        m_main_menu_controller.setFocus();
+                    }
    
-            })
+                })
+            }
+            else{
+                m_focused_controller = m_main_menu_controller;
+                m_main_menu_controller.setFocus();
+                
+            }
         }
     }
 
@@ -1551,6 +1557,8 @@ var ApplicationController = function( screenObj ){
             });
         }
         else{
+            m_focused_controller = m_main_menu_controller;
+            m_main_menu_controller.setFocus();
             openErrorDialog(Dictionary.getText( Dictionary.TEXT.ERROR_OCCURRED ), function(){}, true,  ErrorWidget.BUTTON_CAPTION.OK)
         }
 

@@ -200,7 +200,7 @@ var ShowDetailsController = function( ParentControllerObj ){
             }
         //var a = m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].isActive()
         
-            else if (showWatchlistButton.isActive()){
+            else if (PlaystationConfig.forcedRegistration == true && showWatchlistButton.isActive()){
                 m_show_detail_text_widget.setScrollbarFocus(false)
                 m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].setActive();
                 showWatchlistButton.setInactive();
@@ -235,7 +235,7 @@ var ShowDetailsController = function( ParentControllerObj ){
                     m_show_detail_text_widget.resetContainerPositionsAndCheckForAnimation();
                     return;
                 }
-                else{
+                else if(PlaystationConfig.forcedRegistration == true){
                     m_show_detail_text_widget.setScrollbarFocus(false);
                     m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].setInactive();
                     showWatchlistButton.setActive();
@@ -244,7 +244,7 @@ var ShowDetailsController = function( ParentControllerObj ){
                 } 
                 
             
-            if(showWatchlistButton.isActive()){
+            if(PlaystationConfig.forcedRegistration == true && showWatchlistButton.isActive()){
                 if ( m_show_detail_text_widget.getScrollbarVisibility() && !m_show_detail_text_widget.getScrollbarFocus()){
                     m_show_detail_text_widget.setScrollbarFocus(true);
                     showWatchlistButton.setInactive();
@@ -261,13 +261,15 @@ var ShowDetailsController = function( ParentControllerObj ){
             }
 
 
-            if ( m_show_detail_text_widget.getScrollbarVisibility() && m_show_detail_text_widget.getScrollbarFocus() ){
+            if ( PlaystationConfig.forcedRegistration == true && m_show_detail_text_widget.getScrollbarVisibility() && m_show_detail_text_widget.getScrollbarFocus() ){
                 m_show_detail_text_widget.setScrollbarFocus( false );
                 showWatchlistButton.setActive();
             }
             else{
                 m_show_detail_text_widget.setScrollbarFocus( false );
-                showWatchlistButton.setInactive();
+                if(PlaystationConfig.forcedRegistration == true){
+                    showWatchlistButton.setInactive();
+                }
 		// MILAN-BEN HACK: ALLOW FOR THE SHOW DETAILS RESPONSE TO BE ABANDONED (EG: USER PRESSES PLAY & CIRCLE *BEFORE* MEDIA DETAILS ARE RETURNED, PUTTING THE APP INTO A WEIRD STATE)
                 abandonResponse();
                 m_parent_controller_obj.requestingParentAction(
@@ -282,7 +284,7 @@ var ShowDetailsController = function( ParentControllerObj ){
             if ( getVisibleMenuWidgetIndex() >= 0 && m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].navRight() ){
                 return;
             }
-            else if ( m_show_detail_text_widget.getScrollbarVisibility() && !m_show_detail_text_widget.getScrollbarFocus() ){
+            else if ( PlaystationConfig.forcedRegistration == true && m_show_detail_text_widget.getScrollbarVisibility() && !m_show_detail_text_widget.getScrollbarFocus() ){
                 if(showWatchlistButton.isActive()){
                     m_show_detail_text_widget.setScrollbarFocus( true );
                     showWatchlistButton.setInactive();
@@ -326,7 +328,7 @@ var ShowDetailsController = function( ParentControllerObj ){
                     }
                 }
             }
-            else if (showWatchlistButton.isActive() ){
+            else if (PlaystationConfig.forcedRegistration == true && showWatchlistButton.isActive() ){
                 // Request from the application controller to add this item to the playlist
                 var itemId = parseInt(showChannelId);
                 var itemType = "channel" // check for medidatailsobject episode to determine if channel add?
@@ -370,7 +372,9 @@ var ShowDetailsController = function( ParentControllerObj ){
         if ( m_is_focussed){
             abandonResponse();
             m_show_detail_text_widget.setScrollbarFocus( false );
-            showWatchlistButton.setInactive();
+            if(PlaystationConfig.forcedRegistration == true){
+                showWatchlistButton.setInactive();
+            }
             m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].setInactive()
             m_parent_controller_obj.requestingParentAction(
                 {action: ApplicationController.OPERATIONS.CLOSE_DETAILS_PAGE, calling_controller: this, details_calling_controller: m_calling_controller}
@@ -453,7 +457,7 @@ var ShowDetailsController = function( ParentControllerObj ){
     }
 
     function refreshWatchlistButton(id) {
-        if( showWatchlistButton ){
+        if( PlaystationConfig.forcedRegistration == true && showWatchlistButton ){
             var watchListText = Dictionary.getText( Dictionary.TEXT.WATCHLIST );
             if(ApplicationController.isInUserWatchlist( id )){
                 watchListText = "- " + watchListText;
@@ -465,7 +469,7 @@ var ShowDetailsController = function( ParentControllerObj ){
             showWatchlistButton.refreshWidget(watchListText, showWatchlistButton.isActive())
         }
     }
-
+    // no PlaystationConfig.forcedRegistration == true here because it should never come here
     this.doWatchlist = function(id, type, callback){
         var user = ApplicationController.getUserInfo()
         //console.log("DO WATCH id type "+id, type)
@@ -554,10 +558,14 @@ var ShowDetailsController = function( ParentControllerObj ){
     
     m_master_container.addChild( m_show_detail_thumb_widget.getDisplayNode() );
     m_master_container.addChild( m_show_detail_text_widget.getDisplayNode() );
-    m_master_container.addChild( showWatchlistButton.getDisplayNode() );
     
     m_show_detail_thumb_widget.getDisplayNode().x = 30;
-    showWatchlistButton.getDisplayNode().x = 30;
-    showWatchlistButton.getDisplayNode().y = 420;
     m_show_detail_text_widget.getDisplayNode().x = 350;
+
+    if(PlaystationConfig.forcedRegistration == true){
+        m_master_container.addChild( showWatchlistButton.getDisplayNode() );
+        showWatchlistButton.getDisplayNode().x = 30;
+        showWatchlistButton.getDisplayNode().y = 420;
+        
+    }
 };

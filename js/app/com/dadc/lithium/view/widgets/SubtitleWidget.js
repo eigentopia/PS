@@ -73,8 +73,8 @@ var SubtitleWidget = function( SubtitlesObj ) {
             //            tblock.shader = shader;
                 // disabled the glow shader
 
-                tmp_container.addChild( tblock );
                 tmp_container.addChild( shadowBlock );
+                tmp_container.addChild( tblock );
 
                 tblock.x = 1920 / 2 - tblock.naturalWidth / 2;
                 tblock.y = -( ( messages.length - 1 ) - i ) * 50;
