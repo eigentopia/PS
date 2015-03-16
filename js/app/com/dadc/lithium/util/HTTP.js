@@ -10,6 +10,8 @@ var Http = function(){
     var self = this
     var queue = [];
     var currentRequest;
+    var busy = false
+
     var s = 'https://' + StorageManagerInstance.get( 'api_hostname' ) + '/Service.svc/';
     var stagingURL = "https://staging-api-us.crackle.com/Service.svc/"
     var httpClientObj = engine.createHttpClient();
@@ -52,17 +54,17 @@ var Http = function(){
         me.url = url;
         //var d = new Date();
         //me.url = url +"&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
-        console.log("request" + me.url)
+        console.log("request " + me.url)
         me.method = method;
         me.callback = callback;
         if(sendbody){
             me.sendbody = sendbody
         }
         if(headers){
-            me.config.headers = headers.headers;
+            me.config.headers = headers;
         }
         queue.push(me)
-        if(queue.length === 1){
+        if(queue.length === 1 && !busy){
             startRequest();
         }
     }
@@ -80,10 +82,10 @@ var Http = function(){
             me.sendbody = sendbody
         }
         if(headers){
-            me.config.headers = headers.headers;
+            me.config.headers = headers;
         }
         queue.push(me)
-        if(queue.length === 1){
+        if(queue.length === 1 && !busy){
             startRequest();
         }
     }
@@ -111,13 +113,12 @@ var Http = function(){
     }
 
     function startRequest(){
-        if(queue.length > 0 ){
+            busy = true
             http_retries = 0;
             api_retries = 0;
-            currentRequest = queue.shift(); 
+            currentRequest = queue.shift()
             initHttpRequest();
             httpRequestObj.start();
-        }
     }
 
     function initHttpRequest(){
@@ -149,6 +150,7 @@ var Http = function(){
             http_retries++;
             initHttpRequest();
             httpRequestObj.start();
+            return;
         } 
         else if ( status != 200 && http_retries >= Config.NETWORK_ERROR_RETRY ){
             if(status>-1){
@@ -162,7 +164,6 @@ var Http = function(){
                     currentRequest.callback( null, Config.CONNECTION_ERROR );
                 }      
             }
-            currentRequest = null;
         }
         //API Errors
         else {
@@ -176,6 +177,7 @@ var Http = function(){
                     api_retries++;
                     initHttpRequest();
                     httpRequestObj.start();
+                    return
                 }
                 else if ( ( (dataObj.messageCode && dataObj.messageCode != 0)
                     ||  (dataObj.status && dataObj.status.messageCode != 0) )
@@ -195,6 +197,11 @@ var Http = function(){
                 currentRequest.callback( null, Config.API_ERROR );
             }
         }
+            currentRequest = null;
+            busy=false
+            if(queue.length > 0){
+                startRequest();
+            }
     }
 
 

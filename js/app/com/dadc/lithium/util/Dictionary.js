@@ -31,6 +31,37 @@ var Dictionary = function()
 var Dictionary = new Dictionary();
 
 Dictionary.TEXT = {
+    NOW_WITH:{
+        'en': 'Now with more you',
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
+    },
+    ACTIVATE:{
+        'en': 'Activate your device to personalize your Crackle experience.',
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
+    },
+    LOGIN_TO:{
+        'en': 'Log in to ',
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
+    },
+    ENTER_CODE:{
+        'en': 'Enter this activation code:',
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
+    },
+    VALID_ACCOUNT:{
+        'en': 'You will need a valid Crackle account to activate your device.',
+        'pt': 'Você ainda está assistindo?',
+        'es': '¿Aún estás viendo?',
+        'fr': 'Vous regardez toujours?' 
+    },
+
     WANTTOCONTINE:{
         'en': 'Are you still watching?',
         'pt': 'Você ainda está assistindo?',
@@ -254,6 +285,12 @@ Dictionary.TEXT = {
         'es': 'Al presionar el botón CONTINUAR significa que estás de acuerdo con los términos de servicio de Crackle, por favor visita http://www.crackle.com/tos para ver mas detalles. ',
 		'fr': "En appuyant sur le bouton CONTINUER ci-dessous, vous acceptez les conditions d'utilisation de Crackle. Rendez-vous sur http://www.crackle.com/tos pour en savoir plus."
     },
+    DISCLAIMER_AUTHSCREEN: {
+        'en': "Please visit http://www.crackle.com/tos for more details.",
+        'pt': 'Por favor visite http://www.crackle.com.br/tos para mais detalhes.',
+        'es': 'Por favor visita http://www.crackle.com/tos para ver mas detalles.',
+        'fr': "Rendez-vous sur http://www.crackle.com/tos pour en savoir plus."
+    },
     ABOUT: {
         'en': 'About',
         'pt': 'Sobre',
@@ -279,7 +316,7 @@ Dictionary.TEXT = {
 		'fr': "Crackle est votre source de divertissement sans restrictions. Découvrez notre sélection de films d'Hollywood et de séries télévisées ou originales en version intégrale et non censurée. Retrouvez le meilleur de vos genres préférés, de la comédie à la science-fiction en passant par l'action, l'horreur et bien d'autres, et profitez-en sans le moindre frais sur votre ordinateur, téléphone portable, tablette, téléviseur connecté à Internet ou console de jeu. Pour en savoir plus et consulter les conditions d'utilisation et la charte de confidentialité, rendez-vous sur www.crackle.com."
     },
     LOGIN: {
-        'en': 'Sign In', 
+        'en': 'Device Status', 
         'pt': 'Login',
         'es': 'Ingresar',
 		'fr': 'Connexion'
@@ -304,6 +341,29 @@ Dictionary.TEXT = {
         'es':"Tu correo electrónico o contraseña están incorrectos. Por favor verifica si la información es correcta e intenta nuevamente.",
 		'fr':"Adresse e-mail ou mot de passe non valide. Vérifiez les informations saisies et réessayez."
     },
+    HELLO:{
+        'en':"Hello, ",
+        'pt':"Olá, ",
+        'es':"Hola, ",
+        'fr':"Bonjour, "
+
+    },
+    DEVICE_ACTIVE:{
+        'en':"Your device is active.",
+        'pt':"O seu endereço de e-mail ou senha estão incorretos. Favor verificar se a informação está correta e tente novamente.",
+        'es':"Tu correo electrónico o contraseña están incorrectos. Por favor verifica si la información es correcta e intenta nuevamente.",
+        'fr':"Adresse e-mail ou mot de passe non valide. Vérifiez les informations saisies et réessayez."
+    },
+    DEACTIVATE_HOW:{
+        'en':"To deactivate this device from your Crackle account, please visit Crackle.com and select Manage Your Devices from your Profile.",
+        'pt':"O seu endereço de e-mail ou senha estão incorretos. Favor verificar se a informação está correta e tente novamente.",
+        'es':"Tu correo electrónico o contraseña están incorrectos. Por favor verifica si la información es correcta e intenta nuevamente.",
+        'fr':"Adresse e-mail ou mot de passe non valide. Vérifiez les informations saisies et réessayez."
+    },
+
+
+
+
     SUBMIT_BUTTON_TEXT: {
         'en': 'Submit', 
         'pt': 'Login',

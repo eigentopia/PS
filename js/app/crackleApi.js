@@ -132,10 +132,10 @@ var CrackleApi = {
                 callback&&callback(true)
             }
         },
-
         sso: function(cb) {
             var authUrl = "externaluser/sso?format=json";
             var returnData = null;
+            var id = (PlaystationConfig.hashedDeviceID != null)?PlaystationConfig.hashedDeviceID:"testeridforplaystation"
             var body = { data:JSON.stringify({"AffiliateUserId": PlaystationConfig.hashedDeviceID}), dataType:"Application/Json" }
             //console.log(self.apiUrl + authUrl)
             //HTTP.request(self.apiUrl + authUrl, "POST", body,
@@ -366,7 +366,10 @@ var PlaystationConfig = {
 
                             CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
 
+                            //CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
+
                             PlaystationConfig.hashedDeviceID = engine.stats.device.id;
+                            PlaystationConfig.forcedRegistration = (configdata && configdata.ForcedRegistrationOn)?configdata.ForcedRegistrationOn:true
                             
                             if(engine.stats.locale && engine.stats.locale == "fr_FR"){
                                 StorageManagerInstance.set( 'lang', 'fr');
@@ -390,5 +393,6 @@ var PlaystationConfig = {
                 }
             })
         },
-        hashedDeviceID: null
+        hashedDeviceID: null,
+        forcedRegistration: false
 }

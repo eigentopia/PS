@@ -58,7 +58,7 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
 
     this.navLeft = function(){
         //console.log("NAV L ShowDetailsMenuItemWidget "+myWatchListButton.isActive())
-        if(myWatchListButton.isActive()){
+        if(PlaystationConfig.forcedRegistration == true && myWatchListButton.isActive()){
             myWatchListButton.setInactive();
             watchNowButton.setActive();
             currentButton = watchNowButton;
@@ -71,7 +71,7 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
     }
     this.navRight = function(){
         //console.log("NAV R ShowDetailsMenuItemWidget "+watchNowButton.isActive())
-        if(watchNowButton.isActive()){
+        if(PlaystationConfig.forcedRegistration == true && watchNowButton.isActive()){
             watchNowButton.setInactive();
             myWatchListButton.setActive();
             currentButton = myWatchListButton;
@@ -84,19 +84,22 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
     }
     this.enterPressed = function(doWatchlist){
         //console.log("ENTER ShowDetailsMenuItemWidget")
-        if(myWatchListButton.isActive()){
-            doWatchlist(m_media_obj.getID(), "media", function(isAdd){
-                var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST ); 
-                if(isAdd){
-                    buttonText = "+ " + buttonText;
-                }
-                else{
-                    buttonText = "- " + buttonText;
-                }
-                
-                myWatchListButton.refreshWidget(buttonText, true)
-            })
-            return true;
+        //Weird new auth rules
+        if(PlaystationConfig.forcedRegistration == true){
+            if(myWatchListButton.isActive()){
+                doWatchlist(m_media_obj.getID(), "media", function(isAdd){
+                    var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST ); 
+                    if(isAdd){
+                        buttonText = "+ " + buttonText;
+                    }
+                    else{
+                        buttonText = "- " + buttonText;
+                    }
+                    
+                    myWatchListButton.refreshWidget(buttonText, true)
+                })
+                return true;
+            }
         }
         
         return false
@@ -132,8 +135,9 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
         if ( !m_root_node.contains( m_inactive_container ) ){
             m_root_node.addChildAt( m_inactive_container, 0 );
         }
-        
-        myWatchListButton.setInactive();
+        if(PlaystationConfig.forcedRegistration == true){
+            myWatchListButton.setInactive();
+        }
         watchNowButton.setInactive();
         
 
@@ -148,7 +152,9 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
         if ( !m_root_node.contains( m_disabled_container ) ){
             m_root_node.addChildAt( m_disabled_container, 0 );
         }
-        myWatchListButton.setDisabled();
+        if(PlaystationConfig.forcedRegistration == true){
+            myWatchListButton.setDisabled();
+        }
         watchNowButton.setDisabled();
         currentButton = null;        
     }
@@ -160,7 +166,7 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
             m_video_progress_widget.refreshWidget( m_media_obj.getDurationInSeconds(), VideoProgressManagerInstance.getProgress( m_media_obj.getID() ) );
     }
     this.refreshWatchlistButton = function(){
-        if( myWatchListButton ){
+        if(PlaystationConfig.forcedRegistration == true &&  myWatchListButton ){
             var watchListText = Dictionary.getText( Dictionary.TEXT.WATCHLIST );
             if(ApplicationController.isInUserWatchlist( m_media_obj.getID())){
                 watchListText = "- " + watchListText;
@@ -249,24 +255,29 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
         
         tmp_container.addChild( tmp_slate );
 
-        watchNowButton.getDisplayNode().x = 870;
-        watchNowButton.getDisplayNode().y = 20;
-        tmp_container.addChild( watchNowButton.getDisplayNode() );
         
-        
-        var watchListText = Dictionary.getText( Dictionary.TEXT.WATCHLIST );
-        if(ApplicationController.isInUserWatchlist( m_media_obj.getID())){
-            watchListText = "- " + watchListText;
-        }
-        else{
-            watchListText = "+ " + watchListText;
-        }
-        myWatchListButton.refreshWidget(watchListText)
+        if(PlaystationConfig.forcedRegistration == true){
+            var watchListText = Dictionary.getText( Dictionary.TEXT.WATCHLIST );
+            if(ApplicationController.isInUserWatchlist( m_media_obj.getID())){
+                watchListText = "- " + watchListText;
+            }
+            else{
+                watchListText = "+ " + watchListText;
+            }
+                myWatchListButton.refreshWidget(watchListText)
 
-        myWatchListButton.getDisplayNode().x = 1150;
-        myWatchListButton.getDisplayNode().y = 20;
-        tmp_container.addChild( myWatchListButton.getDisplayNode() );
+            watchNowButton.getDisplayNode().x = 870;
+            watchNowButton.getDisplayNode().y = 20;
+            myWatchListButton.getDisplayNode().x = 1150;
+            myWatchListButton.getDisplayNode().y = 20;
+            tmp_container.addChild( myWatchListButton.getDisplayNode() );
+        }else{
+            watchNowButton.getDisplayNode().x = 1150;
+            watchNowButton.getDisplayNode().y = 20;
+            
+        }
         
+        tmp_container.addChild( watchNowButton.getDisplayNode() );
         
         return tmp_container;
     }

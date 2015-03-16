@@ -129,14 +129,17 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
 
                         AnalyticsManagerInstance.firePageViewEvent({cc0:'watchlists', cc1:'recommended', cc2:'', title:ChannelDetailsObj.getName()})
                         
-                        var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST)
-                        if (ApplicationController.isInUserWatchlist(ChannelDetailsObj.getID())){
-                            buttonText = "- " + buttonText
+                        //Weird new conditional rules around activation
+                        if( PlaystationConfig.forcedRegistration == true){
+                            var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST)
+                            if (ApplicationController.isInUserWatchlist(ChannelDetailsObj.getID())){
+                                buttonText = "- " + buttonText
+                            }
+                            else{
+                                buttonText = "+ " + buttonText
+                            }
+                            myWatchlistButton.refreshWidget(buttonText)
                         }
-                        else{
-                            buttonText = "+ " + buttonText
-                        }
-                        myWatchlistButton.refreshWidget(buttonText)
                         
                         // inform our parent controller that we are ready to go
                         ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_READY );            
@@ -172,7 +175,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
     this.navDown = function(){
         if ( m_is_focussed && m_present_widgets.length > 0) {
             
-            if(myWatchlistButton.isActive()){
+            if( PlaystationConfig.forcedRegistration == true && myWatchlistButton.isActive()){
                 myWatchlistButton.setInactive(); 
                 m_recommended_watchlist_template1.setFocus();
             }
@@ -186,7 +189,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
     }
     this.navUp = function(){
         if ( m_is_focussed && m_present_widgets.length > 0){
-            if( m_recommended_watchlist_template1.hasFocus() && !m_recommended_watchlist_template1.navUp() ){
+            if( PlaystationConfig.forcedRegistration == true && m_recommended_watchlist_template1.hasFocus() && !m_recommended_watchlist_template1.navUp() ){
                 m_recommended_watchlist_template1.unsetFocus();
                 myWatchlistButton.setActive();
             }
@@ -205,7 +208,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
 //            Logger.log( 'm_selected_episode_row = ' + m_selected_episode_row );
 //            // Set to inactive the current selected episode
 //            m_playlist_menu_item_widgets[ m_selected_episode_row ].setInactive();
-            if( myWatchlistButton.isActive() ){
+            if(  PlaystationConfig.forcedRegistration == true && myWatchlistButton.isActive() ){
                 abandonResponse();
                 myWatchlistButton.setInactive();
                 m_parent_controller_obj.requestingParentAction(
@@ -274,7 +277,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
                     );
                 }
             }
-            else if ( myWatchlistButton.isActive()){
+            else if (  PlaystationConfig.forcedRegistration == true && myWatchlistButton.isActive()){
                 var itemId = m_collection_id;
                 var itemType = "channel" // check for medidatailsobject episode to determine if channel add?
 
@@ -389,7 +392,6 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
    
     m_master_container.addChild( m_recommended_watchlist_thumb_widget.getDisplayNode() );
     m_master_container.addChild( m_recommended_watchlist_text_widget.getDisplayNode() );
-    m_master_container.addChild(myWatchlistButton.getDisplayNode() );
 //    m_master_container.addChild( m_show_details_menu_widget.getDisplayNode() );
 //    m_master_container.addChild( m_menu_container );
     
@@ -397,8 +399,13 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
     
     m_recommended_watchlist_thumb_widget.getDisplayNode().x = 30;
     m_recommended_watchlist_text_widget.getDisplayNode().x = 350;
-    myWatchlistButton.getDisplayNode().x = 30;
-    myWatchlistButton.getDisplayNode().y = 420;
+
+    //Weird new auth rules
+    if(PlaystationConfig.forcedRegistration == true){
+        m_master_container.addChild(myWatchlistButton.getDisplayNode() );
+        myWatchlistButton.getDisplayNode().x = 30;
+        myWatchlistButton.getDisplayNode().y = 420;
+    }
 
 //    m_show_details_menu_widget.getDisplayNode().y = 650;
 //    m_show_details_menu_widget.getDisplayNode().x = 150;

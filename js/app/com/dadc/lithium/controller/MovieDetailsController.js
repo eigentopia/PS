@@ -210,7 +210,6 @@ var MovieDetailsController = function ( ParentControllerObj ){
         m_master_container.addChild( m_movie_detail_text_widget.getDisplayNode() );
 
         m_master_container.addChild( progressWidget.getDisplayNode() );
-        m_master_container.addChild(myWatchlistButton.getDisplayNode() );
         m_master_container.addChild(watchNowButton.getDisplayNode() )
 
         // This size for shows
@@ -225,9 +224,14 @@ var MovieDetailsController = function ( ParentControllerObj ){
         progressWidget.getDisplayNode().y = 620
         watchNowButton.getDisplayNode().x = 100;
         watchNowButton.getDisplayNode().y = 670;
-        myWatchlistButton.getDisplayNode().x = 100;
-        myWatchlistButton.getDisplayNode().y = 770;
 
+        //Handle werid new registation conditions
+        if(PlaystationConfig.forcedRegistration == true){
+            m_master_container.addChild(myWatchlistButton.getDisplayNode() );
+            myWatchlistButton.getDisplayNode().x = 100;
+            myWatchlistButton.getDisplayNode().y = 770;
+        }
+        
         m_movie_detail_thumb_widget.refreshWidget( channelObj );
         m_movie_detail_text_widget.refreshWidget( channelObj );
         progressWidget.refreshWidget( MediaDetailsObj.getDurationInSeconds(), VideoProgressManagerInstance.getProgress( mediaId ) );
@@ -254,7 +258,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
         
         if ( m_is_focussed ) {
             //abandonResponse();
-            if(watchNowButton.isActive()){
+            if(watchNowButton.isActive() && PlaystationConfig.forcedRegistration == true){
                 watchNowButton.setInactive();
                 myWatchlistButton.setActive();
                 currentFocus = myWatchlistButton
@@ -270,7 +274,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
                 return;
             }
             
-            if(myWatchlistButton.isActive()){
+            if( PlaystationConfig.forcedRegistration == true && myWatchlistButton.isActive()){
                 watchNowButton.setActive();
                 myWatchlistButton.setInactive();
                 currentFocus = watchNowButton;
@@ -287,7 +291,10 @@ var MovieDetailsController = function ( ParentControllerObj ){
             }
             else{
                 watchNowButton.setInactive();
-                myWatchlistButton.setInactive();
+                //Werid auth condition rules
+                if( PlaystationConfig.forcedRegistration == true){
+                    myWatchlistButton.setInactive();
+                }
                 currentFocus = watchNowButton;
                 abandonResponse();
                 m_parent_controller_obj.requestingParentAction(
@@ -328,7 +335,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
                 });
                 m_media_details_request.startRequest();
             }
-            else if (myWatchlistButton.isActive() ){
+            else if ( PlaystationConfig.forcedRegistration == true && myWatchlistButton.isActive() ){
                 // Request from the application controller to add this item to the playlist
                 self.doWatchlist(watchListItem, watchListItemType, function(isAdd){
                     var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST ); 
@@ -386,13 +393,15 @@ var MovieDetailsController = function ( ParentControllerObj ){
         if(m_is_focussed){
             abandonResponse();
             m_is_focussed = false;
-                watchNowButton.setInactive();
+            watchNowButton.setInactive();
+            if( PlaystationConfig.forcedRegistration == true){
                 myWatchlistButton.setInactive();
-                currentFocus = watchNowButton;
-                abandonResponse();
-                m_parent_controller_obj.requestingParentAction(
-                    {action: ApplicationController.OPERATIONS.CLOSE_DETAILS_PAGE, calling_controller: this, details_calling_controller: m_calling_controller}
-                );
+            }
+            currentFocus = watchNowButton;
+            abandonResponse();
+            m_parent_controller_obj.requestingParentAction(
+                {action: ApplicationController.OPERATIONS.CLOSE_DETAILS_PAGE, calling_controller: this, details_calling_controller: m_calling_controller}
+            );
         
         }
     }    
@@ -412,7 +421,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
     }
 
     function refreshWatchlistButton() {
-        if( mediaObj ){
+        if(  PlaystationConfig.forcedRegistration == true && mediaObj ){
             var watchListText = Dictionary.getText( Dictionary.TEXT.WATCHLIST );
             if(ApplicationController.isInUserWatchlist( watchListItem) ){
                 watchListText = "- " + watchListText;
