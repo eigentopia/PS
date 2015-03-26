@@ -363,13 +363,13 @@ var PlaystationConfig = {
                             StorageManagerInstance.set( 'api_hostname', apiUrl );
 
                             //CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
-
+//
                             CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
 
                             //CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
 
                             PlaystationConfig.hashedDeviceID = engine.stats.device.id;
-                            PlaystationConfig.forcedRegistration = (configdata && configdata.ForcedRegistrationOn)?configdata.ForcedRegistrationOn:true
+                            PlaystationConfig.forcedRegistration = (configdata && configdata.ForcedRegistrationOn)?configdata.ForcedRegistrationOn:false
                             
                             if(engine.stats.locale && engine.stats.locale == "fr_FR"){
                                 StorageManagerInstance.set( 'lang', 'fr');

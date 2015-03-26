@@ -71,7 +71,7 @@ VideoManager = function(){
         
         // get the proper video based on what the current JS video is
         var video_config = m_current_jsvideo.getVideoConfig();
-        Logger.log( video_config["content-type"] );
+        Logger.log( "Content type " + video_config["content-type"] );
         
         UtilLibraryInstance.garbageCollect();
         switch( video_config["content-type"] ){
@@ -94,7 +94,7 @@ VideoManager = function(){
         m_core_video_obj.y = ( 1080 / 2 ) - ( JSVideoObj.getHeight() / 2 );
 
         // assign listeners
-        m_core_video_obj.onOpened = onOpened;
+        //m_core_video_obj.onOpened = onOpened;
         m_core_video_obj.onEnded = onEnded;
         m_core_video_obj.onError = onError;
         m_core_video_obj.onPlaying = onPlaying;
@@ -110,9 +110,18 @@ VideoManager = function(){
         // }
         // add the video to the screen
         m_root_node.addChild( m_core_video_obj );
-        m_core_video_obj.open( m_current_jsvideo.getVideoURL(), 
-            {"video-starttimeoffset": m_current_jsvideo.getResumeTime()} 
-        );
+        if(m_core_video_obj.open( m_current_jsvideo.getVideoURL(), 
+            //{"video-starttimeoffset": m_current_jsvideo.getResumeTime(),
+            {"Audio-Level"       : "2",
+                        "Audio-Profile"     : "video/mp2t",
+                        "Video-Profile"     : "adaptive-streaming",
+                        "Video-BufferSize"  : "5000",
+                        "Video-EnableHD"    : "true",
+                        "Video-Level"       : "42",} 
+        )){
+            console.log("VIDEO MANAGER OPEN")
+            m_core_video_obj.play();
+        }
         Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
         Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime());
         Logger.log("core play called");
@@ -174,16 +183,16 @@ VideoManager = function(){
         return m_current_jsvideo;
     }
 
-    function onOpened(foo){
-        Logger.log("core onOpened called " + foo);
-        m_video_time_on_play_before_timeupdate = engine.getTimer();
+    // function onOpened(foo){
+    //     Logger.log("core onOpened called " + foo);
+    //     m_video_time_on_play_before_timeupdate = engine.getTimer();
 
-        m_core_video_obj.play();
+    //     m_core_video_obj.play();
 
-        if( m_current_jsvideo != null ){
-            m_current_jsvideo.onOpened();  
-        }
-    }
+    //     if( m_current_jsvideo != null ){
+    //         m_current_jsvideo.onOpened();  
+    //     }
+    //}
     
     function onEnded(){
         Logger.log("core onEnded called");
@@ -191,8 +200,9 @@ VideoManager = function(){
             m_current_jsvideo.onEnded();
     }
     
-    function onError(){
+    function onError(error){
         Logger.log("core onError called");
+        Logger.shout(error)
         if( m_current_jsvideo != null )
             m_current_jsvideo.onError();
     }

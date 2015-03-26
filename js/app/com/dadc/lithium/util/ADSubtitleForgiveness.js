@@ -12,6 +12,7 @@ var ADSubtitleForgiveness = function(){
     }
     
     this.shouldPlayAds = function( forgiveness_in_seconds, media_details_id ){
+        return false
 
         // if(engine.storage.local.userEmailAddress && engine.storage.local.userEmailAddress == "eigenstates@yahoo.com" ){
         //     return false

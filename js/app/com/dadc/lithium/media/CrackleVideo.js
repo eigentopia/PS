@@ -9,7 +9,7 @@ include( "js/app/com/dadc/lithium/model/TTMLSubtitleModel.js" );
 
 var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, PlaybackReadyListener, PlaybackErrorListener )
 {
-    Logger.shout( "NEW CRACKLE VIDEO CREATED" );
+    Logger.shout( "NEW CRACKLE VIDEO CREATED " + audioVideoUrl );
     var This                    = this;
     //This will return the default, or first in the list. This is what was asked for. 
     var m_video_url             = audioVideoUrl;
@@ -65,8 +65,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         Logger.log( 'ADManager_EVENT = ' + ADManager_EVENT );
         //processAdSlots();
         adUplynkMarks()
-        var baseurl = m_video_url.substring(0, m_video_url.indexOf("?")+1)
 
+        //CAN DISAPPEAR AFTER CMS is RIGHT
+        var baseurl = m_video_url.substring(0, m_video_url.indexOf("?")+1)
         var qs = m_video_url.substring(m_video_url.indexOf("?")+1).split('&');
         var newQs ="" ; 
         var pair;
@@ -87,9 +88,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             //qsParams[d(pair[0])] = d(pair[1]);
         }
 
-        m_video_url= baseurl + newQs
-
-        //m_video_url = adManager.adsData.playURL + "&sid="+adManager.adsData.sid
+        //m_video_url= baseurl + newQs
+        //m_video_url = "http://content.uplynk.com/450b20fd3c4240f794849a8950577638.m3u8"
+        //m_video_url = baseurl
+        m_video_url = adManager.adsData.playURL + "&sid="+adManager.adsData.sid
         PlaybackReadyListener.notifyPlaybackReady();
 
 //         switch( ADManager_EVENT ){

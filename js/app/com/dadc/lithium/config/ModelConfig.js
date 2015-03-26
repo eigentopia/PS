@@ -4,10 +4,10 @@ var ModelConfig = function(){ }
 ModelConfig.getServerURLRoot = function(){
 
     // DYNAMIC PRODUCTION
-    return 'https://' + StorageManagerInstance.get( 'api_hostname' ) + '/Service.svc/';
+    //return 'https://' + StorageManagerInstance.get( 'api_hostname' ) + '/Service.svc/';
 
     // STAGING
-    //return  "https://staging-api-us.crackle.com/Service.svc/";
+    return  "https://staging-api-us.crackle.com/Service.svc/";
 
     // STATIC PRODUCTION
 //    return "https://api.crackle.com/Service.svc/";
@@ -39,3 +39,5 @@ ModelConfig.createRequest = function( method, url, headers, params ){
 
     return httpRequestObj;
 }
+
+//http://content.uplynk.com/ext/e8773f7770a44dbd886eee4fca16a66b/2493775.m3u8?euid=&ad.metr=7&extsid=1&ad.preroll=1&ad.bumper=&ad.locationDesc=crackle_apple_tv_us_shows&ad=crackle_live

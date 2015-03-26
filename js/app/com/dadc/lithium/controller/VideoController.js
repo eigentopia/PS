@@ -353,7 +353,7 @@ var VideoController = function( ParentControllerObj )
                 currentMediaList = MediaDetailsObj.videoContextList
                 for (var i=0; i<MediaDetailsObj.videoContextList.length;i++){
                     if (MediaDetailsObj.data.ID == MediaDetailsObj.videoContextList[i].ID){
-                        console.log("FOUNNF "+ MediaDetailsObj.data.ID+ " AT "+ i)
+                        console.log("FOUND "+ MediaDetailsObj.data.ID+ " AT "+ i)
                         startingMediaListIndex = i
                         currentMediaListIndex = i;
                     }
