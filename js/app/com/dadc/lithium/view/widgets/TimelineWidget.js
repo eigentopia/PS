@@ -250,7 +250,7 @@ var TimelineWidget = function( current_time, total_video_length, ad_breaks ) {
         
         //Make time position change here.         
         m_cursor_time_text_container = null;
-        UtilLibraryInstance.garbageCollect();
+//        UtilLibraryInstance.garbageCollect();
 
         
         m_cursor_time_text_container = getCursorTimeTextContainer();
@@ -270,7 +270,7 @@ var TimelineWidget = function( current_time, total_video_length, ad_breaks ) {
         }
         
         m_time_position_container = null;
-        UtilLibraryInstance.garbageCollect();
+//        UtilLibraryInstance.garbageCollect();
         
         m_time_position_container = getTimePositionContainer();
         m_time_position_container.x = 120;

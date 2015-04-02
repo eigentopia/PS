@@ -77,9 +77,9 @@ var JSVideo = function( video_url, videoManagerObj ){
     }
     
     
-    this.onOpened = function(){
+    // this.onOpened = function(){
         
-    }
+    // }
     
     this.onEnded = function(){
         notifyListeners( new EndOfMediaEvent( ) );
@@ -91,6 +91,7 @@ var JSVideo = function( video_url, videoManagerObj ){
     }
     
     this.onPlaying = function(){
+        console.log("CALLING PLAYING IN JSVIDEO")
         notifyListeners( new PlayingEvent( videoManagerObj.getPlaybackTimePTS() ) );
     }
     
@@ -131,12 +132,11 @@ JSVideo.VIDEOCONFIG = {
         "transfer-type":"progressive-download",
         "encryption-type":"none"
     },
-    TYPE_PROGRESSIVE: {     "Audio-ChannelCount"    : "2",
-                        "Content-Type"          : "video/mp2t",
-                        "Transfer-Type"         : "adaptive-streaming",
-                        "Video-TargetHeight"    : "1080",
-                        "Video-TargetWidth"     : "1920",
-                        }
+    TYPE_PROGRESSIVE: {  
+                        //"Content-Type": "video/mp2t", Default
+                        "transfer-type"         : "adaptive-streaming",
+                    }
+
 }
 
 var PlaybackEvent = function( ){ };

@@ -66,32 +66,32 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //processAdSlots();
         adUplynkMarks()
 
-        //CAN DISAPPEAR AFTER CMS is RIGHT
-        var baseurl = m_video_url.substring(0, m_video_url.indexOf("?")+1)
-        var qs = m_video_url.substring(m_video_url.indexOf("?")+1).split('&');
-        var newQs ="" ; 
-        var pair;
-        for (var i = qs.length - 1; i >= 0; i--) {
-            pair = qs[i].split('=');
-            if(pair[0] == "ad"){
-                pair[1] = "crackle_live"
-            }
-            else if (pair[0] == "ad.locationDesc"){
-                pair[1] = "crackle_apple_tv"+pair[1]
-            }
-            if(i==0){
-                newQs += pair[0]+"="+pair[1]
-            }
-            else{
-                newQs += pair[0]+"="+pair[1]+"&"
-            }
-            //qsParams[d(pair[0])] = d(pair[1]);
-        }
+        // //CAN DISAPPEAR AFTER CMS is RIGHT
+        // var baseurl = m_video_url.substring(0, m_video_url.indexOf("?")+1)
+        // var qs = m_video_url.substring(m_video_url.indexOf("?")+1).split('&');
+        // var newQs ="" ; 
+        // var pair;
+        // for (var i = qs.length - 1; i >= 0; i--) {
+        //     pair = qs[i].split('=');
+        //     if(pair[0] == "ad"){
+        //         pair[1] = "crackle_live"
+        //     }
+        //     else if (pair[0] == "ad.locationDesc"){
+        //         pair[1] = "crackle_apple_tv"+pair[1]
+        //     }
+        //     if(i==0){
+        //         newQs += pair[0]+"="+pair[1]
+        //     }
+        //     else{
+        //         newQs += pair[0]+"="+pair[1]+"&"
+        //     }
+        //     //qsParams[d(pair[0])] = d(pair[1]);
+        // }
 
         //m_video_url= baseurl + newQs
         //m_video_url = "http://content.uplynk.com/450b20fd3c4240f794849a8950577638.m3u8"
         //m_video_url = baseurl
-        m_video_url = adManager.adsData.playURL + "&sid="+adManager.adsData.sid
+        m_video_url = adManager.adsData.playURL //+ "&sid="+adManager.adsData.sid
         PlaybackReadyListener.notifyPlaybackReady();
 
 //         switch( ADManager_EVENT ){
@@ -378,10 +378,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
     this.onOpened = function(){
         //This is very bad. Fix.
-        var parentVideo = VideoManagerInstance.getCoreVideo()
-        var CCSettings = parentVideo.getCCSystemSettings();
-        engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
-        console.log("GOT ME CC")
+        // var parentVideo = VideoManagerInstance.getCoreVideo()
+        // var CCSettings = parentVideo.getCCSystemSettings();
+        // engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
+        // console.log("GOT ME CC")
         // if(ConvivaIntegration.sessionId == null){
         //     ConvivaIntegration.createSession(parentVideo, m_video_url, m_media_details_obj)
         // }

@@ -362,9 +362,7 @@ var PlaystationConfig = {
                             // should not need this- on CrackleApi now
                             StorageManagerInstance.set( 'api_hostname', apiUrl );
 
-                            //CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
-//
-                            CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
+                            CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
 
                             //CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
 

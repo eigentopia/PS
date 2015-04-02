@@ -9,9 +9,9 @@ var Uplynk = (function(){
 		//http://content.uplynk.com/preplay/ext/e8773f7770a44dbd886eee4fca16a66b/2491595.json?ad=crackle_live&ad.locationDesc=crackle_apple_tv_us_movies&ad.bumper=&ad.preroll=1&extsid=1&ad.metr=7&euid="
        //http://content.uplynk.com/ext/e8773f7770a44dbd886eee4fca16a66b/2448594.m3u8?ad=&ad.locationDesc=_us_movies&ad.bumper=93731bf8cac142e4b99cf5844a9668dc&ad.preroll=1&extsid=1&ad.metr=7&euid=
         var preplayUrl = getUplynkUrl(url)
-		Http.request(preplayUrl, "GET", null, null, function(data, status){
+		Http.requestJSON(preplayUrl, "GET", null, {headers:""}, function(data, status){
             if(data != null && status == 200){                    
-                self.adsData = JSON.parse(data);
+                self.adsData = data;
 				preProcessAds();
                 cb && cb(data, status)
             }
@@ -61,30 +61,29 @@ var Uplynk = (function(){
 
         var idJson = urlToJson.substring(0, urlToJson.indexOf("?")+1)
 
-        var __url = "http://content.uplynk.com/4537c2ace3a44230bbd1492f91e553f5.m3u8?ad=crackle_live&ad.locationDesc=crackle_apple_tv_us_shows&ad.bumper=&ad.preroll=1&extsid=1&ad.metr=7&euid="
+        // var qs = urlToJson.substring(urlToJson.indexOf("?")+1).split('&');
+        // var newQs ="" ; 
+        // var pair;
+        // for (var i = qs.length - 1; i >= 0; i--) {
+        //     pair = qs[i].split('=');
+        //     if(pair[0] == "ad"){
+        //         pair[1] = "crackle_live"
+        //     }
+        //     else if (pair[0] == "ad.locationDesc"){
+        //         pair[1] = "crackle_apple_tv"+pair[1]
+        //     }
 
-        var qs = urlToJson.substring(urlToJson.indexOf("?")+1).split('&');
-        var newQs ="" ; 
-        var pair;
-        for (var i = qs.length - 1; i >= 0; i--) {
-            pair = qs[i].split('=');
-            if(pair[0] == "ad"){
-                pair[1] = "crackle_live"
-            }
-            else if (pair[0] == "ad.locationDesc"){
-                pair[1] = "crackle_apple_tv"+pair[1]
-            }
+        //     if(i==0){
+        //         newQs += pair[0]+"="+pair[1]
+        //     }
+        //     else{
+        //         newQs += pair[0]+"="+pair[1]+"&"
+        //     }
+        //     //qsParams[d(pair[0])] = d(pair[1]);
+        // }
 
-            if(i==0){
-                newQs += pair[0]+"="+pair[1]
-            }
-            else{
-                newQs += pair[0]+"="+pair[1]+"&"
-            }
-            //qsParams[d(pair[0])] = d(pair[1]);
-        }
-
-		newUrl += idJson + newQs;
+		//newUrl += idJson + newQs;
+        newUrl += urlToJson
 
     	return "http://" + newUrl
 

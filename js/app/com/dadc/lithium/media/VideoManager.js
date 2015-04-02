@@ -73,7 +73,7 @@ VideoManager = function(){
         var video_config = m_current_jsvideo.getVideoConfig();
         Logger.log( "Content type " + video_config["content-type"] );
         
-        UtilLibraryInstance.garbageCollect();
+        //UtilLibraryInstance.garbageCollect();
         switch( video_config["content-type"] ){
             case "video/mp4":
                 m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_MP4 );
@@ -94,7 +94,7 @@ VideoManager = function(){
         m_core_video_obj.y = ( 1080 / 2 ) - ( JSVideoObj.getHeight() / 2 );
 
         // assign listeners
-        //m_core_video_obj.onOpened = onOpened;
+        m_core_video_obj.onOpened = onOpened;
         m_core_video_obj.onEnded = onEnded;
         m_core_video_obj.onError = onError;
         m_core_video_obj.onPlaying = onPlaying;
@@ -110,22 +110,13 @@ VideoManager = function(){
         // }
         // add the video to the screen
         m_root_node.addChild( m_core_video_obj );
-        if(m_core_video_obj.open( m_current_jsvideo.getVideoURL(), 
-            //{"video-starttimeoffset": m_current_jsvideo.getResumeTime(),
-            {"Audio-Level"       : "2",
-                        "Audio-Profile"     : "video/mp2t",
-                        "Video-Profile"     : "adaptive-streaming",
-                        "Video-BufferSize"  : "5000",
-                        "Video-EnableHD"    : "true",
-                        "Video-Level"       : "42",} 
-        )){
+            Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
+            Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime());
             console.log("VIDEO MANAGER OPEN")
-            m_core_video_obj.play();
-        }
-        Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
-        Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime());
-        Logger.log("core play called");
-        
+        m_core_video_obj.open( m_current_jsvideo.getVideoURL() 
+            //{"video-starttimeoffset": m_current_jsvideo.getResumeTime(),
+            ,{"SteadyBufferingForStart": 2} 
+        )
     }
     this.pause = function( state ){
         m_video_time_on_play_before_timeupdate = undefined;
@@ -183,16 +174,20 @@ VideoManager = function(){
         return m_current_jsvideo;
     }
 
-    // function onOpened(foo){
-    //     Logger.log("core onOpened called " + foo);
-    //     m_video_time_on_play_before_timeupdate = engine.getTimer();
+    function onOpened(foo){
+        Logger.log("core onOpened called " + foo);
+        m_video_time_on_play_before_timeupdate = engine.getTimer();
+        var CCSettings = m_core_video_obj.getCCSystemSettings();
+        engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
+        console.log("GOT ME CC")
 
-    //     m_core_video_obj.play();
+        Logger.log("core play called");
+        m_core_video_obj.play();
 
-    //     if( m_current_jsvideo != null ){
-    //         m_current_jsvideo.onOpened();  
-    //     }
-    //}
+        if( m_current_jsvideo != null ){
+            m_current_jsvideo.onOpened();  
+        }
+    }
     
     function onEnded(){
         Logger.log("core onEnded called");

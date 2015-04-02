@@ -123,7 +123,7 @@ var VideoController = function( ParentControllerObj )
         {
             m_crackle_video.stop();
             m_crackle_video = null;
-            UtilLibraryInstance.garbageCollect();
+            //UtilLibraryInstance.garbageCollect();
         }
     };
 
