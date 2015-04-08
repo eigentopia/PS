@@ -15,11 +15,10 @@ var LoginWidget = function( ) {
     var focus = false;
     var activeField;
     var self = this;
-
-    var user = ApplicationController.getUserInfo();
-    
+    var user;
     var loginNode = engine.createContainer();
     var logOutNode = engine.createContainer();
+    var pollOk = false
 
     this.refreshWidget = function(){};
     this.getDisplayNode = function(){
@@ -30,6 +29,7 @@ var LoginWidget = function( ) {
         return activeField;
     }
     this.setActive = function(){
+        pollOk = true
         //if active screen is submit
         // Logger.log("LOGWIDG SETTING ACTIVE " + currentScreen)
         // focus = true;
@@ -43,6 +43,7 @@ var LoginWidget = function( ) {
         // }
     }
     this.setInactive = function(){
+        pollOk = false
         // if(currentScreen == "login"){
         //     submitButton.setInactive();
         //     passSlate.setInactive();
@@ -72,31 +73,32 @@ var LoginWidget = function( ) {
     this.init = function(){
         // var user = ApplicationController.getUserInfo();
         // if( user && user.id != null){
-            self.showLoggedInScreen()
+            showStatusScreen()
         // }
         // else{
         //     self.showLoginScreen()
         // }
     }
 
-    this.showLoggedInScreen = function(){
-
+    function showStatusScreen(){
+        user = ApplicationController.getUserInfo();
         var whichScreen;
 
-        if(PlaystationConfig.forcedRegistration == true && user.email !==null){
+        if((PlaystationConfig.forcedRegistration == true && user.name !== undefined) || user.name !== undefined) {
             whichScreen =  showHome()
         }
         else{
-            whichScreen =  showDisclaimer()
+            whichScreen =  showActivate()
+            pollActivation()
         }
         
 
         //DISCLAIMER SCREEN CLONE
         //DISCLAIMER_AUTHSCREEN
         currentScreen = "logOut"
-        if(m_master_container.contains(loginNode)){
-            m_master_container.removeChild(loginNode);
-        }
+        // if(m_master_container.contains(loginNode)){
+        //     m_master_container.removeChild(loginNode);
+        // }
 
         // logOutButton = new PlaylistMenuButtonWidget(Dictionary.getText( Dictionary.TEXT.LOGOUT_BUTTON_TEXT ));
         // logOutButtonNode =  logOutButton.getDisplayNode();
@@ -117,9 +119,12 @@ var LoginWidget = function( ) {
     }
 
     function showHome(){
+        if(m_master_container.contains(rootNode)){
+             m_master_container.removeChild(rootNode);
+        }
         var homeScreen = engine.createContainer()
 
-        var logOutInfo = engine.createTextBlock( [Dictionary.getText( Dictionary.TEXT.HELLO ), "placeholder"], 
+        var logOutInfo = engine.createTextBlock( [Dictionary.getText( Dictionary.TEXT.HELLO ), user.name], 
             [FontLibraryInstance.getFont_DISCLAIMERBUTTON(),FontLibraryInstance.getFont_DISCLAIMERBUTTON()], 500 );
         logOutInfo.x=( 1200 / 2 ) - ( logOutInfo.naturalWidth / 2 );
         logOutInfo.y=150;
@@ -139,47 +144,76 @@ var LoginWidget = function( ) {
 
     }
     
-    function showDisclaimer(){
-        var tmp_container;
-        var tblock;
+    var rootNode = engine.createContainer();
+    function showActivate(){
+        // var tmp_container;
+        // var tblock;
 
-        tmp_container = engine.createContainer();
-        tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_1 ), FontLibraryInstance.getFont_DISCLAIMERTITLE(), 1400 );
-        tmp_container.addChild( tblock );
-        tblock.x = ( 1250 / 2 ) - ( tblock.naturalWidth / 2 );
-        tblock.y = 150;
+        // tmp_container = engine.createContainer();
+        // tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_1 ), FontLibraryInstance.getFont_DISCLAIMERTITLE(), 1400 );
+        // tmp_container.addChild( tblock );
+        // tblock.x = ( 1250 / 2 ) - ( tblock.naturalWidth / 2 );
+        // tblock.y = 150;
 
-        tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_2), FontLibraryInstance.getFont_DISCLAIMERTEXT(), 1100 );
-        tmp_container.addChild( tblock );
-        tblock.x = ( 1200 / 2 ) - ( tblock.naturalWidth / 2 );
-        tblock.y = 250;
+        // tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_2), FontLibraryInstance.getFont_DISCLAIMERTEXT(), 1100 );
+        // tmp_container.addChild( tblock );
+        // tblock.x = ( 1200 / 2 ) - ( tblock.naturalWidth / 2 );
+        // tblock.y = 250;
 
-        tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_3 ), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 1100 );
-        tmp_container.addChild( tblock );
-        tblock.x = ( 1200 / 2 ) - ( tblock.naturalWidth / 2 );
-        tblock.y = 350;
+        // tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_3 ), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 1100 );
+        // tmp_container.addChild( tblock );
+        // tblock.x = ( 1200 / 2 ) - ( tblock.naturalWidth / 2 );
+        // tblock.y = 350;
         
-        var last_height = tblock.naturalHeight;
-        var last_y = tblock.y;
+        // var last_height = tblock.naturalHeight;
+        // var last_y = tblock.y;
 
-        tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_AUTHSCREEN ), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 1100);
-        tmp_container.addChild( tblock );
-        tblock.x = ( 1200 / 2 ) - ( tblock.naturalWidth / 2 );
-        tblock.y = last_y + last_height + 50;
+        // tblock = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DISCLAIMER_AUTHSCREEN ), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 1100);
+        // tmp_container.addChild( tblock );
+        // tblock.x = ( 1200 / 2 ) - ( tblock.naturalWidth / 2 );
+        // tblock.y = last_y + last_height + 50;
+
+
+        //self.rootNode.addChild( AssetLoaderInstance.getImage( "Artwork/activationScreen.png" ) );
+
+        var nowWithText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.NOW_WITH ),  FontLibraryInstance.AUTHYOU, 1200 )
+        nowWithText.x = (1200 - nowWithText.naturalWidth)/2
+        nowWithText.y  = (1080)/2 - 550
+        rootNode.addChild(nowWithText)
+
+        var activateText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ACTIVATE ),  FontLibraryInstance.AUTHACTIVATE, 1200 )
+        activateText.x = (1200 - activateText.naturalWidth)/2
+        activateText.y  = (1080)/2 - 420  
+        rootNode.addChild(activateText)
+
+        var loginText = engine.createTextBlock([Dictionary.getText( Dictionary.TEXT.LOGIN_TO ), 'http://crackle.com/activate'],  [FontLibraryInstance.AUTHLOGIN, FontLibraryInstance.AUTHLOGINURL], 1200 )
+        loginText.x = (1200 - loginText.naturalWidth)/2
+        loginText.y  = (1080)/2 - 320  
+        rootNode.addChild(loginText)
+
+        var enterCodeText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ENTER_CODE ),  FontLibraryInstance.AUTHLOGIN, 1200 )
+        enterCodeText.x = (1200 - enterCodeText.naturalWidth)/2
+        enterCodeText.y  = (1080)/2 -220 
+        rootNode.addChild(enterCodeText)
+
+        var validAccountText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.VALID_ACCOUNT ),  FontLibraryInstance.PLAYNEXTDETAILSALT, 1200 )
+        validAccountText.x = (1200 - validAccountText.naturalWidth)/2
+        validAccountText.y  = (1080)/2 + 40 
+        rootNode.addChild(validAccountText)
         
-        return tmp_container;
+        return rootNode
     }
 
-    this.showLoginScreen = function(){
-        currentScreen = "login"
-        if(m_master_container.contains(logOutNode)){
-            m_master_container.removeChild(logOutNode);
-        }
+    // this.showLoginScreen = function(){
+    //     currentScreen = "login"
+    //     if(m_master_container.contains(logOutNode)){
+    //         m_master_container.removeChild(logOutNode);
+    //     }
 
-        var logInInfo = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.LOGIN_SCREEN_TEXT ), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 1000 );
-        logInInfo.x=100;
-        logInInfo.y=50;
-        loginNode.addChild(logInInfo);
+    //     var logInInfo = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.LOGIN_SCREEN_TEXT ), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 1000 );
+    //     logInInfo.x=100;
+    //     logInInfo.y=50;
+    //     loginNode.addChild(logInInfo);
 
         // var emailLabel = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.EMAIL_INFO ), FontLibraryInstance.getFont_MOVIEDETAILTEXT(), 500 );
         // emailLabel.x = 100
@@ -209,12 +243,56 @@ var LoginWidget = function( ) {
         // submitButtonNode.y = 600;
         // loginNode.addChild( submitButtonNode );
         
-        m_master_container.addChild( loginNode );
-        m_master_container.width = submitButtonNode.naturalWidth;
-        m_master_container.height = submitButtonNode.naturalHeight;
+        //m_master_container.addChild( loginNode );
+        //m_master_container.width = submitButtonNode.naturalWidth;
+        //m_master_container.height = submitButtonNode.naturalHeight;
 
-        this.setActive();
+        //this.setActive();
         
+    //  }
+    var pollTimer;
+    var authCode=""
+       
+    function pollActivation() {
+        var done = false;
+        CrackleApi.User.sso(function (ssoResponse) {
+            if (ssoResponse.ActivationCode) {
+                if (ssoResponse.ActivationCode != authCode) {
+                    authCode = ssoResponse.ActivationCode
+                    activationText = engine.createTextBlock(ssoResponse.ActivationCode,  FontLibraryInstance.AUTHSCREEN, 1200 )
+                    activationText.x = (1200 - activationText.naturalWidth)/2
+                    activationText.y  = (1080)/2 - 100
+                    rootNode.addChild(activationText)
+
+                }
+                if(pollOk == true){
+                    pollTimer = setTimeout(function () {
+                        pollActivation()
+                
+                    }, 3000);
+                }
+            }
+            else if (ssoResponse.CrackleUserId) {
+                //clearTimeout(pollTimer);
+                if (!done) {
+                    //Because CrackleAPI- that's why.
+                    CrackleApi.User.moreUserInfo(ssoResponse, function(fullUserData){
+                        ApplicationController.setUserInfo(fullUserData, showStatusScreen)
+                        done = true;
+                    })   
+                }
+            }
+            else if (ssoResponse.error) {
+                if (ssoResponse.error != 'authing') {
+                    //clearTimeout(pollTimer);
+                    if (!done) {
+                        showStatusScreen && showStatusScreen( false, ssoResponse.error)
+                        done = true;
+                    }
+                }
+            }
+        });
+
     }
 
     this.addEmailText = function(text){
