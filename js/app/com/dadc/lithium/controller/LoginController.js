@@ -7,17 +7,19 @@ var LoginController = function( ParentControllerObj ){
     var m_parent_controller_obj     = ParentControllerObj;
     var m_root_node                 = engine.createContainer();
     var m_master_container          = engine.createContainer();
-    var m_login_widget              = new LoginWidget();
     var m_is_focused;
     //var keys = Keyboard;
     var self = this;
-    var previousScreen = null;
+    self.previousScreen = null;
     
     var geo = StorageManagerInstance.get( 'geocode' );
 
     // Widgets
     this.openPreviousController = function(){
-        return openPreviousOnLogin;
+        m_parent_controller_obj.requestingParentAction({
+                action:self.previousScreen.action, 
+                calling_controller: this, 
+            });
     }
 
     this.getParentController = function(){return m_parent_controller_obj;};
@@ -25,7 +27,7 @@ var LoginController = function( ParentControllerObj ){
     this.getControllerName = function(){return 'LoginController';};
     this.open = function( nextScreen ){
         if(nextScreen){
-            previousScreen = nextScreen
+            self.previousScreen = nextScreen
         }
         AnalyticsManagerInstance.firePageViewEvent({cc0:'mycrackle', cc1:'login'})
         m_login_widget.init()
@@ -102,9 +104,16 @@ var LoginController = function( ParentControllerObj ){
             {action: ApplicationController.OPERATIONS.SELECT_PREVIOUS_MENU, calling_controller: this}
         );
     }
+    this.showError = function(){
+
+        m_parent_controller_obj.requestingParentAction(
+            {action: ApplicationController.OPERATIONS.SELECT_PREVIOUS_MENU, calling_controller: this}
+        );
+    }
 
     
     m_root_node = engine.createContainer();
+    var m_login_widget              = new LoginWidget(self);
 };
 
 // var Keyboard = function(){

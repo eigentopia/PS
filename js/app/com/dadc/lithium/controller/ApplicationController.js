@@ -1476,7 +1476,7 @@ var ApplicationController = function( screenObj ){
             CrackleApi.User.sso(function(data){
                 if(data && (data.ActivationCode !=null || data.ActivationCode !=undefined)){
                     ApplicationController.setUserInfo(null)
-                    if(PlaystationConfig.forcedRegistration == 'FLOOGLE'){
+                    if(PlaystationConfig.forcedRegistration == true){
                         openAuthorization()
                     }
                     else{
@@ -1501,8 +1501,8 @@ var ApplicationController = function( screenObj ){
                     }
                 }
                 else{
-                                            m_focused_controller = m_main_menu_controller;
-                        m_main_menu_controller.setFocus();
+                    m_focused_controller = m_main_menu_controller;
+                    m_main_menu_controller.setFocus();
                 }
 
             })
