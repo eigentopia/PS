@@ -72,6 +72,8 @@ var LoginWidget = function( ) {
                 if(!user.age || user.age ==''){
                     CrackleApi.User.moreUserInfo(ssoResponse, function(fullData){
                         ApplicationController.setUserInfo(fullData)
+                        logOutNode.removeChild(statusScreen)
+                        m_master_container.removeChild(activationText)
                         statusScreen =  showHome()
                         logOutNode.addChild(statusScreen);
                         m_master_container.addChild( logOutNode );
@@ -81,6 +83,13 @@ var LoginWidget = function( ) {
                 }
                 else{
                     ApplicationController.setCrackleUser(ssoResponse)
+                        logOutNode.removeChild(statusScreen)
+                        m_master_container.removeChild(activationText)
+                        statusScreen =  showHome()
+                        logOutNode.addChild(statusScreen);
+                        m_master_container.addChild( logOutNode );
+                        m_master_container.width = logOutNode.naturalWidth;
+                        m_master_container.height = logOutNode.naturalHeight;
                 }
             }
             else if (ssoResponse.error) {
@@ -184,6 +193,13 @@ var LoginWidget = function( ) {
                         ApplicationController.setUserInfo(fullUserData, showStatusScreen)
                         StorageManagerInstance.set('deviceAuth', 'true')
                         done = true;
+                        logOutNode.removeChild(statusScreen)
+                        m_master_container.removeChild(activationText)
+                        statusScreen =  showHome()
+                        logOutNode.addChild(statusScreen);
+                        m_master_container.addChild( logOutNode );
+                        m_master_container.width = logOutNode.naturalWidth;
+                        m_master_container.height = logOutNode.naturalHeight;
                     })   
                 }
             }
@@ -193,6 +209,7 @@ var LoginWidget = function( ) {
                     if (!done) {
                         showStatusScreen && showStatusScreen( false, ssoResponse.error)
                         done = true;
+
                     }
                 }
             }

@@ -632,10 +632,6 @@ var ApplicationController = function( screenObj ){
     this.update = function( engine_timer ){
         if( LoggerConfig.CONFIG.UPDATE_DEBUG ) Logger.log( 'ApplicationController update() ' + engine_timer );
 
-//        if( engine_timer > m_last_gc_engine_timer + 10 ){
-//            m_last_gc_engine_timer = engine_timer;
-//            UtilLibraryInstance.garbageCollect();
-//        }
 
         // START THE APP IF NOT STARTED ALREADY
         if( m_app_started == false ) this.startApp();
@@ -653,37 +649,6 @@ var ApplicationController = function( screenObj ){
             updateOnscreenControllers( engine_timer );
             updateManagers( engine_timer );
 
-    //        if( engine.stats.memory.available < 150000000 ){
-    //            Logger.log( 'TRYING TO FREE UP SOME MEMORY' );
-    //            if( m_movie_details_controller && m_movie_details_controller != m_focused_controller ){
-    //                if( m_content_container.contains( m_movie_details_controller.getDisplayNode() ) ){
-    //                    m_content_container.removeChild( m_movie_details_controller.getDisplayNode() );
-    //                }
-    //                removeControllerFromPresentControllers( m_movie_details_controller );
-    //                m_movie_details_controller = null;
-    //            }
-    //            if( m_show_details_controller && m_show_details_controller != m_focused_controller ){
-    //                if( m_content_container.contains( m_show_details_controller.getDisplayNode() ) ){
-    //                    m_content_container.removeChild( m_show_details_controller.getDisplayNode() );
-    //                }
-    //                removeControllerFromPresentControllers( m_show_details_controller );
-    //                m_show_details_controller = null;
-    //            }
-    //            if( m_recommended_watchlist_controller && m_recommended_watchlist_controller != m_focused_controller ){
-    //                if( m_content_container.contains( m_recommended_watchlist_controller.getDisplayNode() ) ){
-    //                    m_content_container.removeChild( m_recommended_watchlist_controller.getDisplayNode() );
-    //                }
-    //                removeControllerFromPresentControllers( m_recommended_watchlist_controller );
-    //                m_recommended_watchlist_controller = null;
-    //            }
-    //            UtilLibraryInstance.garbageCollect();
-    //        }
-
-    //        // TODO: Remove me - Subtitle test
-    //        if ( m_start_video_pos > 0 ){
-    //            subtitle_widget.displaySubtitleBetween( m_last_video_pos, engine_timer );
-    //            m_last_video_pos = engine_timer;
-    //        }
         }catch( e ){
             Logger.log( '!!! EXCEPTION ApplicationController update()' );
             Logger.logObj( e );
@@ -1506,53 +1471,41 @@ var ApplicationController = function( screenObj ){
 
             var usrid = localStorage.userId
             var deviceAuth = localStorage.deviceAuth            
-            if(PlaystationConfig.forcedRegistration == true){
-                if(deviceAuth == "" || deviceAuth == undefined){ 
+                //if(deviceAuth == "" || deviceAuth == undefined){ 
             
-                    CrackleApi.User.sso(function(data){
-                        if(data && (data.ActivationCode !=null || data.ActivationCode !=undefined)){
-                        //     if(usrid && (deviceAuth == undefined || deviceAuth == "") ){
-                        //         CrackleApi.User.silentAuth(usrid, function(userInfo){
-                        //             CrackleApi.User.moreUserInfo(userInfo, function(fullUserData){
-                        //                 authComplete(true, fullUserData)
-                        //             })
-                        //         })
-                        //     }
-                        //     else{
-                                localStorage.deviceAuth = ""
-                                openAuthorization()
-                            //}
-                            
-                        }
-                        else if (data && data.CrackleUserName){
-                            CrackleApi.User.moreUserInfo(data, function(fullUserData){
-                        
-                                ApplicationController.setUserInfo(fullUserData)
-                                StorageManagerInstance.set('deviceAuth', 'true')
-                                m_focused_controller = m_main_menu_controller;
-                                m_main_menu_controller.setFocus();
-                            })
-                        }
-       
-                    })
-                }
-            }
-            else{
-                var strg = engine.storage.local
-                if(strg.age && strg.age !== ''){
-                    ApplicationController.setCrackleUser(strg)
-                    m_focused_controller = m_main_menu_controller;
-                    m_main_menu_controller.setFocus();
-                }
-                else{
-                    CrackleApi.User.moreUserInfo(strg, function(fullUserData){
-                        
-                        ApplicationController.setUserInfo(fullUserData)
+            CrackleApi.User.sso(function(data){
+                if(data && (data.ActivationCode !=null || data.ActivationCode !=undefined)){
+                    ApplicationController.setUserInfo(null)
+                    if(PlaystationConfig.forcedRegistration == 'FLOOGLE'){
+                        openAuthorization()
+                    }
+                    else{
                         m_focused_controller = m_main_menu_controller;
                         m_main_menu_controller.setFocus();
-                    })
+                    }
+                    
                 }
-            }
+                else if (data && data.CrackleUserName){
+                    if(localStorage.age && localStorage.age !== ''){
+                        ApplicationController.setCrackleUser(localStorage)
+                        m_focused_controller = m_main_menu_controller;
+                        m_main_menu_controller.setFocus();
+                    }
+                    else{
+                        CrackleApi.User.moreUserInfo(data, function(fullUserData){
+                            ApplicationController.setUserInfo(fullUserData)
+                            StorageManagerInstance.set('deviceAuth', 'true')
+                            m_focused_controller = m_main_menu_controller;
+                            m_main_menu_controller.setFocus();
+                        })
+                    }
+                }
+                else{
+                                            m_focused_controller = m_main_menu_controller;
+                        m_main_menu_controller.setFocus();
+                }
+
+            })
         }
     }
 
@@ -2531,11 +2484,11 @@ var ApplicationController = function( screenObj ){
         localStorage.gender = (user.userGender)?user.userGender:user.gender;
         localStorage.userId = (user.CrackleUserId)?user.CrackleUserId:user.id;
         localStorage.name = (user.CrackleUserName)?user.CrackleUserName:user.name;
-        ApplicationController.setCrackleUser(user)
+        ApplicationController.setCrackleUser(user, cb)
 
     }
 
-    ApplicationController.setCrackleUser = function(userData){
+    ApplicationController.setCrackleUser = function(userData, cb){
         
         console.log("SETTING USER INFO")
         console.dir(userData)
@@ -2546,6 +2499,8 @@ var ApplicationController = function( screenObj ){
             if(data != null && status == 200){
                 console.log("CrackleUser after watchlist")
                 console.dir(crackleUser)
+
+                cb && cb(true)
             }
         });
     }
