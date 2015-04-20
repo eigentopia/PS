@@ -4,19 +4,13 @@
 include( "js/app/com/dadc/lithium/view/widgets/TabbedButtonWidget.js" );
 include( "js/app/com/dadc/lithium/view/widgets/TextBoxWidget.js" );
 
-var LoginWidget = function( ) {
+var LoginWidget = function( widgController) {
     var m_root_node = engine.createContainer();
     var m_master_container = engine.createContainer();
-    var submitButton;
-    var logOutButton;
-    var emailSlate = null;
-    var passSlate = null;
-    var currentScreen = "login"
     var focus = false;
     var activeField;
     var self = this;
     var user;
-    var loginNode = engine.createContainer();
     var logOutNode = engine.createContainer();
     var pollOk = false
 
@@ -37,7 +31,9 @@ var LoginWidget = function( ) {
     }
 
     this.update = function( engine_timer ){
-        if( LoggerConfig.CONFIG.UPDATE_DEBUG ) Logger.log( 'LoginWidget update() ' + engine_timer );
+        if( LoggerConfig.CONFIG.UPDATE_DEBUG ){
+            Logger.log( 'LoginWidget update() ' + engine_timer );
+        }
         
     }
 
@@ -58,6 +54,7 @@ var LoginWidget = function( ) {
         CrackleApi.User.sso(function (ssoResponse) {
             if (ssoResponse.ActivationCode) {
                 if (ssoResponse.ActivationCode != authCode) {
+                    ApplicationController.setUserInfo(null)
                     statusScreen =  showActivate()
                     pollActivation()
                     logOutNode.addChild(statusScreen);
@@ -72,24 +69,36 @@ var LoginWidget = function( ) {
                 if(!user.age || user.age ==''){
                     CrackleApi.User.moreUserInfo(ssoResponse, function(fullData){
                         ApplicationController.setUserInfo(fullData)
-                        logOutNode.removeChild(statusScreen)
-                        m_master_container.removeChild(activationText)
-                        statusScreen =  showHome()
-                        logOutNode.addChild(statusScreen);
-                        m_master_container.addChild( logOutNode );
-                        m_master_container.width = logOutNode.naturalWidth;
-                        m_master_container.height = logOutNode.naturalHeight;
+                        if(widgController.previousScreen == null){
+                            statusScreen && logOutNode.removeChild(statusScreen)
+                            activationText && m_master_container.removeChild(activationText)
+                            statusScreen =  showHome()
+                            logOutNode.addChild(statusScreen);
+                            m_master_container.addChild( logOutNode );
+                            m_master_container.width = logOutNode.naturalWidth;
+                            m_master_container.height = logOutNode.naturalHeight;
+                        }
+                        else{
+                            widgController.openPreviousController();
+
+                        }
                     })
                 }
                 else{
                     ApplicationController.setCrackleUser(ssoResponse)
-                        logOutNode.removeChild(statusScreen)
-                        m_master_container.removeChild(activationText)
+                    if(widgController.previousScreen == null){
+                        statusScreen && logOutNode.removeChild(statusScreen)
+                        activationText && m_master_container.removeChild(activationText)
                         statusScreen =  showHome()
                         logOutNode.addChild(statusScreen);
                         m_master_container.addChild( logOutNode );
                         m_master_container.width = logOutNode.naturalWidth;
                         m_master_container.height = logOutNode.naturalHeight;
+                    }
+                    else{
+                        widgController.openPreviousController();
+
+                    }
                 }
             }
             else if (ssoResponse.error) {
@@ -97,6 +106,7 @@ var LoginWidget = function( ) {
                     //clearTimeout(pollTimer);
                     if (!done) {
                         showStatusScreen && showStatusScreen( false, ssoResponse.error)
+
                         done = true;
                     }
                 }
@@ -165,6 +175,7 @@ var LoginWidget = function( ) {
 
     var pollTimer;
     var authCode=""
+    var activationText=null
        
     function pollActivation() {
         var done = false;
@@ -191,15 +202,21 @@ var LoginWidget = function( ) {
                     //Because CrackleAPI- that's why.
                     CrackleApi.User.moreUserInfo(ssoResponse, function(fullUserData){
                         ApplicationController.setUserInfo(fullUserData, showStatusScreen)
-                        StorageManagerInstance.set('deviceAuth', 'true')
-                        done = true;
-                        logOutNode.removeChild(statusScreen)
-                        m_master_container.removeChild(activationText)
-                        statusScreen =  showHome()
-                        logOutNode.addChild(statusScreen);
-                        m_master_container.addChild( logOutNode );
-                        m_master_container.width = logOutNode.naturalWidth;
-                        m_master_container.height = logOutNode.naturalHeight;
+                        if(widgController.previousScreen == null){
+                            statusScreen && logOutNode.removeChild(statusScreen)
+                            activationText && m_master_container.removeChild(activationText)
+                            done = true;
+                            statusScreen =  showHome()
+                            logOutNode.addChild(statusScreen);
+                            m_master_container.addChild( logOutNode );
+                            m_master_container.width = logOutNode.naturalWidth;
+                            m_master_container.height = logOutNode.naturalHeight;
+                        }
+                        else{
+                            done = true;
+                            widgController.openPreviousController();
+
+                        }
                     })   
                 }
             }
