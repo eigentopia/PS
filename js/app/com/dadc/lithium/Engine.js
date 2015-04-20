@@ -73,72 +73,77 @@ var Engine = function(){
                 clearTimeout(timer);
                 screen.removeChild(container)
                 var storage = engine.storage.local;
-        storage.platform = engine.stats.device.platform;
-                            m_application_controller_obj = new ApplicationController( screen );
-            start();
+                storage.platform = engine.stats.device.platform;
+/*                console.log("****1")
+                console.dir(storage)*/
+                m_application_controller_obj = new ApplicationController( screen );
+                start();
                 //checkStorge(screen);
             }
 
         }
         else{
             var storage = engine.storage.local;
-        storage.platform = engine.stats.device.platform;
-                        m_application_controller_obj = new ApplicationController( screen );
+            storage.platform = engine.stats.device.platform;
+            // console.log("****2")
+            // console.dir(storage)
+
+            m_application_controller_obj = new ApplicationController( screen );
             start();
             //checkStorge(screen);
         }
 
     }
-    function checkStorge(screen){
+    // function checkStorge(screen){
 
-        var storage = engine.storage.local;
-        storage.platform = engine.stats.device.platform;
+    //     var storage = engine.storage.local;
+    //     storage.platform = engine.stats.device.platform;
 
-        if(storage){
-            var email = storage.userEmailAddress;
-            var pwd = storage.userPass
+    //     if(storage){
+    //         var email = storage.userEmailAddress;
+    //         var pwd = storage.userPass
 
-            //m_login_widget.unsetFocus();
-            if((email && email !=="") && (pwd && pwd !=="") ){
-                var request = new LoginRequest(email, pwd, function(data, status){
-                    Logger.log("ENGINE DATA")
-                    Logger.logObj(data)
-                    Logger.log(status)
+    //         //m_login_widget.unsetFocus();
+    //         if((email && email !=="") && (pwd && pwd !=="") ){
+    //             var request = new LoginRequest(email, pwd, function(data, status){
+    //                 Logger.log("ENGINE DATA")
+    //                 Logger.logObj(data)
+    //                 Logger.log(status)
 
-                    if(status == 200 && data != null){
-                        var loginResult = data.m_data;
-                        if(loginResult.status.messageCode == 105 || loginResult.status.messageCode == 110){
+    //                 if(status == 200 && data != null){
+    //                     var loginResult = data.m_data;
+    //                     if(loginResult.status.messageCode == 105 || loginResult.status.messageCode == 110){
 
-                            storage.userEmailAddress = ""
-                            storage.userPass = ""
-                            storage.userId = ""
+    //                         storage.userEmailAddress = ""
+    //                         storage.userPass = ""
+    //                         storage.userId = ""
 
-                        }
-                    }
-                    else{  
-                        storage.userEmailAddress = ""
-                        storage.userPass = ""
-                        storage.userId = ""
-                    }
+    //                     }
+    //                 }
+    //                 else{  
+    //                     storage.userEmailAddress = ""
+    //                     storage.userPass = ""
+    //                     storage.userId = ""
+    //                 }
 
-                    m_application_controller_obj = new ApplicationController( screen );
-                    start();
-                })
-                request.startRequest();
-            }
-            else{   //over protective
-                m_application_controller_obj = new ApplicationController( screen );
-                start();
-            }
-        }
-        else{   //no storage- unlikely
-            storage.userEmailAddress = ""
-            storage.userPass = ""
-            storage.userId = ""
-            m_application_controller_obj = new ApplicationController( screen );
-            start();
-        }              
-    }
+    //                 m_application_controller_obj = new ApplicationController( screen );
+    //                 start();
+    //             })
+    //             request.startRequest();
+    //         }
+    //         else{   //over protective
+    //             m_application_controller_obj = new ApplicationController( screen );
+    //             start();
+    //         }
+    //     }
+    //     else{   //no storage- unlikely
+    //         storage.userEmailAddress = ""
+    //         storage.userPass = ""
+    //         storage.userId = ""
+    //         m_application_controller_obj = new ApplicationController( screen );
+    //         start();
+    //     }              
+    // }
    
     function start(){
         engine.onEnterFrame = onEnterFrame; 

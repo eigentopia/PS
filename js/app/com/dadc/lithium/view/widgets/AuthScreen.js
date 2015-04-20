@@ -16,7 +16,7 @@ var AuthScreen = (function(){
 	function pollActivation() {
 	    var done = false;
         CrackleApi.User.sso(function (ssoResponse) {
-            console.log("GOT something in poll " + JSON.stringify(ssoResponse))
+
             if (ssoResponse.ActivationCode) {
                 if (ssoResponse.ActivationCode != authCode) {
                 	authCode = ssoResponse.ActivationCode
@@ -31,10 +31,9 @@ var AuthScreen = (function(){
 					pollActivation()
 	    		}, 3000);
 
-
             }
             else if (ssoResponse.CrackleUserId) {
-               	clearTimeout(pollTimer);
+               	//clearTimeout(pollTimer);
                 if (!done) {
                 	//Because CrackleAPI- that's why.
                 	CrackleApi.User.moreUserInfo(ssoResponse, function(fullUserData){
@@ -48,7 +47,7 @@ var AuthScreen = (function(){
             }
             else if (ssoResponse.error) {
                 if (ssoResponse.error != 'authing') {
-                    clearTimeout(pollTimer);
+                    //clearTimeout(pollTimer);
                     if (!done) {
                         finishedCallback && finishedCallback( false, ssoResponse.error)
                         done = true;
@@ -61,17 +60,6 @@ var AuthScreen = (function(){
 
 	function drawScreen(){
 	 	self.rootNode = engine.createContainer();
-
-		// var background = engine.createSlate()
-		// 	background.shader = ShaderCreatorInstance.create9SliceShader( AssetLoaderInstance.getImage( "Artwork/button_small_lightgray.png" ), 14, 14, RGBLibraryInstance.getWHITE( .5 ) );
-		// 	background.height = containerHeight
-		// 	background.width = containerWidth
-		// background = engine.createSlate();
-		// background.shader = ShaderCreatorInstance.createSolidColorShader( RGBLibraryInstance.getDARKGRAY(.8) );
-		// background.height = containerHeight
-		// background.width = containerWidth
-		// background.y = (1080- containerHeight) /2
-		// background.x = (1920 -containerWidth) /2
 
 		self.rootNode.addChild( AssetLoaderInstance.getImage( "Artwork/activationScreen.png" ) );
 
@@ -99,14 +87,6 @@ var AuthScreen = (function(){
 		validAccountText.x = (1920 - validAccountText.naturalWidth)/2
 		validAccountText.y  = (1080)/2 + 340 
 		self.rootNode.addChild(validAccountText)
-
-
-// NOW_WITH
-// ACTIVATE
-// LOGIN_TO
-// ENTER_CODE
-// VALID_ACCOUNT
-// 		self.rootNode.addChild(background)
 		
 
 	}

@@ -135,7 +135,7 @@ var CrackleApi = {
         sso: function(cb) {
             var authUrl = "externaluser/sso?format=json";
             var returnData = null;
-            var id = (PlaystationConfig.hashedDeviceID != null)?PlaystationConfig.hashedDeviceID:"testeridforplaystation"
+            var id = (PlaystationConfig.hashedDeviceID !== null)?PlaystationConfig.hashedDeviceID:"testeridforplaystation"
             var body = { data:JSON.stringify({"AffiliateUserId": PlaystationConfig.hashedDeviceID}), dataType:"Application/Json" }
             //console.log(self.apiUrl + authUrl)
             //HTTP.request(self.apiUrl + authUrl, "POST", body,

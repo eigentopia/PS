@@ -192,7 +192,7 @@ var VideoController = function( ParentControllerObj )
                     return;
                 }
 
-                if(!nextVideoOverlay && totalVideosPlayed < 5){//} && userOptOut == false){ //More to play? If the tvp hasn't been reset we skip this part.
+                if((!nextVideoOverlay&& userOptOut == false) && totalVideosPlayed < 5){//} && userOptOut == false){ //More to play? If the tvp hasn't been reset we skip this part.
                     openNextVideoOverlay();       
                 }
             }
@@ -254,6 +254,7 @@ var VideoController = function( ParentControllerObj )
     this.prepareToOpen = function( MediaDetailsObj, audioVideoUrl, subtitleUrl )
     {
         This.audioVideoUrlSwitch = false;
+        userOptOut = false
         //Add stuff here for the video stream
         // console.log("1 prepareToOpen with")
         // console.log(audioVideoUrl)
@@ -581,11 +582,11 @@ var VideoController = function( ParentControllerObj )
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
             // TODO: Maybe check if resume time is equal to movie's length and then restart the movie?
             //
-            // if(nextVideoOverlay != null){
-            //     userOptOut = true;
-            //     closeNextVideoOverlay();
-            //     return;
-            // }
+            if(nextVideoOverlay != null){
+                userOptOut = true;
+                closeNextVideoOverlay();
+                return;
+            }
         
             // if(nextVideoContinueOverlay != null){
             //     return;
