@@ -171,11 +171,11 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
 
        
     }
-    
+    var crackleUser = ApplicationController.getUserInfo() 
     this.navDown = function(){
         if ( m_is_focussed && m_present_widgets.length > 0) {
             
-            if( PlaystationConfig.forcedRegistration == true && myWatchlistButton.isActive()){
+            if( crackleUser.name != '' && myWatchlistButton.isActive()){
                 myWatchlistButton.setInactive(); 
                 m_recommended_watchlist_template1.setFocus();
             }
