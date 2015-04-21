@@ -67,10 +67,14 @@ var AuthScreen = (function(){
 		nowWithText.y  = (1080)/2 - 250
 		self.rootNode.addChild(nowWithText)
 
-		var activateText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ACTIVATE ),  FontLibraryInstance.AUTHACTIVATE, 1920 )
+		var activateText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ACTIVATE ),  FontLibraryInstance.AUTHACTIVATE, 980 )
 		activateText.x = (1920 - activateText.naturalWidth)/2
-		activateText.y  = (1080)/2 - 120  
+		activateText.y  = (1080)/2 - 130  
 		self.rootNode.addChild(activateText)
+		var activateText2 = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ACTIVATE2 ),  FontLibraryInstance.AUTHACTIVATE, 980 )
+		activateText2.x = (1920 - activateText2.naturalWidth)/2
+		activateText2.y  = (1080)/2 - 95  
+		self.rootNode.addChild(activateText2)
 
 		var loginText = engine.createTextBlock([Dictionary.getText( Dictionary.TEXT.LOGIN_TO ), 'http://crackle.com/activate'],  [FontLibraryInstance.AUTHLOGIN, FontLibraryInstance.AUTHLOGINURL], 1920 )
 		loginText.x = 600

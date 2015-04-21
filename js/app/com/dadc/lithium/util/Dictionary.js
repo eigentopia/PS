@@ -32,34 +32,40 @@ var Dictionary = new Dictionary();
 
 Dictionary.TEXT = {
     NOW_WITH:{
-        'en': 'Now with more you',
-        'pt': 'Você ainda está assistindo?',
-        'es': '¿Aún estás viendo?',
-        'fr': 'Vous regardez toujours?' 
+        'en': 'Register for FREE and take your playlists with you.',
+        'pt': 'Inscreva-se gratuitamente e tenha suas listas de filmes sempre disponíveis.',
+        'es': 'Regístrate gratis y tendrás tus películas favoritas siempre a la mano.',
+        'fr': 'Inscrivez-vous GRATUITEMENT et prenez vos listes de diffusion avec vous.' 
     },
     ACTIVATE:{
-        'en': 'Activate your device to personalize your Crackle experience.',
-        'pt': 'Você ainda está assistindo?',
-        'es': '¿Aún estás viendo?',
-        'fr': 'Vous regardez toujours?' 
+        'en': 'Activate your device to personalize your experience and',
+        'pt': 'Ative seu dispositivo para personalizar sua experiência e',
+        'es': 'Activa tu dispositivo para personalizar tu experiencia y',
+        'fr': 'Activez votre appareil pour personnaliser votre expérience et' 
+    },
+    ACTIVATE2:{
+        'en': 'enjoy Crackle anywhere with our mobile application.',
+        'pt': 'levar o Crackle para qualquer lugar com nosso aplicativo.',
+        'es': 'disfrutar de Crackle en cualquier lugar con nuestra aplicación móvil.',
+        'fr': 'profiter de Crackle partout grâce à notre application mobile.'        
     },
     LOGIN_TO:{
-        'en': 'Log in to ',
-        'pt': 'Você ainda está assistindo?',
-        'es': '¿Aún estás viendo?',
-        'fr': 'Vous regardez toujours?' 
+        'en': 'Log-in to ',
+        'pt': 'Entre no ',
+        'es': 'Regístrate en ',
+        'fr': 'Se connecter sur ' 
     },
     ENTER_CODE:{
         'en': 'Enter this activation code:',
-        'pt': 'Você ainda está assistindo?',
-        'es': '¿Aún estás viendo?',
-        'fr': 'Vous regardez toujours?' 
+        'pt': 'Coloque o Código de Ativação:',
+        'es': 'Ingresa el código de activación:',
+        'fr': "Entrez le code d'activation suivant:" 
     },
     VALID_ACCOUNT:{
         'en': 'You will need a valid Crackle account to activate your device.',
-        'pt': 'Você ainda está assistindo?',
-        'es': '¿Aún estás viendo?',
-        'fr': 'Vous regardez toujours?' 
+        'pt': 'Você precisará de uma conta do Crackle para ativar seu console.',
+        'es': 'Necesitas una cuenta válida en Crackle para activar tu dispositivo.',
+        'fr': "Vous avez besoin d'un compte Crackle valable pour activer votre appareil." 
     },
 
     WANTTOCONTINE:{
