@@ -12,7 +12,7 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
     var m_selected_container;
     var m_disabled_container;
     var m_inactive_container;
-
+    var crackleUser = ApplicationController.getUserInfo()
     var currentButton;
 
     var m_video_progress_widget;
@@ -58,7 +58,7 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
 
     this.navLeft = function(){
         //console.log("NAV L ShowDetailsMenuItemWidget "+myWatchListButton.isActive())
-        if(PlaystationConfig.forcedRegistration == true && myWatchListButton.isActive()){
+        if(crackleUser.name != '' && myWatchListButton.isActive()){
             myWatchListButton.setInactive();
             watchNowButton.setActive();
             currentButton = watchNowButton;
@@ -71,7 +71,7 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
     }
     this.navRight = function(){
         //console.log("NAV R ShowDetailsMenuItemWidget "+watchNowButton.isActive())
-        if(PlaystationConfig.forcedRegistration == true && watchNowButton.isActive()){
+        if(crackleUser.name != '' && watchNowButton.isActive()){
             watchNowButton.setInactive();
             myWatchListButton.setActive();
             currentButton = myWatchListButton;
@@ -85,7 +85,7 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
     this.enterPressed = function(doWatchlist){
         //console.log("ENTER ShowDetailsMenuItemWidget")
         //Weird new auth rules
-        if(PlaystationConfig.forcedRegistration == true){
+        if(crackleUser.name != ''){
             if(myWatchListButton.isActive()){
                 doWatchlist(m_media_obj.getID(), "media", function(isAdd){
                     var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST ); 
@@ -135,7 +135,7 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
         if ( !m_root_node.contains( m_inactive_container ) ){
             m_root_node.addChildAt( m_inactive_container, 0 );
         }
-        if(PlaystationConfig.forcedRegistration == true){
+        if(crackleUser.name != ''){
             myWatchListButton.setInactive();
         }
         watchNowButton.setInactive();
@@ -152,7 +152,7 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
         if ( !m_root_node.contains( m_disabled_container ) ){
             m_root_node.addChildAt( m_disabled_container, 0 );
         }
-        if(PlaystationConfig.forcedRegistration == true){
+        if(crackleUser.name != ''){
             myWatchListButton.setDisabled();
         }
         watchNowButton.setDisabled();
@@ -166,7 +166,7 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
             m_video_progress_widget.refreshWidget( m_media_obj.getDurationInSeconds(), VideoProgressManagerInstance.getProgress( m_media_obj.getID() ) );
     }
     this.refreshWatchlistButton = function(){
-        if(PlaystationConfig.forcedRegistration == true &&  myWatchListButton ){
+        if(crackleUser.name != '' &&  myWatchListButton ){
             var watchListText = Dictionary.getText( Dictionary.TEXT.WATCHLIST );
             if(ApplicationController.isInUserWatchlist( m_media_obj.getID())){
                 watchListText = "- " + watchListText;
@@ -256,7 +256,7 @@ var ShowDetailsMenuItemWidget = function( media_obj, render_on_start ) {
         tmp_container.addChild( tmp_slate );
 
         
-        if(PlaystationConfig.forcedRegistration == true){
+        if(crackleUser.name != ''){
             var watchListText = Dictionary.getText( Dictionary.TEXT.WATCHLIST );
             if(ApplicationController.isInUserWatchlist( m_media_obj.getID())){
                 watchListText = "- " + watchListText;
