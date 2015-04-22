@@ -62,7 +62,12 @@ var AuthScreen = (function(){
 
 		self.rootNode.addChild( AssetLoaderInstance.getImage( "Artwork/activationScreen.png" ) );
 
-		var nowWithText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.NOW_WITH ),  FontLibraryInstance.AUTHYOU, 1920 )
+		var nowWithTextFont = FontLibraryInstance.AUTHYOU
+		if(CrackleApi.lang == 'es' || CrackleApi.lang == 'pt'){
+			nowWithTextFont = FontLibraryInstance.AUTHYOUES
+		}
+
+		var nowWithText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.NOW_WITH ),  nowWithTextFont, 1920 )
 		nowWithText.x = (1920 - nowWithText.naturalWidth)/2
 		nowWithText.y  = (1080)/2 - 250
 		self.rootNode.addChild(nowWithText)

@@ -77,6 +77,7 @@ var FontLibrary = function(){
     
     this.AUTHSCREEN = {font: FontLibrary.FONT.NORMAL, size: 60, color: [255/255, 120/255, 0/255, 1], alignment: 'center', preserveSpaces: true};
     this.AUTHYOU={font: FontLibrary.FONT.NORMAL, size: 45, color: [1, 1, 1, 1.0], preserveSpaces: true};
+    this.AUTHYOUES={font: FontLibrary.FONT.NORMAL, size: 32, color: [1, 1, 1, 1.0], preserveSpaces: true};
     this.AUTHACTIVATE = {font: FontLibrary.FONT.NORMAL, size: 28, color: [1, 1, 1, 1.0], preserveSpaces: true,alignment: 'center', maxLines: 2, continueMark: '...'};
     this.AUTHLOGIN = {font: FontLibrary.FONT.NORMAL, size: 40, color: [1, 1, 1, 1.0], preserveSpaces: true, maxLines: 1, continueMark: '...'};
     this.AUTHLOGINURL = {font: FontLibrary.FONT.NORMAL, size: 40, color: [255/255, 120/255, 0/255, 1], preserveSpaces: true, maxLines: 1, continueMark: '...'};

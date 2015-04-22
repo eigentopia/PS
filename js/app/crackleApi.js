@@ -3,6 +3,7 @@
 include("js/app/com/dadc/lithium/util/HTTP.js")
 var CrackleApi = {
     apiUrl: null,
+    lang:'us',
     Config:{
         geo:function (cb){
             var url = "http://api.crackle.com/Service.svc/geo/country?format=json";
@@ -365,16 +366,23 @@ var PlaystationConfig = {
                             CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
 
                             //CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
+                            //CrackleApi.apiUrl = "https://ps3-api-es.crackle.com/Service.svc/"
 
                             PlaystationConfig.hashedDeviceID = engine.stats.device.id;
                             PlaystationConfig.forcedRegistration = (configdata && configdata.ForcedRegistrationOn)?configdata.ForcedRegistrationOn:false
                             
                             if(engine.stats.locale && engine.stats.locale == "fr_FR"){
                                 StorageManagerInstance.set( 'lang', 'fr');
+                                CrackleApi.lang = 'fr'
                             }
                             else{
                                 StorageManagerInstance.set( 'lang', lang );
+                                CrackleApi.lang = lang
                             }
+
+                            // StorageManagerInstance.set( 'lang', 'es' );
+                            // CrackleApi.lang = 'es'
+
 
                             cb && cb("YAY")
                             
