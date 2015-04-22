@@ -322,10 +322,10 @@ Dictionary.TEXT = {
 		'fr': "Crackle est votre source de divertissement sans restrictions. Découvrez notre sélection de films d'Hollywood et de séries télévisées ou originales en version intégrale et non censurée. Retrouvez le meilleur de vos genres préférés, de la comédie à la science-fiction en passant par l'action, l'horreur et bien d'autres, et profitez-en sans le moindre frais sur votre ordinateur, téléphone portable, tablette, téléviseur connecté à Internet ou console de jeu. Pour en savoir plus et consulter les conditions d'utilisation et la charte de confidentialité, rendez-vous sur www.crackle.com."
     },
     LOGIN: {
-        'en': 'Device Status', 
-        'pt': 'Login',
-        'es': 'Ingresar',
-		'fr': 'Connexion'
+        'en': 'Activation', 
+        'pt': 'Ativação',
+        'es': 'Activación',
+		'fr': 'Activation'
     },
     LOGIN_SCREEN_TEXT: {
         'en': 'Please sign in with your Crackle account. \nIf you do not have an account, go to \nwww.crackle.com to register.', 
