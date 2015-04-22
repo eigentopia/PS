@@ -446,16 +446,18 @@ var VideoController = function( ParentControllerObj )
             nextVideoContinueOverlay.navLeft();
             return;
         }
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
-            m_last_seek_timer = engine.getTimer();
-            m_seek_direction = VideoController.SEEK_DIRECTION.RW;
+        if(!this.inAd){
+            if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
+                m_last_seek_timer = engine.getTimer();
+                m_seek_direction = VideoController.SEEK_DIRECTION.RW;
 
-            if( m_timeline_widget.isVisible() ){
-                m_timeline_widget.scanBackward();
-            }else{
-                m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
-                m_timeline_widget.showCursor();
-                m_timeline_widget.setVisible( true );
+                if( m_timeline_widget.isVisible() ){
+                    m_timeline_widget.scanBackward();
+                }else{
+                    m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
+                    m_timeline_widget.showCursor();
+                    m_timeline_widget.setVisible( true );
+                }
             }
         }
 
@@ -474,21 +476,20 @@ var VideoController = function( ParentControllerObj )
             nextVideoContinueOverlay.navRight();
             return;
         }
+        if(!this.inAd){
+            if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
+                m_last_seek_timer = engine.getTimer();
+                m_seek_direction = VideoController.SEEK_DIRECTION.FW;
 
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
-            m_last_seek_timer = engine.getTimer();
-            m_seek_direction = VideoController.SEEK_DIRECTION.FW;
-
-            if( m_timeline_widget.isVisible() ){
-                m_timeline_widget.scanForward();
-            }else{
-                m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
-                m_timeline_widget.showCursor();
-                m_timeline_widget.setVisible( true );
+                if( m_timeline_widget.isVisible() ){
+                    m_timeline_widget.scanForward();
+                }else{
+                    m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
+                    m_timeline_widget.showCursor();
+                    m_timeline_widget.setVisible( true );
+                }
             }
-
         }
-
         // INNOVID INTEGRATION: dispatch key press events
         if( m_current_ig_video != undefined ){
             m_current_ig_video.getIGLayer().navRight();
@@ -500,17 +501,18 @@ var VideoController = function( ParentControllerObj )
 
     this.navDown = function(){
         Logger.log( 'navDown' );
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
-            if( !m_timeline_widget.isVisible() ){
-                m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
-                m_timeline_widget.showCursor();
-                m_timeline_widget.setVisible( true );
-            }else{
-                Logger.log( 'resetTimer' );
-                m_timeline_widget.resetTimer();
+        if(!this.inAd){
+            if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
+                if( !m_timeline_widget.isVisible() ){
+                    m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
+                    m_timeline_widget.showCursor();
+                    m_timeline_widget.setVisible( true );
+                }else{
+                    Logger.log( 'resetTimer' );
+                    m_timeline_widget.resetTimer();
+                }
             }
         }
-
 
         // INNOVID INTEGRATION: dispatch key press events
         if( m_current_ig_video != undefined ){
@@ -541,20 +543,21 @@ var VideoController = function( ParentControllerObj )
 
             closeNextVideoContinueOverlay()
         }
+        if(!this.inAd){
+            if( m_seek_direction && m_crackle_video.isPlaying() ){
+                toggleTimeline();
+                m_seek_direction = null;
+                if( m_crackle_video.isPaused() ){
+                    m_timeline_widget.setPauseStatus( false );
+                    m_crackle_video.togglePause();
+                }
+                Logger.log( 'setting current time to ' + m_timeline_widget.getSeekTime() );
+                m_crackle_video.setCurrentTime( m_timeline_widget.getSeekTime() );
 
-        if( m_seek_direction && m_crackle_video.isPlaying() ){
-            toggleTimeline();
-            m_seek_direction = null;
-            if( m_crackle_video.isPaused() ){
-                m_timeline_widget.setPauseStatus( false );
-                m_crackle_video.togglePause();
+                // Setting to zero here so timeline can be reupdated regardless
+                // of what the "real" current time is
+                m_last_time = 0;
             }
-            Logger.log( 'setting current time to ' + m_timeline_widget.getSeekTime() );
-            m_crackle_video.setCurrentTime( m_timeline_widget.getSeekTime() );
-
-            // Setting to zero here so timeline can be reupdated regardless
-            // of what the "real" current time is
-            m_last_time = 0;
         }
 
         // INNOVID INTEGRATION: dispatch key press events
@@ -564,46 +567,47 @@ var VideoController = function( ParentControllerObj )
     }
 
     this.startPressed = function(){
-
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying()  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
-            m_crackle_video.togglePause();
-            m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
-            m_timeline_widget.showCursor();
-            m_timeline_widget.setPauseStatus( m_crackle_video.isPaused() );
-            m_timeline_widget.setVisible( true );
+        if(!this.inAd){
+            if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying()  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
+                m_crackle_video.togglePause();
+                m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
+                m_timeline_widget.showCursor();
+                m_timeline_widget.setPauseStatus( m_crackle_video.isPaused() );
+                m_timeline_widget.setVisible( true );
+            }
         }
-
         // INNOVID INTEGRATION: dispatch key press events
         if( m_current_ig_video != undefined ){
             m_current_ig_video.getIGLayer().startPressed();
         }
     }
     this.circlePressed = function(){
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
-            // TODO: Maybe check if resume time is equal to movie's length and then restart the movie?
-            //
-            if(nextVideoOverlay != null){
-                userOptOut = true;
-                closeNextVideoOverlay();
-                return;
+        if(!this.inAd){
+            if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
+                // TODO: Maybe check if resume time is equal to movie's length and then restart the movie?
+                //
+                if(nextVideoOverlay != null){
+                    userOptOut = true;
+                    closeNextVideoOverlay();
+                    return;
+                }
+            
+                // if(nextVideoContinueOverlay != null){
+                //     return;
+                // }
+                //
+                // store video progress
+                VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_crackle_video.getResumeTime() );
+                closeNextVideoOverlay()
+                closeNextVideoContinueOverlay()
+                VideoManagerInstance.stop();
+                VideoManagerInstance.close();
+
+                m_parent_controller_obj.requestingParentAction(
+                    {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: this}
+                );
             }
-        
-            // if(nextVideoContinueOverlay != null){
-            //     return;
-            // }
-            //
-            // store video progress
-            VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_crackle_video.getResumeTime() );
-            closeNextVideoOverlay()
-            closeNextVideoContinueOverlay()
-            VideoManagerInstance.stop();
-            VideoManagerInstance.close();
-
-            m_parent_controller_obj.requestingParentAction(
-                {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: this}
-            );
         }
-
         // INNOVID INTEGRATION: dispatch key press events
         if( m_current_ig_video != undefined ){
             m_current_ig_video.getIGLayer().circlePressed();
@@ -613,7 +617,7 @@ var VideoController = function( ParentControllerObj )
     {
 
         if(m_is_focussed && VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
-            if(m_crackle_video.isPlaying() )
+            if(!this.inAd)
             {
                 m_timeline_widget.setVisible(false)
                 //toggleTimeline();
@@ -642,14 +646,16 @@ var VideoController = function( ParentControllerObj )
     }
     this.navUp = function(){
         Logger.log( 'navUp' );
-        if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
-            if( !m_timeline_widget.isVisible() ){
-                m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
-                m_timeline_widget.showCursor();
-                m_timeline_widget.setVisible( true );
-            }else{
-                Logger.log( 'resetTimer' );
-                m_timeline_widget.resetTimer();
+        if(!this.inAd){
+            if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
+                if( !m_timeline_widget.isVisible() ){
+                    m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
+                    m_timeline_widget.showCursor();
+                    m_timeline_widget.setVisible( true );
+                }else{
+                    Logger.log( 'resetTimer' );
+                    m_timeline_widget.resetTimer();
+                }
             }
         }
 
@@ -759,11 +765,12 @@ var VideoController = function( ParentControllerObj )
             );
         }
     };
-
+    this.inAd = false
     this.notifyAdPlaybackStarting = function(){
         Logger.log("notifyAdPlaybackStarting called in VideoController");
         m_timeline_widget.setVisible( false );
         m_seek_direction = null;
+        this.inAd = true;
     };
 
     this.notifyAdPlaybackStalling = function(){

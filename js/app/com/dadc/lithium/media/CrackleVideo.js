@@ -564,6 +564,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 //        }
         
     };
+    var inAd = false;
     function playAd( adIndex ){
         //Uplynk- pause for innovid, hide timeline for everything else.
         Logger.log("play ad called: index " + adIndex);
@@ -573,6 +574,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 //ConvivaIntegration.adStart();
             }
             m_is_playing = false;
+            inAd = true;
             if( m_subtitle_container ) removeSubtitleContainer();
 
             //ConvivaIntegration.detachStreamer();
