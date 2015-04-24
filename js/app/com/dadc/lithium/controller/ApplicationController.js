@@ -1486,19 +1486,19 @@ var ApplicationController = function( screenObj ){
                     
                 }
                 else if (data && data.CrackleUserName){
-                    if(localStorage.age && localStorage.age !== ''){
-                        ApplicationController.setCrackleUser(localStorage)
-                        m_focused_controller = m_main_menu_controller;
-                        m_main_menu_controller.setFocus();
-                    }
-                    else{
+                    //if(localStorage.age && localStorage.age !== ''){
+                      //  ApplicationController.setCrackleUser(localStorage)
+                       // m_focused_controller = m_main_menu_controller;
+                       // m_main_menu_controller.setFocus();
+                   // }
+                   // else{
                         CrackleApi.User.moreUserInfo(data, function(fullUserData){
                             ApplicationController.setUserInfo(fullUserData)
                             StorageManagerInstance.set('deviceAuth', 'true')
                             m_focused_controller = m_main_menu_controller;
                             m_main_menu_controller.setFocus();
                         })
-                    }
+                  //  }
                 }
                 else{
                     m_focused_controller = m_main_menu_controller;
@@ -2551,7 +2551,7 @@ var ApplicationController = function( screenObj ){
             var url =  ModelConfig.getServerURLRoot() + "queue/queue/add/member/"+ crackleUser.id +"/"+type+"/"+id+"?format=json";;
             Http.request(url, "GET", null, null,function(data, status){
                 if(data != null && status ==200){
-                    CrackleApi.User.watchList(crackleUser, function(data, status){
+                    CrackleApi.User.watchlist(crackleUser, function(data, status){
                         callback && callback(true)
                     })
                 }
@@ -2569,7 +2569,7 @@ var ApplicationController = function( screenObj ){
             var url =  ModelConfig.getServerURLRoot() + "queue/queue/remove/member/"+ crackleUser.id +"/"+type+"/"+id+"?format=json";
             Http.requestJSON(url, "GET", null, null, function(data, status){
                 if(data != null && status ==200){
-                     CrackleApi.User.watchList(crackleUser, function(data, status){
+                     CrackleApi.User.watchlist(crackleUser, function(data, status){
                         callback && callback(true)
                     })
                 }

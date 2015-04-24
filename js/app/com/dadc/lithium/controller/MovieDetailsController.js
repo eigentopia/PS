@@ -35,6 +35,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
     var channelId = null;
     var mediaId;
     var channelObj = null;
+    var crackleUser = ApplicationController.getUserInfo()
 
     var m_channel_folder_list_obj;
 
@@ -226,7 +227,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
         watchNowButton.getDisplayNode().y = 670;
 
         //Handle werid new registation conditions
-        if(PlaystationConfig.forcedRegistration == true){
+        if(crackleUser.name != ''){
             m_master_container.addChild(myWatchlistButton.getDisplayNode() );
             myWatchlistButton.getDisplayNode().x = 100;
             myWatchlistButton.getDisplayNode().y = 770;
@@ -258,7 +259,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
         
         if ( m_is_focussed ) {
             //abandonResponse();
-            if(watchNowButton.isActive() && PlaystationConfig.forcedRegistration == true){
+            if(watchNowButton.isActive() && crackleUser.name != ''){
                 watchNowButton.setInactive();
                 myWatchlistButton.setActive();
                 currentFocus = myWatchlistButton
@@ -274,7 +275,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
                 return;
             }
             
-            if( PlaystationConfig.forcedRegistration == true && myWatchlistButton.isActive()){
+            if( crackleUser.name != '' && myWatchlistButton.isActive()){
                 watchNowButton.setActive();
                 myWatchlistButton.setInactive();
                 currentFocus = watchNowButton;
@@ -292,7 +293,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
             else{
                 watchNowButton.setInactive();
                 //Werid auth condition rules
-                if( PlaystationConfig.forcedRegistration == true){
+                if( crackleUser.name != ''){
                     myWatchlistButton.setInactive();
                 }
                 currentFocus = watchNowButton;
@@ -335,7 +336,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
                 });
                 m_media_details_request.startRequest();
             }
-            else if ( PlaystationConfig.forcedRegistration == true && myWatchlistButton.isActive() ){
+            else if ( crackleUser.name != '' && myWatchlistButton.isActive() ){
                 // Request from the application controller to add this item to the playlist
                 self.doWatchlist(watchListItem, watchListItemType, function(isAdd){
                     var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST ); 
@@ -354,9 +355,8 @@ var MovieDetailsController = function ( ParentControllerObj ){
     }
 
     this.doWatchlist = function(id, type, callback){
-        var user = ApplicationController.getUserInfo()
         var itemId = parseInt(id)
-        if (user.id != null){
+        if (crackleUser.id != null){
             if(ApplicationController.isInUserWatchlist(id)){
                 ApplicationController.removeFromUserWatchlist(itemId, type, function(success){
                     if(success){
@@ -394,7 +394,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
             abandonResponse();
             m_is_focussed = false;
             watchNowButton.setInactive();
-            if( PlaystationConfig.forcedRegistration == true){
+            if( crackleUser.name != ''){
                 myWatchlistButton.setInactive();
             }
             currentFocus = watchNowButton;
@@ -421,7 +421,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
     }
 
     function refreshWatchlistButton() {
-        if(  PlaystationConfig.forcedRegistration == true && mediaObj ){
+        if(  crackleUser.name != '' && mediaObj ){
             var watchListText = Dictionary.getText( Dictionary.TEXT.WATCHLIST );
             if(ApplicationController.isInUserWatchlist( watchListItem) ){
                 watchListText = "- " + watchListText;

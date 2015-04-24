@@ -340,10 +340,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
 
     this.onOpened = function(){
-        var parentVideo = VideoManagerInstance.getCoreVideo()
-        var CCSettings = parentVideo.getCCSystemSettings();
-        engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
-        console.log("GOT ME CC")
         // if(ConvivaIntegration.sessionId == null){
         //     ConvivaIntegration.createSession(parentVideo, m_video_url, m_media_details_obj)
         // }

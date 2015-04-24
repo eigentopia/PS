@@ -30,7 +30,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
 
     var myWatchlistButton                       = new PlaylistMenuButtonWidget(" ");
     var self = this;
-    
+    var crackleUser = ApplicationController.getUserInfo()
     this.getParentController = function(){return m_parent_controller_obj;};
     this.getDisplayNode = function( ){return m_root_node;};
     this.getControllerName = function(){return 'RecommendedWatchlistController';};
@@ -130,7 +130,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
                         AnalyticsManagerInstance.firePageViewEvent({cc0:'watchlists', cc1:'recommended', cc2:'', title:ChannelDetailsObj.getName()})
                         
                         //Weird new conditional rules around activation
-                        if( PlaystationConfig.forcedRegistration == true){
+                        if( crackleUser.name != ''){
                             var buttonText = Dictionary.getText( Dictionary.TEXT.WATCHLIST)
                             if (ApplicationController.isInUserWatchlist(ChannelDetailsObj.getID())){
                                 buttonText = "- " + buttonText
@@ -175,7 +175,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
     this.navDown = function(){
         if ( m_is_focussed && m_present_widgets.length > 0) {
             
-            if( PlaystationConfig.forcedRegistration == true && myWatchlistButton.isActive()){
+            if( crackleUser.name != '' && myWatchlistButton.isActive()){
                 myWatchlistButton.setInactive(); 
                 m_recommended_watchlist_template1.setFocus();
             }
@@ -189,7 +189,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
     }
     this.navUp = function(){
         if ( m_is_focussed && m_present_widgets.length > 0){
-            if( PlaystationConfig.forcedRegistration == true && m_recommended_watchlist_template1.hasFocus() && !m_recommended_watchlist_template1.navUp() ){
+            if( crackleUser.name != '' && m_recommended_watchlist_template1.hasFocus() && !m_recommended_watchlist_template1.navUp() ){
                 m_recommended_watchlist_template1.unsetFocus();
                 myWatchlistButton.setActive();
             }
@@ -208,7 +208,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
 //            Logger.log( 'm_selected_episode_row = ' + m_selected_episode_row );
 //            // Set to inactive the current selected episode
 //            m_playlist_menu_item_widgets[ m_selected_episode_row ].setInactive();
-            if(  PlaystationConfig.forcedRegistration == true && myWatchlistButton.isActive() ){
+            if(  crackleUser.name != '' && myWatchlistButton.isActive() ){
                 abandonResponse();
                 myWatchlistButton.setInactive();
                 m_parent_controller_obj.requestingParentAction(
@@ -277,7 +277,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
                     );
                 }
             }
-            else if (  PlaystationConfig.forcedRegistration == true && myWatchlistButton.isActive()){
+            else if (  crackleUser.name != '' && myWatchlistButton.isActive()){
                 var itemId = m_collection_id;
                 var itemType = "channel" // check for medidatailsobject episode to determine if channel add?
 
@@ -401,7 +401,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
     m_recommended_watchlist_text_widget.getDisplayNode().x = 350;
 
     //Weird new auth rules
-    if(PlaystationConfig.forcedRegistration == true){
+    if(crackleUser.name != ''){
         m_master_container.addChild(myWatchlistButton.getDisplayNode() );
         myWatchlistButton.getDisplayNode().x = 30;
         myWatchlistButton.getDisplayNode().y = 420;

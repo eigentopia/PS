@@ -34,7 +34,7 @@ var ShowDetailsController = function( ParentControllerObj ){
     
     var showChannelId;
     var currentMediaDetails; //for tracking. note this only loads on a second call to the API?!?!
-
+    var crackleUser = ApplicationController.getUserInfo();
 
     this.getParentController = function(){return m_parent_controller_obj;};
     this.getDisplayNode = function( ){return m_root_node;};
@@ -200,7 +200,7 @@ var ShowDetailsController = function( ParentControllerObj ){
             }
         //var a = m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].isActive()
         
-            else if (PlaystationConfig.forcedRegistration == true && showWatchlistButton.isActive()){
+            else if (crackleUser.name != '' && showWatchlistButton.isActive()){
                 m_show_detail_text_widget.setScrollbarFocus(false)
                 m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].setActive();
                 showWatchlistButton.setInactive();
@@ -235,7 +235,7 @@ var ShowDetailsController = function( ParentControllerObj ){
                     m_show_detail_text_widget.resetContainerPositionsAndCheckForAnimation();
                     return;
                 }
-                else if(PlaystationConfig.forcedRegistration == true){
+                else if(crackleUser.name != ''){
                     m_show_detail_text_widget.setScrollbarFocus(false);
                     m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].setInactive();
                     showWatchlistButton.setActive();
@@ -244,7 +244,7 @@ var ShowDetailsController = function( ParentControllerObj ){
                 } 
                 
             
-            if(PlaystationConfig.forcedRegistration == true && showWatchlistButton.isActive()){
+            if(crackleUser.name != '' && showWatchlistButton.isActive()){
                 if ( m_show_detail_text_widget.getScrollbarVisibility() && !m_show_detail_text_widget.getScrollbarFocus()){
                     m_show_detail_text_widget.setScrollbarFocus(true);
                     showWatchlistButton.setInactive();
@@ -261,13 +261,13 @@ var ShowDetailsController = function( ParentControllerObj ){
             }
 
 
-            if ( PlaystationConfig.forcedRegistration == true && m_show_detail_text_widget.getScrollbarVisibility() && m_show_detail_text_widget.getScrollbarFocus() ){
+            if ( crackleUser.name != '' && m_show_detail_text_widget.getScrollbarVisibility() && m_show_detail_text_widget.getScrollbarFocus() ){
                 m_show_detail_text_widget.setScrollbarFocus( false );
                 showWatchlistButton.setActive();
             }
             else{
                 m_show_detail_text_widget.setScrollbarFocus( false );
-                if(PlaystationConfig.forcedRegistration == true){
+                if(crackleUser.name != ''){
                     showWatchlistButton.setInactive();
                 }
 		// MILAN-BEN HACK: ALLOW FOR THE SHOW DETAILS RESPONSE TO BE ABANDONED (EG: USER PRESSES PLAY & CIRCLE *BEFORE* MEDIA DETAILS ARE RETURNED, PUTTING THE APP INTO A WEIRD STATE)
@@ -284,7 +284,7 @@ var ShowDetailsController = function( ParentControllerObj ){
             if ( getVisibleMenuWidgetIndex() >= 0 && m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].navRight() ){
                 return;
             }
-            else if ( PlaystationConfig.forcedRegistration == true && m_show_detail_text_widget.getScrollbarVisibility() && !m_show_detail_text_widget.getScrollbarFocus() ){
+            else if ( crackleUser.name != '' && m_show_detail_text_widget.getScrollbarVisibility() && !m_show_detail_text_widget.getScrollbarFocus() ){
                 if(showWatchlistButton.isActive()){
                     m_show_detail_text_widget.setScrollbarFocus( true );
                     showWatchlistButton.setInactive();
@@ -328,7 +328,7 @@ var ShowDetailsController = function( ParentControllerObj ){
                     }
                 }
             }
-            else if (PlaystationConfig.forcedRegistration == true && showWatchlistButton.isActive() ){
+            else if (crackleUser.name != '' && showWatchlistButton.isActive() ){
                 // Request from the application controller to add this item to the playlist
                 var itemId = parseInt(showChannelId);
                 var itemType = "channel" // check for medidatailsobject episode to determine if channel add?
@@ -372,7 +372,7 @@ var ShowDetailsController = function( ParentControllerObj ){
         if ( m_is_focussed){
             abandonResponse();
             m_show_detail_text_widget.setScrollbarFocus( false );
-            if(PlaystationConfig.forcedRegistration == true){
+            if(crackleUser.name != ''){
                 showWatchlistButton.setInactive();
             }
             m_show_details_menu_widgets[ getVisibleMenuWidgetIndex() ].setInactive()
@@ -457,7 +457,7 @@ var ShowDetailsController = function( ParentControllerObj ){
     }
 
     function refreshWatchlistButton(id) {
-        if( PlaystationConfig.forcedRegistration == true && showWatchlistButton ){
+        if( crackleUser.name != '' && showWatchlistButton ){
             var watchListText = Dictionary.getText( Dictionary.TEXT.WATCHLIST );
             if(ApplicationController.isInUserWatchlist( id )){
                 watchListText = "- " + watchListText;
@@ -469,7 +469,7 @@ var ShowDetailsController = function( ParentControllerObj ){
             showWatchlistButton.refreshWidget(watchListText, showWatchlistButton.isActive())
         }
     }
-    // no PlaystationConfig.forcedRegistration == true here because it should never come here
+    // no crackleUser.name != '' here because it should never come here
     this.doWatchlist = function(id, type, callback){
         var user = ApplicationController.getUserInfo()
         //console.log("DO WATCH id type "+id, type)
@@ -562,7 +562,7 @@ var ShowDetailsController = function( ParentControllerObj ){
     m_show_detail_thumb_widget.getDisplayNode().x = 30;
     m_show_detail_text_widget.getDisplayNode().x = 350;
 
-    if(PlaystationConfig.forcedRegistration == true){
+    if(crackleUser.name != ''){
         m_master_container.addChild( showWatchlistButton.getDisplayNode() );
         showWatchlistButton.getDisplayNode().x = 30;
         showWatchlistButton.getDisplayNode().y = 420;

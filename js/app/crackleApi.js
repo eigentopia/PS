@@ -30,6 +30,19 @@ var CrackleApi = {
                 }
             })
        },
+       regionApp: function(apiUrl, cb){
+            var url = "https://"+ apiUrl+"/Service.svc/appconfig?format=json";
+               
+            Http.requestJSON(url, "GET", null, null, function(data, status){
+                if(data != null && status == 200){
+                    var regionForce = data.ForcedRegistrationOn
+                    cb && cb(regionForce)
+                }
+                else{
+                    cb && cb(null, status)
+                }
+            })
+       },
        //stub for now
        getApiUrl: function(){
             return StorageManagerInstance.get( 'api_hostname');
@@ -331,6 +344,7 @@ include( "js/app/com/dadc/lithium/util/md5.js")
 
 var PlaystationConfig = {
         setConfig:function(cb){
+            //This has to be the most absrud set of design choices ever made. 3 calls to set up the app.
             CrackleApi.Config.geo(function(data, status){
                 if(data !== null){
                     var id = data.ID
@@ -369,28 +383,33 @@ var PlaystationConfig = {
                             //CrackleApi.apiUrl = "https://ps3-api-es.crackle.com/Service.svc/"
 
                             PlaystationConfig.hashedDeviceID = engine.stats.device.id;
-                            PlaystationConfig.forcedRegistration = (configdata && configdata.ForcedRegistrationOn)?configdata.ForcedRegistrationOn:false
-                            
-                            if(engine.stats.locale && engine.stats.locale == "fr_FR"){
-                                StorageManagerInstance.set( 'lang', 'fr');
-                                CrackleApi.lang = 'fr'
-                            }
-                            else{
-                                StorageManagerInstance.set( 'lang', lang );
-                                CrackleApi.lang = lang
-                            }
 
-                            // StorageManagerInstance.set( 'lang', 'es' );
-                            // CrackleApi.lang = 'es'
+                            CrackleApi.Config.regionApp(apiUrl, function(regionUrl){
+
+                                PlaystationConfig.forcedRegistration = (regionUrl)?regionUrl:false
+                                
+                                if(engine.stats.locale && engine.stats.locale == "fr_FR"){
+                                    StorageManagerInstance.set( 'lang', 'fr');
+                                    CrackleApi.lang = 'fr'
+                                }
+                                else{
+                                    StorageManagerInstance.set( 'lang', lang );
+                                    CrackleApi.lang = lang
+                                }
+
+                                // StorageManagerInstance.set( 'lang', 'es' );
+                                // CrackleApi.lang = 'es'
 
 
-                            cb && cb("YAY")
-                            
+                                cb && cb("YAY")
+                                
+                            })
                         }
                         else{
                             //error in app configuration
                             cb && cb(null)
                         }
+
                     })
                 }
                 else{
