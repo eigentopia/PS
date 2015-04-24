@@ -1471,8 +1471,7 @@ var ApplicationController = function( screenObj ){
 
             var usrid = localStorage.userId
             var deviceAuth = localStorage.deviceAuth            
-                //if(deviceAuth == "" || deviceAuth == undefined){ 
-            
+
             CrackleApi.User.sso(function(data){
                 if(data && (data.ActivationCode !=null || data.ActivationCode !=undefined)){
                     ApplicationController.setUserInfo(null)

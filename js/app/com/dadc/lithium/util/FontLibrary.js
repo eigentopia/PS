@@ -157,9 +157,9 @@ var FontLibrary = function(){
 
                 font.font = systemFont
                 font.size = 45//subFontConfig.size;
-                font.color[0] = subFontConfig.fontColor[0]/255 *100
-                font.color[1] = subFontConfig.fontColor[1]/255 *100
-                font.color[2] = subFontConfig.fontColor[2]/255 *100
+                font.color[0] = (subFontConfig.fontColor[0] == 1)?1:subFontConfig.fontColor[0]/255 *100
+                font.color[1] = (subFontConfig.fontColor[1] == 1)?1:subFontConfig.fontColor[1]/255 *100
+                font.color[2] = (subFontConfig.fontColor[2] == 1)?1:subFontConfig.fontColor[2]/255 *100
                 font.color[3] = subFontConfig.fontColor[3]
                 font.preserveSpaces= true
                 //font.dynamic = true

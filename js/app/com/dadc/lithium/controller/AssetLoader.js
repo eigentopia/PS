@@ -119,6 +119,8 @@ AssetLoaderInstance.requireAsset( "Artwork/global_nav_button_orange.png" );
 AssetLoaderInstance.requireAsset( "Artwork/global_nav_button_gray.png" );
 AssetLoaderInstance.requireAsset( "Artwork/subnav_button_orange.png" );
 AssetLoaderInstance.requireAsset( "Artwork/subnav_button_gray.png" );
+AssetLoaderInstance.requireAsset( "Artwork/number-button_1.png" )
+AssetLoaderInstance.requireAsset( "Artwork/number-button_2.png" )
 
 AssetLoaderInstance.requireAsset( "Artwork/menu_button_home.png" );
 AssetLoaderInstance.requireAsset( "Artwork/menu_button_movies.png" );

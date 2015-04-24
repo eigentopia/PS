@@ -396,11 +396,8 @@ var PlaystationConfig = {
                                     StorageManagerInstance.set( 'lang', lang );
                                     CrackleApi.lang = lang
                                 }
-
                                 // StorageManagerInstance.set( 'lang', 'es' );
                                 // CrackleApi.lang = 'es'
-
-
                                 cb && cb("YAY")
                                 
                             })

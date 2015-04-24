@@ -145,7 +145,12 @@ var LoginWidget = function( widgController) {
     function showActivate(){
         var rootNode = engine.createContainer();
 
-        var nowWithText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.NOW_WITH ),  FontLibraryInstance.AUTHYOU, 1200 )
+        var nowWithTextFont = FontLibraryInstance.AUTHYOU
+        if(CrackleApi.lang == 'es' || CrackleApi.lang == 'pt'){
+            nowWithTextFont = FontLibraryInstance.AUTHYOUES
+        }
+
+        var nowWithText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.NOW_WITH ),  nowWithTextFont, 1200 )
         nowWithText.x = (1200 - nowWithText.naturalWidth)/2
         nowWithText.y  = (1080)/2 - 550
         rootNode.addChild(nowWithText)
@@ -154,20 +159,24 @@ var LoginWidget = function( widgController) {
         activateText.x = (1200 - activateText.naturalWidth)/2
         activateText.y  = (1080)/2 - 420  
         rootNode.addChild(activateText)
+        var activateText2 = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ACTIVATE2 ),  FontLibraryInstance.AUTHACTIVATE, 980 )
+        activateText2.x = (1200 - activateText2.naturalWidth)/2
+        activateText2.y  = (1080)/2 - 380  
+        rootNode.addChild(activateText2)
 
         var loginText = engine.createTextBlock([Dictionary.getText( Dictionary.TEXT.LOGIN_TO ), 'http://crackle.com/activate'],  [FontLibraryInstance.AUTHLOGIN, FontLibraryInstance.AUTHLOGINURL], 1200 )
         loginText.x = (1200 - loginText.naturalWidth)/2
-        loginText.y  = (1080)/2 - 320  
+        loginText.y  = (1080)/2 - 250  
         rootNode.addChild(loginText)
 
         var enterCodeText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ENTER_CODE ),  FontLibraryInstance.AUTHLOGIN, 1200 )
         enterCodeText.x = (1200 - enterCodeText.naturalWidth)/2
-        enterCodeText.y  = (1080)/2 -220 
+        enterCodeText.y  = (1080)/2 -150 
         rootNode.addChild(enterCodeText)
 
         var validAccountText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.VALID_ACCOUNT ),  FontLibraryInstance.PLAYNEXTDETAILSALT, 1200 )
         validAccountText.x = (1200 - validAccountText.naturalWidth)/2
-        validAccountText.y  = (1080)/2 + 40 
+        validAccountText.y  = (1080)/2 + 50 
         rootNode.addChild(validAccountText)
         
         return rootNode
