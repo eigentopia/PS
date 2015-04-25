@@ -145,6 +145,18 @@ var LoginWidget = function( widgController) {
     function showActivate(){
         var rootNode = engine.createContainer();
 
+        var numberOne = engine.loadImage("Artwork/number-button_1.png", function(img){
+            img.x = 150
+            img.y  = (1080)/2 - 260 
+            rootNode.addChild(img)
+        })
+        var numberTwo =engine.loadImage("Artwork/number-button_2.png", function(img){
+            img.x = 150
+            img.y  = (1080)/2 - 160 
+            rootNode.addChild(img)
+        })
+
+
         var nowWithTextFont = FontLibraryInstance.AUTHYOU
         if(CrackleApi.lang == 'es' || CrackleApi.lang == 'pt'){
             nowWithTextFont = FontLibraryInstance.AUTHYOUES
@@ -165,18 +177,18 @@ var LoginWidget = function( widgController) {
         rootNode.addChild(activateText2)
 
         var loginText = engine.createTextBlock([Dictionary.getText( Dictionary.TEXT.LOGIN_TO ), 'http://crackle.com/activate'],  [FontLibraryInstance.AUTHLOGIN, FontLibraryInstance.AUTHLOGINURL], 1200 )
-        loginText.x = (1200 - loginText.naturalWidth)/2
+        loginText.x = 250//(1200 - loginText.naturalWidth)/2
         loginText.y  = (1080)/2 - 250  
         rootNode.addChild(loginText)
 
         var enterCodeText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ENTER_CODE ),  FontLibraryInstance.AUTHLOGIN, 1200 )
-        enterCodeText.x = (1200 - enterCodeText.naturalWidth)/2
+        enterCodeText.x = 250 //(1200 - enterCodeText.naturalWidth)/2
         enterCodeText.y  = (1080)/2 -150 
         rootNode.addChild(enterCodeText)
 
         var validAccountText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.VALID_ACCOUNT ),  FontLibraryInstance.PLAYNEXTDETAILSALT, 1200 )
         validAccountText.x = (1200 - validAccountText.naturalWidth)/2
-        validAccountText.y  = (1080)/2 + 50 
+        validAccountText.y  = (1080)/2 + 200 
         rootNode.addChild(validAccountText)
         
         return rootNode
@@ -194,7 +206,7 @@ var LoginWidget = function( widgController) {
                     authCode = ssoResponse.ActivationCode
                     activationText = engine.createTextBlock(ssoResponse.ActivationCode,  FontLibraryInstance.AUTHSCREEN, 1200 )
                     activationText.x = (1200 - activationText.naturalWidth)/2
-                    activationText.y  = (1080)/2 - 100
+                    activationText.y  = (1080)/2 - 50
                     m_master_container.addChild(activationText)
 
                 }
