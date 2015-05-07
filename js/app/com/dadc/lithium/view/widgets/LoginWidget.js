@@ -120,15 +120,19 @@ var LoginWidget = function( widgController) {
         }
         var homeScreen = engine.createContainer()
 
-        var logOutInfo = engine.createTextBlock( [Dictionary.getText( Dictionary.TEXT.HELLO ), user.name], 
-            [FontLibraryInstance.getFont_DISCLAIMERBUTTON(),FontLibraryInstance.getFont_DISCLAIMERBUTTON()], 500 );
+        var logOutInfo = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.HELLO ),FontLibraryInstance.getFont_DISCLAIMERBUTTON(), 500 );
         logOutInfo.x=( 1200 / 2 ) - ( logOutInfo.naturalWidth / 2 );
-        logOutInfo.y=150;
+        logOutInfo.y=120;
         homeScreen.addChild(logOutInfo)
+
+        var logOutInfo1 = engine.createTextBlock( user.name, FontLibraryInstance.getFont_DISCLAIMERBUTTON(), 1500 );
+        logOutInfo1.x=( 1200 / 2 ) - ( logOutInfo1.naturalWidth / 2 );
+        logOutInfo1.y=190;
+        homeScreen.addChild(logOutInfo1)
 
         var deviceActiveText = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DEVICE_ACTIVE), FontLibraryInstance.getFont_DISCLAIMERBUTTON(), 900 );
         deviceActiveText.x=( 1200 / 2 ) - ( deviceActiveText.naturalWidth / 2 );
-        deviceActiveText.y=220;
+        deviceActiveText.y=270;
         homeScreen.addChild(deviceActiveText)
 
         var deactivateText = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DEACTIVATE_HOW), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 1100 );

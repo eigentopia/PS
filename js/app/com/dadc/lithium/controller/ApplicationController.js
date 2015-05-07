@@ -1517,13 +1517,12 @@ var ApplicationController = function( screenObj ){
     function authComplete(status, data){
 
         if(status == true && data.CrackleUserId){
-            StorageManagerInstance.set('deviceAuth', 'true')
-            ApplicationController.setUserInfo(data, function(sucessGettingWatchlist){
-
-
+            CrackleApi.User.moreUserInfo(data, function(fullUserData){
                 AnalyticsManagerInstance.loginEvent(  );
                 //remove child auth
                 screenObj.removeChild( AuthScreen.rootNode );
+                ApplicationController.setUserInfo(fullUserData)
+                StorageManagerInstance.set('deviceAuth', 'true')
                 m_focused_controller = m_main_menu_controller;
                 m_main_menu_controller.setFocus();
             });
@@ -2480,7 +2479,7 @@ var ApplicationController = function( screenObj ){
         }
 
         localStorage.age = (user.userAge)?user.userAge:user.age;
-        localStorage.gender = (user.userGender)?user.userGender:user.gender;
+        localStorage.gender = (user.userGender.toString() == '0')?user.userGender.toString():user.gender.toString();
         localStorage.userId = (user.CrackleUserId)?user.CrackleUserId:user.id;
         localStorage.name = (user.CrackleUserName)?user.CrackleUserName:user.name;
         ApplicationController.setCrackleUser(user, cb)

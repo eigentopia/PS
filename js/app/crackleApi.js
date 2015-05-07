@@ -62,8 +62,8 @@ var CrackleApi = {
                 cb(newUserData)
             })
         },
-    	watchlist: function(crackleUser, cb){
-    		var url = CrackleApi.apiUrl + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' ) +"?format=json";
+        watchlist: function(crackleUser, cb){
+            var url = CrackleApi.apiUrl + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' ) +"?format=json";
             if(crackleUser.id != null){
                 var d = new Date();
                 var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
@@ -365,6 +365,7 @@ var PlaystationConfig = {
                                 if( supportedRegions[ i ].CountryCode == cc ){
                                     apiUrl = supportedRegions[ i ].ApiHostName;
                                     lang = supportedRegions[ i ].Language;
+                                    PlaystationConfig.forcedRegistration = supportedRegions[ i ].ForcedRegistrationOn
                                     break;
                                 }
                             }
@@ -378,35 +379,27 @@ var PlaystationConfig = {
                             StorageManagerInstance.set( 'api_hostname', apiUrl );
 
                             CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
+                            PlaystationConfig.hashedDeviceID = engine.stats.device.id
 
                             //CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
                             //CrackleApi.apiUrl = "https://ps3-api-es.crackle.com/Service.svc/"
-
-                            PlaystationConfig.hashedDeviceID = engine.stats.device.id;
-
-                            CrackleApi.Config.regionApp(apiUrl, function(regionUrl){
-
-                                PlaystationConfig.forcedRegistration = (regionUrl)?regionUrl:false
                                 
-                                if(engine.stats.locale && engine.stats.locale == "fr_FR"){
-                                    StorageManagerInstance.set( 'lang', 'fr');
-                                    CrackleApi.lang = 'fr'
-                                }
-                                else{
-                                    StorageManagerInstance.set( 'lang', lang );
-                                    CrackleApi.lang = lang
-                                }
-                                // StorageManagerInstance.set( 'lang', 'es' );
-                                // CrackleApi.lang = 'es'
-                                cb && cb("YAY")
-                                
-                            })
+                            if(engine.stats.locale && engine.stats.locale == "fr_FR"){
+                                StorageManagerInstance.set( 'lang', 'fr');
+                                CrackleApi.lang = 'fr'
+                            }
+                            else{
+                                StorageManagerInstance.set( 'lang', lang );
+                                CrackleApi.lang = lang
+                            }
+                            // StorageManagerInstance.set( 'lang', 'es' );
+                            // CrackleApi.lang = 'es'
+                            cb && cb("YAY")
                         }
                         else{
                             //error in app configuration
                             cb && cb(null)
                         }
-
                     })
                 }
                 else{

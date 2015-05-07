@@ -74,17 +74,23 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
         var output = [];
         for( var i = 0; i < m_allEventCallbacks.length; i++ )
         {
+            var evtCb = m_allEventCallbacks[i]
             if(  m_allEventCallbacks[i].getName() === "defaultImpression" ){
 
                 output.push( m_allEventCallbacks[i].getUrl() );
-                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
-                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
-                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
-                        output.push( newData.attributes.value );
+                
+                if(evtCb.data.trackingURLs && evtCb.data.trackingURLs.url){
+                    if(evtCb.data.trackingURLs.url.length){
+                        for(z=0;z<evtCb.data.trackingURLs.url.length;z++){
+                            var newData = evtCb.data.trackingURLs.url[z]
+                            output.push( newData.attributes.value );
+                        }
+                    }
+                    else{
+                        output.push( evtCb.data.trackingURLs.url.attributes.value );
                     }
                 }
             }
-
         }
     
         Logger.shout("FreewheelEventCallbackHelper.postImpressionUrls() - Total impressions of generic or defaultImpression: " + output.length);
@@ -106,11 +112,16 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
         {
             if( m_allEventCallbacks[i].getType() === "play" || m_allEventCallbacks[i].getName() === "start" ){
                 output.push( m_allEventCallbacks[i].getUrl() );
-
-                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
-                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
-                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
-                        output.push( newData.attributes.value );
+                var evtCb = m_allEventCallbacks[i]
+                if(evtCb.data.trackingURLs && evtCb.data.trackingURLs.url){
+                    if(evtCb.data.trackingURLs.url.length){
+                        for(z=0;z<evtCb.data.trackingURLs.url.length;z++){
+                            var newData = evtCb.data.trackingURLs.url[z]
+                            output.push( newData.attributes.value );
+                        }
+                    }
+                    else{
+                        output.push( evtCb.data.trackingURLs.url.attributes.value );
                     }
                 }
             }
@@ -137,10 +148,16 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
             if( m_allEventCallbacks[i].getName() === "firstQuartile" )
             {
                 output.push( m_allEventCallbacks[i].getUrl() );
-                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
-                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
-                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
-                        output.push( newData.attributes.value );
+                var evtCb = m_allEventCallbacks[i]
+                if(evtCb.data.trackingURLs && evtCb.data.trackingURLs.url){
+                    if(evtCb.data.trackingURLs.url.length){
+                        for(z=0;z<evtCb.data.trackingURLs.url.length;z++){
+                            var newData = evtCb.data.trackingURLs.url[z]
+                            output.push( newData.attributes.value );
+                        }
+                    }
+                    else{
+                        output.push( evtCb.data.trackingURLs.url.attributes.value );
                     }
                 }
             }
@@ -167,10 +184,16 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
             if( m_allEventCallbacks[i].getName() === "midPoint" || m_allEventCallbacks[i].getName() === "midpoint" )
             {
                 output.push( m_allEventCallbacks[i].getUrl() );
-                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
-                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
-                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
-                        output.push( newData.attributes.value );
+                var evtCb = m_allEventCallbacks[i]
+                if(evtCb.data.trackingURLs && evtCb.data.trackingURLs.url){
+                    if(evtCb.data.trackingURLs.url.length){
+                        for(z=0;z<evtCb.data.trackingURLs.url.length;z++){
+                            var newData = evtCb.data.trackingURLs.url[z]
+                            output.push( newData.attributes.value );
+                        }
+                    }
+                    else{
+                        output.push( evtCb.data.trackingURLs.url.attributes.value );
                     }
                 }
             }
@@ -197,12 +220,18 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
             if( m_allEventCallbacks[i].getName() === "thirdQuartile" )
             {
                 output.push( m_allEventCallbacks[i].getUrl() );
-                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
-                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
-                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
-                        output.push( newData.attributes.value );
+                var evtCb = m_allEventCallbacks[i]
+                if(evtCb.data.trackingURLs && evtCb.data.trackingURLs.url){
+                    if(evtCb.data.trackingURLs.url.length){
+                        for(z=0;z<evtCb.data.trackingURLs.url.length;z++){
+                            var newData = evtCb.data.trackingURLs.url[z]
+                            output.push( newData.attributes.value );
+                        }
                     }
-                }            
+                    else{
+                        output.push( evtCb.data.trackingURLs.url.attributes.value );
+                    }
+                }       
             }
         }
         
@@ -227,10 +256,16 @@ var FreewheelEventCallbackHelper = function( AdManager_TemporalAdSlotObj, ADHead
             if( m_allEventCallbacks[i].getName() === "complete" )
             {
                 output.push( m_allEventCallbacks[i].getUrl() );
-                if(m_allEventCallbacks[i].data.trackingURLs && m_allEventCallbacks[i].data.trackingURLs.url && m_allEventCallbacks[i].data.trackingURLs.url.length){
-                    for(z=0;z<m_allEventCallbacks[i].data.trackingURLs.url.length;z++){
-                        var newData = m_allEventCallbacks[i].data.trackingURLs.url[z]
-                        output.push( newData.attributes.value );
+                var evtCb = m_allEventCallbacks[i]
+                if(evtCb.data.trackingURLs && evtCb.data.trackingURLs.url){
+                    if(evtCb.data.trackingURLs.url.length){
+                        for(z=0;z<evtCb.data.trackingURLs.url.length;z++){
+                            var newData = evtCb.data.trackingURLs.url[z]
+                            output.push( newData.attributes.value );
+                        }
+                    }
+                    else{
+                        output.push( evtCb.data.trackingURLs.url.attributes.value );
                     }
                 }
             }
