@@ -2495,9 +2495,6 @@ var ApplicationController = function( screenObj ){
         crackleUser.watchlist = [];
         CrackleApi.User.watchlist(crackleUser, function(data, status){
             if(data != null && status == 200){
-                console.log("CrackleUser after watchlist")
-                console.dir(crackleUser)
-
                 cb && cb(true)
             }
         });

@@ -96,8 +96,8 @@ var AnalyticsRequest = function( AnalyticsModelObj, callback ){
         var AM_ID = "13381"
         //This looks this way because the params must be in a certain order?
         var _url = 'http://crackle.demdex.net/event?'
-
-        var qs = 'd_dpid='+AM_ID+"&d_dpuuid=TEST"//+ApplicationController.crackleUser.id
+        var userID = StorageManagerInstance.get('userId')
+        var qs = 'd_dpid='+AM_ID+"&d_dpuuid="+userID
         qs+= analObj.getQS()
         qs+= "&d_stuff=1&d_dst=1&d_rtbd=json&d_cts=1&d_cb=pt_callback"
 

@@ -362,14 +362,10 @@ Dictionary.TEXT = {
     },
     DEACTIVATE_HOW:{
         'en':"To deactivate this device from your Crackle account, please visit Crackle.com and select Manage Your Devices from your Profile.",
-        'pt':"O seu endereço de e-mail ou senha estão incorretos. Favor verificar se a informação está correta e tente novamente.",
-        'es':"Tu correo electrónico o contraseña están incorrectos. Por favor verifica si la información es correcta e intenta nuevamente.",
-        'fr':"Adresse e-mail ou mot de passe non valide. Vérifiez les informations saisies et réessayez."
+        'pt':"Para desativar esse dispositivo da sua conta no Crackle, por favor visite www.crackle.com.br e selecione 'Administrar seus dispositivos' no seu perfil.",
+        'es':"Para desactivar este dispositivo de tu cuenta de Crackle, visita por favor Crackle.com y selecciona Administra Tus Dispositivos desde tu Perfil.",
+        'fr':"Pour désactiver cet appareil de votre compte Crackle, rendez-vous à crackle.com et sélectionnez Gérer vos appareils depuis votre Profil."
     },
-
-
-
-
     SUBMIT_BUTTON_TEXT: {
         'en': 'Submit', 
         'pt': 'Login',
