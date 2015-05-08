@@ -185,6 +185,9 @@ VideoManager = function(){
         m_core_video_obj.play();
 
         if( m_current_jsvideo != null ){
+            var CCSettings = m_core_video_obj.getCCSystemSettings();
+            engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
+            console.log("GOT ME CC")
             m_current_jsvideo.onOpened();  
         }
     }

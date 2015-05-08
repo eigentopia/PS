@@ -77,7 +77,8 @@ var FontLibrary = function(){
     
     this.AUTHSCREEN = {font: FontLibrary.FONT.NORMAL, size: 60, color: [255/255, 120/255, 0/255, 1], alignment: 'center', preserveSpaces: true};
     this.AUTHYOU={font: FontLibrary.FONT.NORMAL, size: 45, color: [1, 1, 1, 1.0], preserveSpaces: true};
-    this.AUTHACTIVATE = {font: FontLibrary.FONT.NORMAL, size: 27, color: [1, 1, 1, 1.0], preserveSpaces: true, maxLines: 1, continueMark: '...'};
+    this.AUTHYOUES={font: FontLibrary.FONT.NORMAL, size: 32, color: [1, 1, 1, 1.0], preserveSpaces: true};
+    this.AUTHACTIVATE = {font: FontLibrary.FONT.NORMAL, size: 28, color: [1, 1, 1, 1.0], preserveSpaces: true,alignment: 'center', maxLines: 2, continueMark: '...'};
     this.AUTHLOGIN = {font: FontLibrary.FONT.NORMAL, size: 40, color: [1, 1, 1, 1.0], preserveSpaces: true, maxLines: 1, continueMark: '...'};
     this.AUTHLOGINURL = {font: FontLibrary.FONT.NORMAL, size: 40, color: [255/255, 120/255, 0/255, 1], preserveSpaces: true, maxLines: 1, continueMark: '...'};
 
@@ -156,9 +157,9 @@ var FontLibrary = function(){
 
                 font.font = systemFont
                 font.size = 45//subFontConfig.size;
-                font.color[0] = subFontConfig.fontColor[0]/255 *100
-                font.color[1] = subFontConfig.fontColor[1]/255 *100
-                font.color[2] = subFontConfig.fontColor[2]/255 *100
+                font.color[0] = (subFontConfig.fontColor[0] == 1)?1:subFontConfig.fontColor[0]/255 *100
+                font.color[1] = (subFontConfig.fontColor[1] == 1)?1:subFontConfig.fontColor[1]/255 *100
+                font.color[2] = (subFontConfig.fontColor[2] == 1)?1:subFontConfig.fontColor[2]/255 *100
                 font.color[3] = subFontConfig.fontColor[3]
                 font.preserveSpaces= true
                 //font.dynamic = true

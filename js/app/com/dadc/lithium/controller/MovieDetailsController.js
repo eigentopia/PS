@@ -258,8 +258,8 @@ var MovieDetailsController = function ( ParentControllerObj ){
         }
         
         if ( m_is_focussed ) {
-            //abandonResponse();
-            if(crackleUser.name != '' && watchNowButton.isActive()){
+
+            if(watchNowButton.isActive() && crackleUser.name != ''){
                 watchNowButton.setInactive();
                 myWatchlistButton.setActive();
                 currentFocus = myWatchlistButton
@@ -355,9 +355,8 @@ var MovieDetailsController = function ( ParentControllerObj ){
     }
 
     this.doWatchlist = function(id, type, callback){
-        var user = ApplicationController.getUserInfo()
         var itemId = parseInt(id)
-        if (user.id != null){
+        if (crackleUser.id != null){
             if(ApplicationController.isInUserWatchlist(id)){
                 ApplicationController.removeFromUserWatchlist(itemId, type, function(success){
                     if(success){
@@ -423,6 +422,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
 
     function refreshWatchlistButton() {
         if( crackleUser.name != '' && mediaObj ){
+
             var watchListText = Dictionary.getText( Dictionary.TEXT.WATCHLIST );
             if(ApplicationController.isInUserWatchlist( watchListItem) ){
                 watchListText = "- " + watchListText;

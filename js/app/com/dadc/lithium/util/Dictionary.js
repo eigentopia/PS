@@ -32,34 +32,40 @@ var Dictionary = new Dictionary();
 
 Dictionary.TEXT = {
     NOW_WITH:{
-        'en': 'Now with more you',
-        'pt': 'Você ainda está assistindo?',
-        'es': '¿Aún estás viendo?',
-        'fr': 'Vous regardez toujours?' 
+        'en': 'Register for FREE and take your playlists with you.',
+        'pt': 'Inscreva-se gratuitamente e tenha suas listas de filmes sempre disponíveis.',
+        'es': 'Regístrate gratis y tendrás tus películas favoritas siempre a la mano.',
+        'fr': 'Inscrivez-vous GRATUITEMENT et prenez vos listes de diffusion avec vous.' 
     },
     ACTIVATE:{
-        'en': 'Activate your device to personalize your Crackle experience.',
-        'pt': 'Você ainda está assistindo?',
-        'es': '¿Aún estás viendo?',
-        'fr': 'Vous regardez toujours?' 
+        'en': 'Activate your device to personalize your experience and',
+        'pt': 'Ative seu dispositivo para personalizar sua experiência e',
+        'es': 'Activa tu dispositivo para personalizar tu experiencia y',
+        'fr': 'Activez votre appareil pour personnaliser votre expérience et' 
+    },
+    ACTIVATE2:{
+        'en': 'enjoy Crackle anywhere with our mobile application.',
+        'pt': 'levar o Crackle para qualquer lugar com nosso aplicativo.',
+        'es': 'disfrutar de Crackle en cualquier lugar con nuestra aplicación móvil.',
+        'fr': 'profiter de Crackle partout grâce à notre application mobile.'        
     },
     LOGIN_TO:{
-        'en': 'Log in to ',
-        'pt': 'Você ainda está assistindo?',
-        'es': '¿Aún estás viendo?',
-        'fr': 'Vous regardez toujours?' 
+        'en': 'Log-in to ',
+        'pt': 'Entre no ',
+        'es': 'Regístrate en ',
+        'fr': 'Se connecter sur ' 
     },
     ENTER_CODE:{
         'en': 'Enter this activation code:',
-        'pt': 'Você ainda está assistindo?',
-        'es': '¿Aún estás viendo?',
-        'fr': 'Vous regardez toujours?' 
+        'pt': 'Coloque o Código de Ativação:',
+        'es': 'Ingresa el código de activación:',
+        'fr': "Entrez le code d'activation suivant:" 
     },
     VALID_ACCOUNT:{
         'en': 'You will need a valid Crackle account to activate your device.',
-        'pt': 'Você ainda está assistindo?',
-        'es': '¿Aún estás viendo?',
-        'fr': 'Vous regardez toujours?' 
+        'pt': 'Você precisará de uma conta do Crackle para ativar seu console.',
+        'es': 'Necesitas una cuenta válida en Crackle para activar tu dispositivo.',
+        'fr': "Vous avez besoin d'un compte Crackle valable pour activer votre appareil." 
     },
 
     WANTTOCONTINE:{
@@ -316,10 +322,10 @@ Dictionary.TEXT = {
 		'fr': "Crackle est votre source de divertissement sans restrictions. Découvrez notre sélection de films d'Hollywood et de séries télévisées ou originales en version intégrale et non censurée. Retrouvez le meilleur de vos genres préférés, de la comédie à la science-fiction en passant par l'action, l'horreur et bien d'autres, et profitez-en sans le moindre frais sur votre ordinateur, téléphone portable, tablette, téléviseur connecté à Internet ou console de jeu. Pour en savoir plus et consulter les conditions d'utilisation et la charte de confidentialité, rendez-vous sur www.crackle.com."
     },
     LOGIN: {
-        'en': 'Device Status', 
-        'pt': 'Login',
-        'es': 'Ingresar',
-		'fr': 'Connexion'
+        'en': 'Activation', 
+        'pt': 'Ativação',
+        'es': 'Activación',
+		'fr': 'Activation'
     },
     LOGIN_SCREEN_TEXT: {
         'en': 'Please sign in with your Crackle account. \nIf you do not have an account, go to \nwww.crackle.com to register.', 
@@ -356,14 +362,10 @@ Dictionary.TEXT = {
     },
     DEACTIVATE_HOW:{
         'en':"To deactivate this device from your Crackle account, please visit Crackle.com and select Manage Your Devices from your Profile.",
-        'pt':"O seu endereço de e-mail ou senha estão incorretos. Favor verificar se a informação está correta e tente novamente.",
-        'es':"Tu correo electrónico o contraseña están incorrectos. Por favor verifica si la información es correcta e intenta nuevamente.",
-        'fr':"Adresse e-mail ou mot de passe non valide. Vérifiez les informations saisies et réessayez."
+        'pt':"Para desativar esse dispositivo da sua conta no Crackle, por favor visite www.crackle.com.br e selecione 'Administrar seus dispositivos' no seu perfil.",
+        'es':"Para desactivar este dispositivo de tu cuenta de Crackle, visita por favor Crackle.com y selecciona Administra Tus Dispositivos desde tu Perfil.",
+        'fr':"Pour désactiver cet appareil de votre compte Crackle, rendez-vous à crackle.com et sélectionnez Gérer vos appareils depuis votre Profil."
     },
-
-
-
-
     SUBMIT_BUTTON_TEXT: {
         'en': 'Submit', 
         'pt': 'Login',

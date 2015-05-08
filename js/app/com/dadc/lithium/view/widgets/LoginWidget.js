@@ -45,8 +45,8 @@ var LoginWidget = function( widgController) {
     var statusScreen = null;
     function showStatusScreen(){
         user = ApplicationController.getUserInfo();
-        console.log("LOGIN WIDG")
-        console.dir(user)
+        // console.log("LOGIN WIDG")
+        // console.dir(user)
 
         var dAuth = StorageManagerInstance.get('deviceAuth');
         var userName = user.name
@@ -112,8 +112,6 @@ var LoginWidget = function( widgController) {
                 }
             }
         });
-
-
     }
 
     function showHome(){
@@ -122,20 +120,27 @@ var LoginWidget = function( widgController) {
         }
         var homeScreen = engine.createContainer()
 
-        var logOutInfo = engine.createTextBlock( [Dictionary.getText( Dictionary.TEXT.HELLO ), user.name], 
-            [FontLibraryInstance.getFont_DISCLAIMERBUTTON(),FontLibraryInstance.getFont_DISCLAIMERBUTTON()], 500 );
+        var logOutInfo = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.HELLO ),FontLibraryInstance.getFont_DISCLAIMERBUTTON(), 500 );
         logOutInfo.x=( 1200 / 2 ) - ( logOutInfo.naturalWidth / 2 );
-        logOutInfo.y=150;
+        logOutInfo.y=120;
         homeScreen.addChild(logOutInfo)
+
+        var logOutInfo1 = engine.createTextBlock( user.name, FontLibraryInstance.getFont_DISCLAIMERBUTTON(), 1500 );
+        logOutInfo1.x=( 1200 / 2 ) - ( logOutInfo1.naturalWidth / 2 );
+        logOutInfo1.y=190;
+        homeScreen.addChild(logOutInfo1)
 
         var deviceActiveText = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DEVICE_ACTIVE), FontLibraryInstance.getFont_DISCLAIMERBUTTON(), 900 );
         deviceActiveText.x=( 1200 / 2 ) - ( deviceActiveText.naturalWidth / 2 );
-        deviceActiveText.y=220;
+        deviceActiveText.y=270;
         homeScreen.addChild(deviceActiveText)
 
         var deactivateText = engine.createTextBlock( Dictionary.getText( Dictionary.TEXT.DEACTIVATE_HOW), FontLibraryInstance.getFont_DISCLAIMERCENTERTEXT(), 1100 );
         deactivateText.x=( 1200 / 2 ) - ( deactivateText.naturalWidth / 2 );
         deactivateText.y=400;
+        if(CrackleApi.lang == 'es' || CrackleApi.lang == 'pt'){
+            deactivateText.y=600
+        }
         homeScreen.addChild(deactivateText)
 
         return homeScreen
@@ -145,7 +150,24 @@ var LoginWidget = function( widgController) {
     function showActivate(){
         var rootNode = engine.createContainer();
 
-        var nowWithText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.NOW_WITH ),  FontLibraryInstance.AUTHYOU, 1200 )
+        var numberOne = engine.loadImage("Artwork/number-button_1.png", function(img){
+            img.x = 150
+            img.y  = (1080)/2 - 260 
+            rootNode.addChild(img)
+        })
+        var numberTwo =engine.loadImage("Artwork/number-button_2.png", function(img){
+            img.x = 150
+            img.y  = (1080)/2 - 160 
+            rootNode.addChild(img)
+        })
+
+
+        var nowWithTextFont = FontLibraryInstance.AUTHYOU
+        if(CrackleApi.lang == 'es' || CrackleApi.lang == 'pt'){
+            nowWithTextFont = FontLibraryInstance.AUTHYOUES
+        }
+
+        var nowWithText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.NOW_WITH ),  nowWithTextFont, 1200 )
         nowWithText.x = (1200 - nowWithText.naturalWidth)/2
         nowWithText.y  = (1080)/2 - 550
         rootNode.addChild(nowWithText)
@@ -154,20 +176,24 @@ var LoginWidget = function( widgController) {
         activateText.x = (1200 - activateText.naturalWidth)/2
         activateText.y  = (1080)/2 - 420  
         rootNode.addChild(activateText)
+        var activateText2 = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ACTIVATE2 ),  FontLibraryInstance.AUTHACTIVATE, 980 )
+        activateText2.x = (1200 - activateText2.naturalWidth)/2
+        activateText2.y  = (1080)/2 - 380  
+        rootNode.addChild(activateText2)
 
-        var loginText = engine.createTextBlock([Dictionary.getText( Dictionary.TEXT.LOGIN_TO ), 'http://crackle.com/activate'],  [FontLibraryInstance.AUTHLOGIN, FontLibraryInstance.AUTHLOGINURL], 1200 )
-        loginText.x = (1200 - loginText.naturalWidth)/2
-        loginText.y  = (1080)/2 - 320  
+        var loginText = engine.createTextBlock([Dictionary.getText( Dictionary.TEXT.LOGIN_TO ), 'crackle.com/activate'],  [FontLibraryInstance.AUTHLOGIN, FontLibraryInstance.AUTHLOGINURL], 1200 )
+        loginText.x = 250//(1200 - loginText.naturalWidth)/2
+        loginText.y  = (1080)/2 - 250  
         rootNode.addChild(loginText)
 
         var enterCodeText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ENTER_CODE ),  FontLibraryInstance.AUTHLOGIN, 1200 )
-        enterCodeText.x = (1200 - enterCodeText.naturalWidth)/2
-        enterCodeText.y  = (1080)/2 -220 
+        enterCodeText.x = 250 //(1200 - enterCodeText.naturalWidth)/2
+        enterCodeText.y  = (1080)/2 -150 
         rootNode.addChild(enterCodeText)
 
         var validAccountText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.VALID_ACCOUNT ),  FontLibraryInstance.PLAYNEXTDETAILSALT, 1200 )
         validAccountText.x = (1200 - validAccountText.naturalWidth)/2
-        validAccountText.y  = (1080)/2 + 40 
+        validAccountText.y  = (1080)/2 + 200 
         rootNode.addChild(validAccountText)
         
         return rootNode
@@ -185,7 +211,7 @@ var LoginWidget = function( widgController) {
                     authCode = ssoResponse.ActivationCode
                     activationText = engine.createTextBlock(ssoResponse.ActivationCode,  FontLibraryInstance.AUTHSCREEN, 1200 )
                     activationText.x = (1200 - activationText.naturalWidth)/2
-                    activationText.y  = (1080)/2 - 100
+                    activationText.y  = (1080)/2 - 50
                     m_master_container.addChild(activationText)
 
                 }

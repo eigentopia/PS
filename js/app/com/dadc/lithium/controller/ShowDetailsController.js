@@ -34,7 +34,7 @@ var ShowDetailsController = function( ParentControllerObj ){
     var crackleUser = ApplicationController.getUserInfo()
     var showChannelId;
     var currentMediaDetails; //for tracking. note this only loads on a second call to the API?!?!
-
+    var crackleUser = ApplicationController.getUserInfo();
 
     this.getParentController = function(){return m_parent_controller_obj;};
     this.getDisplayNode = function( ){return m_root_node;};
@@ -469,7 +469,7 @@ var ShowDetailsController = function( ParentControllerObj ){
             showWatchlistButton.refreshWidget(watchListText, showWatchlistButton.isActive())
         }
     }
-    // no PlaystationConfig.forcedRegistration == true here because it should never come here
+    // no crackleUser.name != '' here because it should never come here
     this.doWatchlist = function(id, type, callback){
         var user = ApplicationController.getUserInfo()
         //console.log("DO WATCH id type "+id, type)

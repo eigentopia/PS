@@ -30,7 +30,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
 
     var myWatchlistButton                       = new PlaylistMenuButtonWidget(" ");
     var self = this;
-    
+    var crackleUser = ApplicationController.getUserInfo()
     this.getParentController = function(){return m_parent_controller_obj;};
     this.getDisplayNode = function( ){return m_root_node;};
     this.getControllerName = function(){return 'RecommendedWatchlistController';};
@@ -205,9 +205,6 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
     
     this.navLeft = function(){
         if ( m_is_focussed ) {
-//            Logger.log( 'm_selected_episode_row = ' + m_selected_episode_row );
-//            // Set to inactive the current selected episode
-//            m_playlist_menu_item_widgets[ m_selected_episode_row ].setInactive();
             if( crackleUser.name != '' && myWatchlistButton.isActive() ){
                 abandonResponse();
                 myWatchlistButton.setInactive();
@@ -277,7 +274,7 @@ var RecommendedWatchlistController = function( ParentControllerObj ){
                     );
                 }
             }
-            else if ( crackleUser.name != '' && myWatchlistButton.isActive()){
+            else if (  crackleUser.name != '' && myWatchlistButton.isActive()){
                 var itemId = m_collection_id;
                 var itemType = "channel" // check for medidatailsobject episode to determine if channel add?
 

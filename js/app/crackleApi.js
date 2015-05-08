@@ -3,6 +3,7 @@
 include("js/app/com/dadc/lithium/util/HTTP.js")
 var CrackleApi = {
     apiUrl: null,
+    lang:'us',
     Config:{
         geo:function (cb){
             var url = "http://api.crackle.com/Service.svc/geo/country?format=json";
@@ -29,6 +30,19 @@ var CrackleApi = {
                 }
             })
        },
+       regionApp: function(apiUrl, cb){
+            var url = "https://"+ apiUrl+"/Service.svc/appconfig?format=json";
+               
+            Http.requestJSON(url, "GET", null, null, function(data, status){
+                if(data != null && status == 200){
+                    var regionForce = data.ForcedRegistrationOn
+                    cb && cb(regionForce)
+                }
+                else{
+                    cb && cb(null, status)
+                }
+            })
+       },
        //stub for now
        getApiUrl: function(){
             return StorageManagerInstance.get( 'api_hostname');
@@ -48,8 +62,8 @@ var CrackleApi = {
                 cb(newUserData)
             })
         },
-    	watchlist: function(crackleUser, cb){
-    		var url = CrackleApi.apiUrl + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' ) +"?format=json";
+        watchlist: function(crackleUser, cb){
+            var url = CrackleApi.apiUrl + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' ) +"?format=json";
             if(crackleUser.id != null){
                 var d = new Date();
                 var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
@@ -330,6 +344,7 @@ include( "js/app/com/dadc/lithium/util/md5.js")
 
 var PlaystationConfig = {
         setConfig:function(cb){
+            //This has to be the most absrud set of design choices ever made. 3 calls to set up the app.
             CrackleApi.Config.geo(function(data, status){
                 if(data !== null){
                     var id = data.ID
@@ -350,6 +365,7 @@ var PlaystationConfig = {
                                 if( supportedRegions[ i ].CountryCode == cc ){
                                     apiUrl = supportedRegions[ i ].ApiHostName;
                                     lang = supportedRegions[ i ].Language;
+                                    PlaystationConfig.forcedRegistration = supportedRegions[ i ].ForcedRegistrationOn
                                     break;
                                 }
                             }
@@ -363,21 +379,22 @@ var PlaystationConfig = {
                             StorageManagerInstance.set( 'api_hostname', apiUrl );
 
                             CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
+                            PlaystationConfig.hashedDeviceID = engine.stats.device.id
 
                             //CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
-
-                            PlaystationConfig.hashedDeviceID = engine.stats.device.id;
-                            PlaystationConfig.forcedRegistration = (configdata && configdata.ForcedRegistrationOn)?configdata.ForcedRegistrationOn:false
-                            
+                            //CrackleApi.apiUrl = "https://ps3-api-es.crackle.com/Service.svc/"
+                                
                             if(engine.stats.locale && engine.stats.locale == "fr_FR"){
                                 StorageManagerInstance.set( 'lang', 'fr');
+                                CrackleApi.lang = 'fr'
                             }
                             else{
                                 StorageManagerInstance.set( 'lang', lang );
+                                CrackleApi.lang = lang
                             }
-
+                            // StorageManagerInstance.set( 'lang', 'es' );
+                            // CrackleApi.lang = 'es'
                             cb && cb("YAY")
-                            
                         }
                         else{
                             //error in app configuration

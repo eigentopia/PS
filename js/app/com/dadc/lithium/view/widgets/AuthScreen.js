@@ -63,17 +63,26 @@ var AuthScreen = (function(){
 
 		self.rootNode.addChild( AssetLoaderInstance.getImage( "Artwork/activationScreen.png" ) );
 
-		var nowWithText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.NOW_WITH ),  FontLibraryInstance.AUTHYOU, 1920 )
+		var nowWithTextFont = FontLibraryInstance.AUTHYOU
+		if(CrackleApi.lang == 'es' || CrackleApi.lang == 'pt'){
+			nowWithTextFont = FontLibraryInstance.AUTHYOUES
+		}
+
+		var nowWithText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.NOW_WITH ),  nowWithTextFont, 1920 )
 		nowWithText.x = (1920 - nowWithText.naturalWidth)/2
 		nowWithText.y  = (1080)/2 - 250
 		self.rootNode.addChild(nowWithText)
 
-		var activateText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ACTIVATE ),  FontLibraryInstance.AUTHACTIVATE, 1920 )
+		var activateText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ACTIVATE ),  FontLibraryInstance.AUTHACTIVATE, 980 )
 		activateText.x = (1920 - activateText.naturalWidth)/2
-		activateText.y  = (1080)/2 - 120  
+		activateText.y  = (1080)/2 - 130  
 		self.rootNode.addChild(activateText)
+		var activateText2 = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.ACTIVATE2 ),  FontLibraryInstance.AUTHACTIVATE, 980 )
+		activateText2.x = (1920 - activateText2.naturalWidth)/2
+		activateText2.y  = (1080)/2 - 95  
+		self.rootNode.addChild(activateText2)
 
-		var loginText = engine.createTextBlock([Dictionary.getText( Dictionary.TEXT.LOGIN_TO ), 'http://crackle.com/activate'],  [FontLibraryInstance.AUTHLOGIN, FontLibraryInstance.AUTHLOGINURL], 1920 )
+		var loginText = engine.createTextBlock([Dictionary.getText( Dictionary.TEXT.LOGIN_TO ), 'crackle.com/activate'],  [FontLibraryInstance.AUTHLOGIN, FontLibraryInstance.AUTHLOGINURL], 1920 )
 		loginText.x = 600
 		loginText.y  = (1080)/2 - 20  
 		self.rootNode.addChild(loginText)
