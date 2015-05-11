@@ -1459,8 +1459,11 @@ var ApplicationController = function( screenObj ){
                 if( screenObj.contains( m_disclaimer_controller.getDisplayNode() ) )
                     screenObj.removeChild( m_disclaimer_controller.getDisplayNode() );
 
-                m_disclaimer_controller = null;
+                removeControllerFromPresentControllers( m_disclaimer_controller );
+
             }
+            
+            m_disclaimer_controller = null;
 
             AnalyticsManagerInstance.fireHomePageViewEvent();
             AnalyticsManagerInstance.firePageViewEvent( AnalyticsManager.PAGENAME.HOME );
@@ -1477,6 +1480,7 @@ var ApplicationController = function( screenObj ){
                 if(data && (data.ActivationCode !=null || data.ActivationCode !=undefined)){
                     ApplicationController.setUserInfo(null)
                     if(PlaystationConfig.forcedRegistration == true){
+                        m_focused_controller = null
                         openAuthorization()
                     }
                     else{
