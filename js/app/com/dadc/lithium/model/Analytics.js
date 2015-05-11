@@ -182,7 +182,7 @@ var Analytics = function( key_values ){
                 kv  = kv.replace(':', '')
                 kv = kv.split(' ').join('_')
 
-                qs += '&'+i+'='+kv
+                qs += '&c_'+i+'='+kv
             }
         }
 

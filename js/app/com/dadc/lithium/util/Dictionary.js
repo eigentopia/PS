@@ -352,13 +352,12 @@ Dictionary.TEXT = {
         'pt':"Olá, ",
         'es':"Hola, ",
         'fr':"Bonjour, "
-
     },
     DEVICE_ACTIVE:{
         'en':"Your device is active.",
-        'pt':"O seu endereço de e-mail ou senha estão incorretos. Favor verificar se a informação está correta e tente novamente.",
-        'es':"Tu correo electrónico o contraseña están incorrectos. Por favor verifica si la información es correcta e intenta nuevamente.",
-        'fr':"Adresse e-mail ou mot de passe non valide. Vérifiez les informations saisies et réessayez."
+        'pt':"Seu dispositivo está ativado.",
+        'es':"Tu dispositivo está activado.",
+        'fr':"Votre appareil est activé."
     },
     DEACTIVATE_HOW:{
         'en':"To deactivate this device from your Crackle account, please visit Crackle.com and select Manage Your Devices from your Profile.",
@@ -371,7 +370,6 @@ Dictionary.TEXT = {
         'pt': 'Login',
         'es': 'Login',
 		'fr': 'Connexion'
-
     },
     EMAIL_INFO:{
         'en': 'E-mail Address', 
@@ -390,7 +388,6 @@ Dictionary.TEXT = {
         'pt': 'Sair',
         'es': 'Salir',
 		'fr': 'Déconnexion'
-
     },
     REGISTER_BUTTON_TEXT: {
         'en': 'Get a free Crackle account', 
