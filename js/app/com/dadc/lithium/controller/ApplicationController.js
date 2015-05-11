@@ -1453,13 +1453,14 @@ var ApplicationController = function( screenObj ){
                 m_focused_controller = m_disclaimer_controller;
             }, true, ErrorWidget.BUTTON_CAPTION.CONTINUE );
         }else{
-            m_disclaimer_controller.close();
+            if(m_disclaimer_controller !== null){
+                m_disclaimer_controller.close();
 
+                if( screenObj.contains( m_disclaimer_controller.getDisplayNode() ) )
+                    screenObj.removeChild( m_disclaimer_controller.getDisplayNode() );
 
-            if( screenObj.contains( m_disclaimer_controller.getDisplayNode() ) )
-                screenObj.removeChild( m_disclaimer_controller.getDisplayNode() );
-
-            m_disclaimer_controller = null;
+                m_disclaimer_controller = null;
+            }
 
             AnalyticsManagerInstance.fireHomePageViewEvent();
             AnalyticsManagerInstance.firePageViewEvent( AnalyticsManager.PAGENAME.HOME );
