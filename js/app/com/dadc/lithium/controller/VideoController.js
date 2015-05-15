@@ -63,6 +63,7 @@ var VideoController = function( ParentControllerObj )
             // on-start: add the IG layer
             m_master_container.addChild( IGVideoObj.getIGLayer().getDisplayNode() );
             m_current_ig_video = IGVideoObj;
+            this.inAd   = true
             Logger.log("added...");
             Logger.log("current ig video: ");
             Logger.logObj( m_current_ig_video );
@@ -74,6 +75,7 @@ var VideoController = function( ParentControllerObj )
     // INNOVID INTEGRATION: listen for ig videos ending
     this.notifyIGVideoEnded = function( IGVideoObj ){
         console.log("IG VIDEO HAS ENDED")
+        this.inAd   = false
         // on-end: remove the IG layer
         if( IGVideoObj == m_current_ig_video ){
             // INNOVID TODO: CONFIRM THAT LITHIUM ALLOWS US TO REMOVE CHILDREN LIKE THIS
@@ -783,6 +785,7 @@ var VideoController = function( ParentControllerObj )
         m_parent_controller_obj.requestingParentAction(
             {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_ERROR, calling_controller: this}
         );
+        this.inAd = false
     };
 
     function startPlayback(){

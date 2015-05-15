@@ -4,10 +4,10 @@ var ModelConfig = function(){ }
 ModelConfig.getServerURLRoot = function(){
 
     // DYNAMIC PRODUCTION
-    return 'https://' + StorageManagerInstance.get( 'api_hostname' ) + '/Service.svc/';
+    //return 'https://' + StorageManagerInstance.get( 'api_hostname' ) + '/Service.svc/';
 
     // STAGING
-    //return  "https://staging-api-us.crackle.com/Service.svc/";
+    return  "https://staging-api-us.crackle.com/Service.svc/";
 
     // STATIC PRODUCTION
 //    return "https://api.crackle.com/Service.svc/";
