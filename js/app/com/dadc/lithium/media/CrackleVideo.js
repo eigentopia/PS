@@ -278,9 +278,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 //      Logger.log( "-" );
         m_previous_time = m_current_time;
         m_current_time = currentTime;
-
-        m_is_playing = true;
-
         // Check if we have fired video started omniture event
         // If not, fire it
         if ( m_omni_events.indexOf( CrackleVideo.OMNIEVENTS.VIDEOSTARTED ) < 0 ){
@@ -288,9 +285,21 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             m_omni_events.push( CrackleVideo.OMNIEVENTS.VIDEOSTARTED );
             AnalyticsManagerInstance.fireVideoStartEvent( MediaDetailsObj );
         }
+        //check for inad here
+        if(This.inAd == true){
+            if(playingAd != null && playingAd.end_time => m_current_time){
+                m_is_playing = false;
+                playingAd = null
+                This.inAd = false            
+            }
+        }
+        else{
+            m_is_playing = true;
+        }
 
         for( var i = 0; i < m_playback_marks_tc.length; i++ ){
             // MILAN: ADDED >= FOR FIRST TIMECHECK
+
             if( m_playback_marks_tc[i] >= m_previous_time && m_playback_marks_tc[i] < m_current_time && ( ( m_current_time - 2 ) < m_playback_marks_tc[i] ) ){
                 var mark_number = m_playback_marks_map[ m_playback_marks_tc[ i ] ];
                 var time_pos = m_playback_marks_tc[ i ];
@@ -300,9 +309,16 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
                 // Playlist mark?
                 if ( m_playlists[ time_pos ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
+
+                    //figure out which type of ad
+                    //if( m_current_timem_playlists[ time_pos ].start_time + m_playlists[ time_pos ].durtation && This.inAd == false){
+                        //This.inAd = true
+                    //}
                     Logger.log( 'playlist mark' );
-                    VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_current_time)
+                    //VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_current_time)
+                    VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), parseInt(m_current_time + m_playlists[ time_pos ].durtation ))
                     playAd( time_pos );
+                    return
                 }
 
                 // Omniture mark?
@@ -559,7 +575,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 //        }
         
     };
-    var inAd = false;
+    This.inAd = false;
+    var playingAd = null
     function playAd( adIndex ){
         //Uplynk- pause for innovid, hide timeline for everything else.
         Logger.log("play ad called: index " + adIndex);
@@ -568,8 +585,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 //ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
                 //ConvivaIntegration.adStart();
             }
-            m_is_playing = false;
-            inAd = true;
+
+            This.inAd = true;
+            playingAd = m_playlists[adIndex]
             if( m_subtitle_container ) removeSubtitleContainer();
 
             //ConvivaIntegration.detachStreamer();
@@ -578,11 +596,13 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             //m_playlists[ adIndex ].play(adIndex);
             
             
-            return true;
+            //return true;
         }
         else{
             Logger.log("CrackleVideo.playAd(" + adIndex + ") - index in m_playlists is undefined");
-            return false;
+            This.inAd = false;
+            playingAd = null
+            //return false;
         }
     }
 
