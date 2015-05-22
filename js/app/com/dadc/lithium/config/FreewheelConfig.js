@@ -45,7 +45,7 @@ var FreewheelConfig = function()
 
     	var csid = "crackle_ps_app_" + m_geoLocation.value;
         if(engine.stats.device.platform == "ps4"){
-            csid = "crackle_playstation4_app_" + m_geoLocation.value;
+            csid = "crackle_playstation4_" + m_geoLocation.value;
         }
     	csid += (m_geoLocation === MRMLocation.UnitedStates || m_geoLocation === MRMLocation.Null) ? "" : "_";
     	csid += freewheelMediaType;
