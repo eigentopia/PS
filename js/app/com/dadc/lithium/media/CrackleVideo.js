@@ -287,10 +287,11 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         }
         //check for inad here
         if(This.inAd == true){
-            if(playingAd != null && playingAd.end_time => m_current_time){
+            if(playingAd != null && m_current_time >= playingAd.end_time){
                 m_is_playing = false;
                 playingAd = null
-                This.inAd = false            
+                This.inAd = false
+                PlaybackReadyListener.notifyAdEnd()           
             }
         }
         else{

@@ -157,7 +157,7 @@ var ImpressionTracker = function()
 	    // if the impression wasn't sent, push it for reporting
 	    if( found === false )
 	    {
-		notSent.push( m_freewheelTracking[ vIndex ] );
+		notSent.push( m_vastTracking[ vIndex ] );
 	    }
 	}
 	

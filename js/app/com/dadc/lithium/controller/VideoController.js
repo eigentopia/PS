@@ -775,6 +775,9 @@ var VideoController = function( ParentControllerObj )
         this.inAd = true;
     };
 
+    this.notifyAdEnd = function(){
+        this.inAd = false;
+    }
     this.notifyAdPlaybackStalling = function(){
         Logger.log("notifyAdPlaybackStalling called in VideoController");
 
