@@ -59,65 +59,95 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         PlaybackErrorListener.notifyIGVideoEnded( IGVideoObj );
     };
 
-    this.notifyAdManagerUpdated = function( ADManager_EVENT ){
-        //Uplynk bring in ads
-        //Logger.log( 'notifyAdManagerUpdated called in CrackleVideo' );
-        Logger.log( 'ADManager_EVENT = ' + ADManager_EVENT );
-        //processAdSlots();
-        adUplynkMarks()
+    this.notifyUplynkUpdated = function(data, status){
+        Logger.log( 'Uplynk parse status = ' + status );
+        if(data !== null && status == 200){
+            
+            if(data.ad_info.slots){
+                var slots = data.ad_info.slots
+                //Uplynk - if an innovid go get the ad and put it in the slot.
+                for( var i = 0; i < slots.length; i++ ){
+                    var slot = slots[i]
+                    var time_position = parseInt(slot.start_time );
 
-        // //CAN DISAPPEAR AFTER CMS is RIGHT
-        // var baseurl = m_video_url.substring(0, m_video_url.indexOf("?")+1)
-        // var qs = m_video_url.substring(m_video_url.indexOf("?")+1).split('&');
-        // var newQs ="" ; 
-        // var pair;
-        // for (var i = qs.length - 1; i >= 0; i--) {
-        //     pair = qs[i].split('=');
-        //     if(pair[0] == "ad"){
-        //         pair[1] = "crackle_live"
-        //     }
-        //     else if (pair[0] == "ad.locationDesc"){
-        //         pair[1] = "crackle_apple_tv"+pair[1]
-        //     }
-        //     if(i==0){
-        //         newQs += pair[0]+"="+pair[1]
-        //     }
-        //     else{
-        //         newQs += pair[0]+"="+pair[1]+"&"
-        //     }
-        //     //qsParams[d(pair[0])] = d(pair[1]);
-        // }
+                    m_playlists[ time_position ] = slot
+                    //Logger.log( 'creating ad slot at ' + time_position );
+                    if( time_position > 0 && time_position < parseInt( m_media_details_obj.getDurationInSeconds() ) ){
+                        This.addPlaybackMark( time_position );
+                    }
+                }
+                m_video_url = adManager.adsData.playURL //+ "&sid="+adManager.adsData.sid
+                PlaybackReadyListener.notifyPlaybackReady();
+            }
+        }else{
+            PlaybackErrorListener.notifyPlaybackError();
+        }
+    }
 
-        //m_video_url= baseurl + newQs
-        //m_video_url = "http://content.uplynk.com/450b20fd3c4240f794849a8950577638.m3u8"
-        //m_video_url = baseurl
-        m_video_url = adManager.adsData.playURL //+ "&sid="+adManager.adsData.sid
-        PlaybackReadyListener.notifyPlaybackReady();
+//     this.notifyAdManagerUpdated = function( ADManager_EVENT ){
+//         //Uplynk bring in ads
+//         //Logger.log( 'notifyAdManagerUpdated called in CrackleVideo' );
+//         Logger.log( 'ADManager_EVENT = ' + ADManager_EVENT );
+//         //processAdSlots();
+//         if(ADManager_EVENT !== null){
+//            adUplynkMarks()
 
-//         switch( ADManager_EVENT ){
-//             case ADManager.EVENT.FREEWHEEL_READY:
-//                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: FREEWHEEL READY' );
-//                 processAdSlots();
-//                 PlaybackReadyListener.notifyPlaybackReady();
-// //                // if we don't have preroll ads, we can start video playback
-//                    if ( ! m_ad_manager.hasPreroll() ){
-//                        PlaybackReadyListener.notifyPlaybackReady();
-//                    }
-//                 break;
-//             case ADManager.EVENT.NOADS:
-//                 processAdSlots();
-//                 PlaybackReadyListener.notifyPlaybackReady();
-//                 //PlaybackErrorListener.notifyPlaybackError();    //DAN: changed to this, originally was calling the wrong listener, and the app would hang infinitely
-//                 break;
-//             case ADManager.EVENT.PREROLL_SLOT_READY:
-//                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: PREROLL READY' );
-// //                PlaybackReadyListener.notifyPlaybackReady();
-//                 break;
-//             case ADManager.EVENT.AD_SLOT_READY:
-//                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: AD SLOT READY' );
-//                 break;
+//         // //CAN DISAPPEAR AFTER CMS is RIGHT
+//         // var baseurl = m_video_url.substring(0, m_video_url.indexOf("?")+1)
+//         // var qs = m_video_url.substring(m_video_url.indexOf("?")+1).split('&');
+//         // var newQs ="" ; 
+//         // var pair;
+//         // for (var i = qs.length - 1; i >= 0; i--) {
+//         //     pair = qs[i].split('=');
+//         //     if(pair[0] == "ad"){
+//         //         pair[1] = "crackle_live"
+//         //     }
+//         //     else if (pair[0] == "ad.locationDesc"){
+//         //         pair[1] = "crackle_apple_tv"+pair[1]
+//         //     }
+//         //     if(i==0){
+//         //         newQs += pair[0]+"="+pair[1]
+//         //     }
+//         //     else{
+//         //         newQs += pair[0]+"="+pair[1]+"&"
+//         //     }
+//         //     //qsParams[d(pair[0])] = d(pair[1]);
+//         // }
+
+//         //m_video_url= baseurl + newQs
+//         //m_video_url = "http://content.uplynk.com/450b20fd3c4240f794849a8950577638.m3u8"
+//         //m_video_url = baseurl
+//             m_video_url = adManager.adsData.playURL //+ "&sid="+adManager.adsData.sid
+//             PlaybackReadyListener.notifyPlaybackReady();
 //         }
-    };
+//         else{
+//             PlaybackErrorListener.notifyPlaybackError();
+//         }
+
+// //         switch( ADManager_EVENT ){
+// //             case ADManager.EVENT.FREEWHEEL_READY:
+// //                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: FREEWHEEL READY' );
+// //                 processAdSlots();
+// //                 PlaybackReadyListener.notifyPlaybackReady();
+// // //                // if we don't have preroll ads, we can start video playback
+// //                    if ( ! m_ad_manager.hasPreroll() ){
+// //                        PlaybackReadyListener.notifyPlaybackReady();
+// //                    }
+// //                 break;
+// //             case ADManager.EVENT.NOADS:
+// //                 processAdSlots();
+// //                 PlaybackReadyListener.notifyPlaybackReady();
+// //                 //PlaybackErrorListener.notifyPlaybackError();    //DAN: changed to this, originally was calling the wrong listener, and the app would hang infinitely
+// //                 break;
+// //             case ADManager.EVENT.PREROLL_SLOT_READY:
+// //                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: PREROLL READY' );
+// // //                PlaybackReadyListener.notifyPlaybackReady();
+// //                 break;
+// //             case ADManager.EVENT.AD_SLOT_READY:
+// //                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: AD SLOT READY' );
+// //                 break;
+// //         }
+//     };
 
     this.addPlaybackListener = function( playbackListener ){
         m_playback_listeners[ m_playback_listeners.length ] = playbackListener;
@@ -287,8 +317,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         }
         //check for inad here
         if(This.inAd == true){
-            if(playingAd != null && m_current_time >= playingAd.end_time){
-                m_is_playing = false;
+            //for uplynk ads
+            if(playingAd != null && (playingAd.end_time && m_current_time >= playingAd.end_time)){
+                m_is_playing = true;
                 playingAd = null
                 This.inAd = false
                 PlaybackReadyListener.notifyAdEnd()           
@@ -317,7 +348,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                     //}
                     Logger.log( 'playlist mark' );
                     //VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_current_time)
-                    VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), parseInt(m_current_time + m_playlists[ time_pos ].durtation ))
+                    VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), parseInt(m_current_time + m_playlists[ time_pos ].duration ))
                     playAd( time_pos );
                     return
                 }
@@ -459,24 +490,24 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     this.getVideoConfig = function(){
         return VideoManager.VIDEOCONFIG.TYPE_PROGRESSIVE;
     };
-    this.forward = function(){
-        var current_time = VideoManagerInstance.getCurrentVideoTime();
-        if( VideoManagerInstance.getCurrentJSVideo() === This ){
-            VideoManagerInstance.setCurrentTime( current_time + 10 );
-        }
+    // this.forward = function(){
+    //     var current_time = VideoManagerInstance.getCurrentVideoTime();
+    //     if( VideoManagerInstance.getCurrentJSVideo() === This ){
+    //         VideoManagerInstance.setCurrentTime( current_time + 10 );
+    //     }
 
-        Logger.log( 'FORWARD' );
-        m_subtitle_widget.displaySubtitleLine( null );
-    };
-    this.rewind = function(){
-        var current_time = VideoManagerInstance.getCurrentVideoTime();
-        if( VideoManagerInstance.getCurrentJSVideo() === This ){
-            VideoManagerInstance.setCurrentTime( current_time - 10 );
-        }
+    //     Logger.log( 'FORWARD' );
+    //     m_subtitle_widget.displaySubtitleLine( null );
+    // };
+    // this.rewind = function(){
+    //     var current_time = VideoManagerInstance.getCurrentVideoTime();
+    //     if( VideoManagerInstance.getCurrentJSVideo() === This ){
+    //         VideoManagerInstance.setCurrentTime( current_time - 10 );
+    //     }
 
-        Logger.log( 'BACKWARD' );
-        m_subtitle_widget.displaySubtitleLine( null );
-    };
+    //     Logger.log( 'BACKWARD' );
+    //     m_subtitle_widget.displaySubtitleLine( null );
+    // };
     this.getAdTimePositions = function(){
         //Uplynk- this is used to set marks I think
 
@@ -508,17 +539,35 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             VideoManagerInstance.setCurrentTime( 0 );
             m_current_time = 0;
             // Play preroll if user went back to time 0
-            if( m_playlists[ 0 ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
-                Logger.log("CrackleVideo.setCurrentTime() - playing ad 0");
-                playAd( 0 );
-                return;
+            // if( m_playlists[ 0 ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
+            //     Logger.log("CrackleVideo.setCurrentTime() - playing ad 0");
+            //     playAd( 0 );
+            //     return
+            // }
+        }
+
+        //Set the time to the begining of an ad break if you seek in to one?
+        var adArray = adManager.adsData.ad_info.slots
+        for(var i=0;i <adArray.length; i++){
+            var ad = adArray[i]
+            if((ad.start_time && time_pos >= ad.start_time) && (ad.end_time && time_pos <= ad.end_time) ){
+            //     if( ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && 
+            // m_current_time < currentVideoEndCreditMark){
+            
+        //     Logger.log("CrackleVideo.setCurrentTime() - playing ad at: " + last_ad);
+        //     m_is_playing = false;
+        //     playAd( last_ad );
+        // }
+                time_pos = ad.start_time
+                break
             }
+
         }
 
         m_current_time = time_pos;
         VideoManagerInstance.setCurrentTime( time_pos );
 
-        m_is_paused = false;
+        //m_is_paused = false;
         Logger.log( 'CrackleVideo.SETCURRENTTIME ' +time_pos);
         Logger.log( 'CrackleVideo.DURATION' +m_media_details_obj.getDurationInSeconds());
 
@@ -527,20 +576,24 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             return;
         }
 
-        for( var ad_time_pos in m_playlists ){
-            if( ad_time_pos > prev_time && ad_time_pos < time_pos ){
-                var diff = time_pos - ad_time_pos;
-                if( diff  < last_diff ){
-                    last_diff = diff;
-                    last_ad = ad_time_pos;
-                }
-            }
-        }
+        // for( var ad_time_pos in m_playlists ){
+        //     if( ad_time_pos > prev_time && ad_time_pos < time_pos ){
+        //         var diff = time_pos - ad_time_pos;
+        //         if( diff  < last_diff ){
+        //             last_diff = diff;
+        //             last_ad = ad_time_pos;
+        //         }
+        //     }
+        // }
         var currentVideoEndCreditMark = m_media_details_obj.data.EndCreditStartMarkInMilliSeconds/1000;
         if(m_media_details_obj.data.EndCreditStartMarkInMilliSeconds == null){
             currentVideoEndCreditMark = m_media_details_obj.data.DurationInSeconds - 10
         }
-        // if( last_ad > 0 && !m_playlists[ last_ad ].hasPlayed() && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && m_current_time < currentVideoEndCreditMark){
+        // if( last_ad > 0 && 
+        //     //!m_playlists[ last_ad ].hasPlayed() && 
+        //     ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && 
+        //     m_current_time < currentVideoEndCreditMark){
+            
         //     Logger.log("CrackleVideo.setCurrentTime() - playing ad at: " + last_ad);
         //     m_is_playing = false;
         //     playAd( last_ad );
@@ -699,7 +752,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             }
         }
     }
-
     function adUplynkMarks(){
         var slots = adManager.adsData.ad_info.slots
         //Uplynk - if an innovid go get the ad and put it in the slot.
@@ -801,7 +853,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
     //var uplynkUrl = MediaDetailsObj.getUplynkURLFromList()
 
-    adManager.getAds(m_video_url, this.notifyAdManagerUpdated)
+    adManager.getAds(m_video_url, this.notifyUplynkUpdated)
 
     addMarks();
 

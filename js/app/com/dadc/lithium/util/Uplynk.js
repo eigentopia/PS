@@ -1,7 +1,7 @@
 var Uplynk = (function(){
 
 	var self = {}
-	self.adsData;
+	self.adsData = {};
 	self.receivedAds = false
 
 	self.getAds = function(url, cb){

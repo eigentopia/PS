@@ -276,12 +276,14 @@ var VideoController = function( ParentControllerObj )
         // console.log("2 prepareToOpen with")
         // console.log(currentAudioVideoUrl)
         // console.log(subtitleUrl)
-        console.log("EndCreditStartMarkInMilliSeconds "+ MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds)
+        //console.log("EndCreditStartMarkInMilliSeconds "+ MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds)
+        
+        //dont start right at the end if that's where it is. 
         currentVideoEndCreditMark = MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds/1000;
         if(MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds == null){
             currentVideoEndCreditMark = MediaDetailsObj.data.DurationInSeconds - 10
         }
-        console.log("END CREDIT MARK "+currentVideoEndCreditMark)
+        //console.log("END CREDIT MARK "+currentVideoEndCreditMark)
 
         if(currentSubtitleUrl != subtitleUrl){
 
@@ -351,7 +353,7 @@ var VideoController = function( ParentControllerObj )
         {
             userOptOut = false;
             Logger.log("currentAudioVideoUrl: " + currentAudioVideoUrl);
-            //This should keep the context of the list.
+            //This should keep the context of the autoPlay list.
             if(currentMediaList == null && MediaDetailsObj.videoContextList){
                 currentMediaList = MediaDetailsObj.videoContextList
                 for (var i=0; i<MediaDetailsObj.videoContextList.length;i++){
@@ -363,7 +365,7 @@ var VideoController = function( ParentControllerObj )
                 }
             }
 
-            console.log("startingMediaListIndex "+ startingMediaListIndex)
+            //console.log("startingMediaListIndex "+ startingMediaListIndex)
 
             totalVideosPlayed ++
             continueCalled = false;
