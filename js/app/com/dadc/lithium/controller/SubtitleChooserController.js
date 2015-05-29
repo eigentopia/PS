@@ -9,7 +9,6 @@ var SubtitleChooserController = function( ParentControllerObj){
     var m_callback_func             = null;
     var m_subtitle_chooser_widget;
     var mediaDetailsObj;
-
     
     this.getParentController = function(){return m_parent_controller_obj;};
     this.getDisplayNode = function( ){return m_root_node;};
@@ -47,9 +46,9 @@ var SubtitleChooserController = function( ParentControllerObj){
             m_parent_controller_obj = null;
         }        
     }
-    this.prepareToOpen = function( MediaDetailsObj, currentAV, currentCC){
+    this.prepareToOpen = function(currentAV, currentCC){
         //m_callback_func = callback_func;
-        mediaDetailsObj = MediaDetailsObj;
+        //mediaDetailsObj = MediaDetailsObj;
         
         //IF NO SUBS, NOTIFY STATUS, THEN CALLBACK. (THIS SEEMS ODD... WHY BOTH?)
         // if( MediaDetailsObj.getClosedCaptionFiles() == null || 
@@ -66,9 +65,10 @@ var SubtitleChooserController = function( ParentControllerObj){
 
             //Now that this opens only while the player is open, this widget is misnamed
             //It will handle both subtitles and video url
-            m_subtitle_chooser_widget = new SubtitleChooserWidget( MediaDetailsObj,currentAV, currentCC );
+            mediaDetailsObj = ParentControllerObj.mediaObj
+            m_subtitle_chooser_widget = new SubtitleChooserWidget(mediaDetailsObj, currentAV, currentCC );
             m_master_container.addChild( m_subtitle_chooser_widget.getDisplayNode() );
-            ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_READY );
+            //ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_READY );
         // }
         
     };
@@ -111,10 +111,11 @@ var SubtitleChooserController = function( ParentControllerObj){
     }
     this.trianglePressed = function(){
         var files = m_subtitle_chooser_widget.getSelectedFiles()
+        m_parent_controller_obj.closeSubtitleChooser(files.audioVideo, files.cc);
 
-        m_parent_controller_obj.requestingParentAction(
-            {action: ApplicationController.OPERATIONS.CLOSE_SUBTITLE_CHOOSER, MediaDetailsObj:mediaDetailsObj, avFile:files.audioVideo, ccFile:files.cc, calling_controller: this}
-        );
+        // m_parent_controller_obj.requestingParentAction(
+        //     {action: ApplicationController.OPERATIONS.CLOSE_SUBTITLE_CHOOSER, MediaDetailsObj:mediaDetailsObj, avFile:files.audioVideo, ccFile:files.cc, calling_controller: this}
+        // );
         
     }
     

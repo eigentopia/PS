@@ -1242,7 +1242,7 @@ var ApplicationController = function( screenObj ){
 
         m_pending_focused_controller = m_subtitle_chooser_controller;
 
-        m_subtitle_chooser_controller.prepareToOpen( json.MediaDetailsObj, json.currentAV, json.currentCC );
+        m_subtitle_chooser_controller.prepareToOpen( json.MediaDetailsObj, json.currentAV, json.currentCC, json.calling_controller );
     }
     function closeSubtitleChooser(){
 

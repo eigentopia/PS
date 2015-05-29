@@ -36,6 +36,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
     //Uplynk
     var adManager = Uplynk;
+    This.inAd = false;
+    var playingAd = null
 
     if( !m_video_url ){
         PlaybackErrorListener.notifyPlaybackError( This );
@@ -83,71 +85,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             PlaybackErrorListener.notifyPlaybackError();
         }
     }
-
-//     this.notifyAdManagerUpdated = function( ADManager_EVENT ){
-//         //Uplynk bring in ads
-//         //Logger.log( 'notifyAdManagerUpdated called in CrackleVideo' );
-//         Logger.log( 'ADManager_EVENT = ' + ADManager_EVENT );
-//         //processAdSlots();
-//         if(ADManager_EVENT !== null){
-//            adUplynkMarks()
-
-//         // //CAN DISAPPEAR AFTER CMS is RIGHT
-//         // var baseurl = m_video_url.substring(0, m_video_url.indexOf("?")+1)
-//         // var qs = m_video_url.substring(m_video_url.indexOf("?")+1).split('&');
-//         // var newQs ="" ; 
-//         // var pair;
-//         // for (var i = qs.length - 1; i >= 0; i--) {
-//         //     pair = qs[i].split('=');
-//         //     if(pair[0] == "ad"){
-//         //         pair[1] = "crackle_live"
-//         //     }
-//         //     else if (pair[0] == "ad.locationDesc"){
-//         //         pair[1] = "crackle_apple_tv"+pair[1]
-//         //     }
-//         //     if(i==0){
-//         //         newQs += pair[0]+"="+pair[1]
-//         //     }
-//         //     else{
-//         //         newQs += pair[0]+"="+pair[1]+"&"
-//         //     }
-//         //     //qsParams[d(pair[0])] = d(pair[1]);
-//         // }
-
-//         //m_video_url= baseurl + newQs
-//         //m_video_url = "http://content.uplynk.com/450b20fd3c4240f794849a8950577638.m3u8"
-//         //m_video_url = baseurl
-//             m_video_url = adManager.adsData.playURL //+ "&sid="+adManager.adsData.sid
-//             PlaybackReadyListener.notifyPlaybackReady();
-//         }
-//         else{
-//             PlaybackErrorListener.notifyPlaybackError();
-//         }
-
-// //         switch( ADManager_EVENT ){
-// //             case ADManager.EVENT.FREEWHEEL_READY:
-// //                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: FREEWHEEL READY' );
-// //                 processAdSlots();
-// //                 PlaybackReadyListener.notifyPlaybackReady();
-// // //                // if we don't have preroll ads, we can start video playback
-// //                    if ( ! m_ad_manager.hasPreroll() ){
-// //                        PlaybackReadyListener.notifyPlaybackReady();
-// //                    }
-// //                 break;
-// //             case ADManager.EVENT.NOADS:
-// //                 processAdSlots();
-// //                 PlaybackReadyListener.notifyPlaybackReady();
-// //                 //PlaybackErrorListener.notifyPlaybackError();    //DAN: changed to this, originally was calling the wrong listener, and the app would hang infinitely
-// //                 break;
-// //             case ADManager.EVENT.PREROLL_SLOT_READY:
-// //                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: PREROLL READY' );
-// // //                PlaybackReadyListener.notifyPlaybackReady();
-// //                 break;
-// //             case ADManager.EVENT.AD_SLOT_READY:
-// //                 Logger.log( 'CrackleVideo.notifyAdManagerUpdated: AD SLOT READY' );
-// //                 break;
-// //         }
-//     };
 
     this.addPlaybackListener = function( playbackListener ){
         m_playback_listeners[ m_playback_listeners.length ] = playbackListener;
@@ -205,42 +142,19 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         if( ! m_marks_finalized ){
             finalizePlaybackMarks();
         }
-        
-        // Forced preroll to play
-        // MILAN: ON CHANGE SUBTITLE AD FORGIVENESS
-        // uplynk- do we need any of this?
-        // if ( m_ad_manager.hasPreroll() === true &&
-        //     m_playlists[ 0 ].hasPlayed() === false &&
-        //     ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) === true &&
-        //     ADSubtitleForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness(), m_video_url ) === true )
-        // {
-        //     Logger.log( 'CrackleVideo.play() - calling PlayAd(0)' + PlaybackReadyListener.audioVideoUrlSwitch );
-        //     if( PlaybackReadyListener.audioVideoUrlSwitch ||  playAd( 0 ) === false )
-        //     {
-        //         if(PlaybackReadyListener.audioVideoUrlSwitch){
-        //             PlaybackReadyListener.audioVideoUrlSwitch = false
-        //         }
-        //         Logger.log("CrackleVideo.play() - there is no ad at index 0 - will play crackle video");
-        //         playCrackleVideo()
-        //     }
-        // }
-                // if no preroll or forgiven, play feature
-        //else
-        //{
-            // IF SUBS ARE NEEDED && SUBS ARE *NOT* RESOLVED YET RESOLVE THEM. onResoved: ACTUALLY PLAY
-            Logger.log("SUBS URL: " + m_subtitle_url)
-            if( m_subtitle_url && ! m_subtitle_widget.subtitlesObjectReady() )
-            {
-                Logger.log("subtitles are required and not ready yet. will begin the loading process");
-                This.loadSubtitles(m_subtitle_url);
-            }
-                // ELSE PLAYBACK CAN HAPPEN NOW.
-            else
-            {
-                Logger.log("subtitles are not required OR are already resolved");
-                playCrackleVideo()
-            }
-       //}
+        // IF SUBS ARE NEEDED && SUBS ARE *NOT* RESOLVED YET RESOLVE THEM. onResoved: ACTUALLY PLAY
+        Logger.log("SUBS URL: " + m_subtitle_url)
+        if( m_subtitle_url && ! m_subtitle_widget.subtitlesObjectReady() )
+        {
+            Logger.log("subtitles are required and not ready yet. will begin the loading process");
+            This.loadSubtitles(m_subtitle_url);
+        }
+            // ELSE PLAYBACK CAN HAPPEN NOW.
+        else
+        {
+            Logger.log("subtitles are not required OR are already resolved");
+            playCrackleVideo()
+        }
     };
 
 
@@ -467,7 +381,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //     }
         // }
 
-        //if(adManager.receivedAds)
+        if(adManager.receivedAds)
             PlaybackReadyListener.notifyPlaybackReady();
     };
 
@@ -490,24 +404,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     this.getVideoConfig = function(){
         return VideoManager.VIDEOCONFIG.TYPE_PROGRESSIVE;
     };
-    // this.forward = function(){
-    //     var current_time = VideoManagerInstance.getCurrentVideoTime();
-    //     if( VideoManagerInstance.getCurrentJSVideo() === This ){
-    //         VideoManagerInstance.setCurrentTime( current_time + 10 );
-    //     }
 
-    //     Logger.log( 'FORWARD' );
-    //     m_subtitle_widget.displaySubtitleLine( null );
-    // };
-    // this.rewind = function(){
-    //     var current_time = VideoManagerInstance.getCurrentVideoTime();
-    //     if( VideoManagerInstance.getCurrentJSVideo() === This ){
-    //         VideoManagerInstance.setCurrentTime( current_time - 10 );
-    //     }
-
-    //     Logger.log( 'BACKWARD' );
-    //     m_subtitle_widget.displaySubtitleLine( null );
-    // };
     this.getAdTimePositions = function(){
         //Uplynk- this is used to set marks I think
 
@@ -546,19 +443,26 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             // }
         }
 
+        if( time_pos === m_media_details_obj.getDurationInSeconds() || time_pos > m_media_details_obj.getDurationInSeconds() ){
+            PlaybackReadyListener.notifyPlaybackEnded();
+            return;
+        }
+
         //Set the time to the begining of an ad break if you seek in to one?
         var adArray = adManager.adsData.ad_info.slots
         for(var i=0;i <adArray.length; i++){
             var ad = adArray[i]
             if((ad.start_time && time_pos >= ad.start_time) && (ad.end_time && time_pos <= ad.end_time) ){
-            //     if( ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && 
-            // m_current_time < currentVideoEndCreditMark){
-            
-        //     Logger.log("CrackleVideo.setCurrentTime() - playing ad at: " + last_ad);
-        //     m_is_playing = false;
-        //     playAd( last_ad );
-        // }
-                time_pos = ad.start_time
+                if( ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && 
+                    m_current_time < currentVideoEndCreditMark){
+                    m_is_playing = false
+                    time_pos = ad.start_time
+                }
+                else{
+                    m_is_playing = true
+                    time_pos = ad.end_time +.01
+                }
+                
                 break
             }
 
@@ -571,33 +475,12 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         Logger.log( 'CrackleVideo.SETCURRENTTIME ' +time_pos);
         Logger.log( 'CrackleVideo.DURATION' +m_media_details_obj.getDurationInSeconds());
 
-        if( time_pos === m_media_details_obj.getDurationInSeconds() || time_pos > m_media_details_obj.getDurationInSeconds() ){
-            PlaybackReadyListener.notifyPlaybackEnded();
-            return;
-        }
-
-        // for( var ad_time_pos in m_playlists ){
-        //     if( ad_time_pos > prev_time && ad_time_pos < time_pos ){
-        //         var diff = time_pos - ad_time_pos;
-        //         if( diff  < last_diff ){
-        //             last_diff = diff;
-        //             last_ad = ad_time_pos;
-        //         }
-        //     }
-        // }
+        //This needs to be moved.
         var currentVideoEndCreditMark = m_media_details_obj.data.EndCreditStartMarkInMilliSeconds/1000;
         if(m_media_details_obj.data.EndCreditStartMarkInMilliSeconds == null){
             currentVideoEndCreditMark = m_media_details_obj.data.DurationInSeconds - 10
         }
-        // if( last_ad > 0 && 
-        //     //!m_playlists[ last_ad ].hasPlayed() && 
-        //     ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && 
-        //     m_current_time < currentVideoEndCreditMark){
-            
-        //     Logger.log("CrackleVideo.setCurrentTime() - playing ad at: " + last_ad);
-        //     m_is_playing = false;
-        //     playAd( last_ad );
-        // }
+
     };
     this.togglePause = function(){
         m_is_paused = !m_is_paused;
@@ -629,8 +512,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 //        }
         
     };
-    This.inAd = false;
-    var playingAd = null
+
+    
     function playAd( adIndex ){
         //Uplynk- pause for innovid, hide timeline for everything else.
         Logger.log("play ad called: index " + adIndex);
@@ -724,7 +607,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
                 //PlaybackReadyListener.notifySubtitlesReady();
                 m_subtitle_widget.refreshWidget( data.getParsedSubtitleObj() );
-                PlaybackReadyListener.notifyPlaybackReady();
+                //PlaybackReadyListener.notifyPlaybackReady();
 
             }catch( e ){
                 Logger.log( '!!! EXCEPTION onSubtitlesCallback' );
