@@ -29,7 +29,7 @@ var VideoController = function( ParentControllerObj )
 
     var m_playback_ready = false;
     var m_subtitles_ready = false;
-    var m_show_subtitles = LoggerConfig.CONFIG.SHOW_SUBTITLES ? true : false;
+    this.m_show_subtitles = LoggerConfig.CONFIG.SHOW_SUBTITLES ? true : false;
 
     var m_seek_direction = null;
     var m_last_seek_timer;
@@ -295,7 +295,7 @@ var VideoController = function( ParentControllerObj )
                 }
                 Logger.log("NEW Subtitle URL: " + subtitleUrl);
                 AnalyticsManagerInstance.subTitleOnEvent(  );
-                m_show_subtitles = true;
+                this.m_show_subtitles = true;
 
             }
             else{
@@ -304,12 +304,12 @@ var VideoController = function( ParentControllerObj )
                 if(m_crackle_video){
                     m_crackle_video.setSubtitleContainer(null)
                 }
-                m_show_subtitles = false;
+                this.m_show_subtitles = false;
             }
 
             //Is the media url the same?
             if(currentAudioVideoUrl == audioVideoUrl){
-                if(m_show_subtitles ){
+                if(htis.m_show_subtitles ){
                     m_crackle_video.setSubtitleContainer(m_subtitle_container)
                 }
                 else{
@@ -680,9 +680,9 @@ var VideoController = function( ParentControllerObj )
     function openSubtitleChooser(){
         subtitleChooserController = new SubtitleChooserController( This );
         var subtitleDisplay = subtitleChooserController.getDisplayNode()
-        subtitleDisplay.x=-300
-        subtitleDisplay.y=-100
-        m_root_node.addChild( subtitleDisplay );
+        subtitleDisplay.x=600
+        subtitleDisplay.y=600
+        m_root_node.addChildAt(subtitleDisplay, 0);
         isFocused = false
         subtitleChooserController.prepareToOpen(currentAudioVideoUrl, currentSubtitleUrl );
         subtitleChooserController.setFocus();
@@ -718,10 +718,8 @@ var VideoController = function( ParentControllerObj )
                 }
                 Logger.log("NEW Subtitle URL: " + ccFile);
                 AnalyticsManagerInstance.subTitleOnEvent(  );
-                m_show_subtitles = true;
+                this.m_show_subtitles = true;
                 m_crackle_video.setSubtitleContainer(m_subtitle_container)
-                m_crackle_video.togglePause()
-                m_timeline_widget.setPauseStatus(false);
 
             }
             else{
@@ -732,15 +730,25 @@ var VideoController = function( ParentControllerObj )
                     m_crackle_video.togglePause()
                 }
 
-                m_show_subtitles = false;
+                this.m_show_subtitles = false;
                 currentSubtitleUrl = null;
                 m_timeline_widget.setPauseStatus(false);
             }
         }
-        else {
+        else if(ccFile == currentSubtitleUrl && ccFile == null) {
+            this.m_show_subtitles = false;
             m_crackle_video.setSubtitleContainer(null)
             m_crackle_video.togglePause()
         }
+        else{
+            m_crackle_video.togglePause()
+        }
+    }
+
+    this.subsLoaded = function(){
+        m_crackle_video.togglePause()
+        m_timeline_widget.setPauseStatus(false);
+
     }
 
     this.navUp = function(){

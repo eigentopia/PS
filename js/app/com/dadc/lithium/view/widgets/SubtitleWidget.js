@@ -9,7 +9,7 @@ var SubtitleWidget = function( SubtitlesObj ) {
     m_root_node.addChild( m_subtitle_container );
 
     var m_subtitles_obj         = SubtitlesObj;
-    var m_last_subtitle         = null;
+    var currentSubtitle         = null;
 
     this.update = function( engine_timer ){
 //        if( LoggerConfig.CONFIG.UPDATE_DEBUG ) Logger.log( 'SubtitleWidget update() ' + engine_timer );
@@ -41,13 +41,22 @@ var SubtitleWidget = function( SubtitlesObj ) {
     }
 
     this.displaySubtitleLine = function( SubtitleLineObj ){
-        this.removeSubtitleFromScreen();
-        if ( SubtitleLineObj ){
-            Logger.log("SubtitleLineObj exists, will add");
-            m_subtitle_container.addChild( getTextContainer( SubtitleLineObj.getText() ) );
+        if(SubtitleLineObj){
+            Logger.log("Current Subtitle: "+currentSubtitle);
+            // if(currentSubtitle != SubtitleLineObj.getText()){
+            //     currentSubtitle = SubtitleLineObj.getText()
+                this.removeSubtitleFromScreen();
+                //if ( SubtitleLineObj ){
+                    Logger.log("Subtitle: "+ SubtitleLineObj.getText());
+                    m_subtitle_container.addChild( getTextContainer( SubtitleLineObj.getText() ) );
 
+                //}else{
+                 //   Logger.log("SubtitleLineObj does not exist, will not add");
+                //}
+            //}
         }else{
-            Logger.log("SubtitleLineObj does not exist, will not add");
+             Logger.log("SubtitleLineObj null");
+            this.removeSubtitleFromScreen();
         }
     }
 

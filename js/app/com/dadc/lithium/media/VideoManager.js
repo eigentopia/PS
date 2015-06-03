@@ -113,9 +113,9 @@ VideoManager = function(){
             Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
             Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime());
             console.log("VIDEO MANAGER OPEN")
-        m_core_video_obj.open( m_current_jsvideo.getVideoURL() 
-            //{"video-starttimeoffset": m_current_jsvideo.getResumeTime(),
-            ,{"SteadyBufferingForStart": 2} 
+        m_core_video_obj.open( m_current_jsvideo.getVideoURL(), 
+            {"video-starttimeoffset": m_current_jsvideo.getResumeTime(),
+            "SteadyBufferingForStart": 2} 
         )
     }
     this.pause = function( state ){
