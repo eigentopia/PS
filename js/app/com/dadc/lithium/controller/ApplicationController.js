@@ -1242,7 +1242,7 @@ var ApplicationController = function( screenObj ){
 
         m_pending_focused_controller = m_subtitle_chooser_controller;
 
-        m_subtitle_chooser_controller.prepareToOpen( json.MediaDetailsObj, json.currentAV, json.currentCC, json.calling_controller );
+        m_subtitle_chooser_controller.prepareToOpen( json.MediaDetailsObj, json.currentAV, json.currentCC );
     }
     function closeSubtitleChooser(){
 
@@ -2484,7 +2484,14 @@ var ApplicationController = function( screenObj ){
         }
 
         localStorage.age = (user.userAge)?user.userAge:user.age;
-        localStorage.gender = (user.userGender.toString() == '0')?user.userGender.toString():user.gender.toString();
+
+        if(user.userGender && user.userGender.toString() == '0'){
+            localStorage.gender =user.userGender.toString()
+        } else if(user.gender&& user.gender.toString() == '0'){
+            localStorage.gender =user.gender.toString()
+        } else{
+            localStorage.gender = '0';
+        }
         localStorage.userId = (user.CrackleUserId)?user.CrackleUserId:user.id;
         localStorage.name = (user.CrackleUserName)?user.CrackleUserName:user.name;
         ApplicationController.setCrackleUser(user, cb)
@@ -2524,6 +2531,27 @@ var ApplicationController = function( screenObj ){
 
         return false;
     }
+
+    // ApplicationController.getUserWatchList = function(callback){
+    //     if(crackleUser.id != null){
+    //         var d = new Date();
+    //         var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
+    //         var url = ModelConfig.getServerURLRoot() + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' )+"?format=json"+ord;
+    //         Http.requestJSON(url, "GET", null, null, function(data, status){
+    //             if(data != null && status == 200){
+    //                 crackleUser.watchlist = [];
+    //                 var items = data.Items;
+    //                 crackleUser.watchlist = items.slice(0);
+
+    //                 callback && callback(data, status)
+    //             }
+    //             else{
+    //                 callback && callback(null, status)
+    //             }
+    //         })
+    //         //HttpRequest.startRequest()
+    //     }
+    // }
 
     ApplicationController.addToUserWatchlist = function (id, type, callback){
         if(id){
