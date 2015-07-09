@@ -114,8 +114,16 @@ VideoManager = function(){
             Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime());
             console.log("VIDEO MANAGER OPEN")
         m_core_video_obj.open( m_current_jsvideo.getVideoURL(), 
-            {"video-starttimeoffset": m_current_jsvideo.getResumeTime(),
-            "SteadyBufferingForStart": 2} 
+            {
+                "video-starttimeoffset": m_current_jsvideo.getResumeTime(),
+                "SteadyBufferingForStart": 2,
+                "Video-Profile"     : "adaptive-streaming",
+                "Video-BufferSize"  : "5000",
+                "Video-EnableHD"    : "true",
+                "Video-Level"       : "42",
+                "Video-MaxSrcWidth" : "1920",
+                "Video-MaxSrcHeight" : "1080"
+            } 
         )
     }
     this.pause = function( state ){

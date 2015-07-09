@@ -2500,8 +2500,8 @@ var ApplicationController = function( screenObj ){
 
     ApplicationController.setCrackleUser = function(userData, cb){
         
-        console.log("SETTING USER INFO")
-        console.dir(userData)
+        //console.log("SETTING USER INFO")
+       // console.dir(userData)
         crackleUser.id = (userData.CrackleUserId)?userData.CrackleUserId:userData.userId;
         crackleUser.name = (userData.CrackleUserName)?userData.CrackleUserName:userData.name
         crackleUser.watchlist = [];
