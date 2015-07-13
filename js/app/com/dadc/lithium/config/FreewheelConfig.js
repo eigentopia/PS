@@ -2,6 +2,7 @@ include( "js/app/com/dadc/lithium/config/LoggerConfig.js" );
 var FreewheelConfig = function()
 {
     var m_geoLocation = MRMLocation.Null;
+    var hashedDeviceID = CryptoJS.MD5( engine.stats.device.id );
     /**
      * get the Geo Location
      * @returns {MRMLocation}
@@ -42,15 +43,19 @@ var FreewheelConfig = function()
 	   Logger.log("getFreeWheelURL() - mediaType: " + freewheelMediaType + ", location: " + m_geoLocation.countryName);
 	
     	// build the site section value
-
+        var platformName = "PlayStation3"
     	var csid = "crackle_ps_app_" + m_geoLocation.value;
         if(engine.stats.device.platform == "ps4"){
             csid = "crackle_playstation4_" + m_geoLocation.value;
+            platformName = "PlayStation4"
         }
     	csid += (m_geoLocation === MRMLocation.UnitedStates || m_geoLocation === MRMLocation.Null) ? "" : "_";
     	csid += freewheelMediaType;
 
 	   Logger.log("getFreeWheelURL() | CSID: " + csid);
+
+       var userId = StorageManagerInstance.get('userId')
+       var vcid = (userId)?userId:hashedDeviceID
 
     	// build the url
     	var output =	    CONFIG.FREEWHEEL_URL +
@@ -63,7 +68,13 @@ var FreewheelConfig = function()
     	    "&caid=" +	    media_id +
     	    "&vprn=" +	    rand(0, 9999999999) +
     	    "&pvrn=" +	    rand(0, 9999999999) +
-    	    "&flag=" +     "+exvt+qtcb+slcb+sltp&metr=1;k1=" +engine.storage.local.age +"&k2="+ engine.storage.local.gender +";";
+            "&vcid=" +      vcid +
+    	    "&flag=" +     "+exvt+qtcb+slcb+sltp+aeti" +
+            "&metr=1"+
+                ";k1=" +engine.storage.local.age + 
+                    "&k2="+ engine.storage.local.gender + 
+                ";comscore_platform=" + platformName +
+                    "&comscore_device=" + platformName
 
 	   Logger.log("FreewheelConfig.getFreeWheelURL() - url: " + output);
 
