@@ -85,7 +85,7 @@ var Uplynk = (function(){
 		//newUrl += idJson + newQs;
         newUrl += urlToJson
 
-    	return "http://" + newUrl
+    	return "http://" + newUrl //+"&hlsver=4"
 
         //return __url;
 

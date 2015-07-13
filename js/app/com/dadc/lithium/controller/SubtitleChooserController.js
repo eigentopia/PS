@@ -67,7 +67,7 @@ var SubtitleChooserController = function( ParentControllerObj){
             //It will handle both subtitles and video url
             mediaDetailsObj = ParentControllerObj.mediaObj
             m_subtitle_chooser_widget = new SubtitleChooserWidget(mediaDetailsObj, currentAV, currentCC );
-            m_master_container.addChild( m_subtitle_chooser_widget.getDisplayNode() );
+            m_root_node.addChild( m_subtitle_chooser_widget.getDisplayNode() );
             //ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_READY );
         // }
         
@@ -118,6 +118,4 @@ var SubtitleChooserController = function( ParentControllerObj){
         // );
         
     }
-    
-    m_root_node = engine.createContainer();
 };

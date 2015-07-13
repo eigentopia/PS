@@ -25,9 +25,25 @@ var TTMLSubtitleModelRequest = function( subtitle_url, callback ){
     var This = this;
 
     this.startRequest = function( ){
-        http_retries = 0;
-        initHttpRequest();
-        httpRequestObj.start();
+        console.log("CALLING START")
+         Http.request(subtitle_url, "GET", null, null, function(data, status){
+            if(data != null && status == 200){
+                if(callback){
+                    Logger.log("FILE::: " + data);
+                    Logger.logObj(data);
+                    var subtitle_data = new TTMLSubtitleModel( data, format );
+                    callback( subtitle_data, status );
+                }
+            }
+            else{
+                if(callback){
+                    callback(null, status)
+                }
+            }
+        }, false)
+        // http_retries = 0;
+        // initHttpRequest();
+        // httpRequestObj.start();
 
         /*try{
             var httpClient = engine.createHttpClient();
@@ -78,8 +94,8 @@ var TTMLSubtitleModelRequest = function( subtitle_url, callback ){
             callback( null, status );
         }else {
             try{
-//                Logger.log("FILE::: " + data);
-//                Logger.logObj(data);
+               Logger.log("FILE::: " + data);
+                               Logger.logObj(data);
                 var subtitle_data = new TTMLSubtitleModel( data, format );
                 callback( subtitle_data, status );
             }catch( e ){

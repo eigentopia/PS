@@ -116,13 +116,13 @@ VideoManager = function(){
         m_core_video_obj.open( m_current_jsvideo.getVideoURL(), 
             {
                 "video-starttimeoffset": m_current_jsvideo.getResumeTime(),
-                "SteadyBufferingForStart": 2,
-                "Video-Profile"     : "adaptive-streaming",
-                "Video-BufferSize"  : "5000",
-                "Video-EnableHD"    : "true",
-                "Video-Level"       : "42",
-                "Video-MaxSrcWidth" : "1920",
-                "Video-MaxSrcHeight" : "1080"
+                //"SteadyBufferingForStart": 2,
+                // "Video-Profile"     : "adaptive-streaming",
+                // "Video-BufferSize"  : "5000",
+                // "Video-EnableHD"    : "true",
+                // "Video-Level"       : "42",
+                // "Video-MaxSrcWidth" : "1920",
+                // "Video-MaxSrcHeight" : "1080"
             } 
         )
     }
@@ -193,10 +193,10 @@ VideoManager = function(){
         m_core_video_obj.play();
 
         if( m_current_jsvideo != null ){
-            var CCSettings = m_core_video_obj.getCCSystemSettings();
-            engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
-            console.log("GOT ME CC")
-            m_current_jsvideo.onOpened();  
+            //var CCSettings = m_core_video_obj.getCCSystemSettings();
+            //engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
+            console.log("GOT ME CC in JSVID")
+            m_current_jsvideo.onOpened(); 
         }
     }
     
@@ -215,6 +215,7 @@ VideoManager = function(){
     
     function onPlaying(){
         Logger.log("core onPlaying called");
+        console.dir(m_core_video_obj.availableTextTracks) 
         if( m_current_jsvideo != null )
             m_current_jsvideo.onPlaying();
     }

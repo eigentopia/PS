@@ -293,7 +293,7 @@ var VideoController = function( ParentControllerObj )
                     subsLoaded = true;
                      m_crackle_video.loadSubtitles(subtitleUrl);
                 }
-                Logger.log("NEW Subtitle URL: " + subtitleUrl);
+                Logger.log("1NEW Subtitle URL: " + subtitleUrl);
                 AnalyticsManagerInstance.subTitleOnEvent(  );
                 this.m_show_subtitles = true;
 
@@ -679,17 +679,18 @@ var VideoController = function( ParentControllerObj )
 
     function openSubtitleChooser(){
         subtitleChooserController = new SubtitleChooserController( This );
-        var subtitleDisplay = subtitleChooserController.getDisplayNode()
-        subtitleDisplay.x=600
-        subtitleDisplay.y=600
-        m_root_node.addChildAt(subtitleDisplay, 0);
+        // subtitleDisplay.x=600
+        // subtitleDisplay.y=600
         isFocused = false
         subtitleChooserController.prepareToOpen(currentAudioVideoUrl, currentSubtitleUrl );
+        var subtitleDisplay = subtitleChooserController.getDisplayNode()
+        m_root_node.addChild(subtitleDisplay);
         subtitleChooserController.setFocus();
     }
 
     this.closeSubtitleChooser = function(avFile, ccFile){
         m_root_node.removeChild( subtitleChooserController.getDisplayNode() );
+       
         subtitleChooserController.unsetFocus();
         subtitleChooserController.close();
         // if( m_subtitle_chooser_controller.getDisplayNode() && m_content_container.contains( m_subtitle_chooser_controller.getDisplayNode() ) )
@@ -716,7 +717,7 @@ var VideoController = function( ParentControllerObj )
                     subsLoaded = true;
                      m_crackle_video.loadSubtitles(ccFile);
                 }
-                Logger.log("NEW Subtitle URL: " + ccFile);
+                Logger.log("2NEW Subtitle URL: " + ccFile);
                 AnalyticsManagerInstance.subTitleOnEvent(  );
                 this.m_show_subtitles = true;
                 m_crackle_video.setSubtitleContainer(m_subtitle_container)
