@@ -2,7 +2,7 @@ include( "js/app/com/dadc/lithium/config/LoggerConfig.js" );
 var FreewheelConfig = function()
 {
     var m_geoLocation = MRMLocation.Null;
-    var hashedDeviceID = CryptoJS.MD5( engine.stats.device.id );
+    var hashedDeviceID =  engine.stats.device.id ;
     /**
      * get the Geo Location
      * @returns {MRMLocation}
