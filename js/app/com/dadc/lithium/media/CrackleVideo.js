@@ -100,7 +100,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         }
     };
 
-    this.getVideoURL = function(){return m_video_url;};
+    this.getVideoURL = function(){return m_video_url + "&hlsver=4";};
     this.getMediaDetailsObj = function(){return m_media_details_obj;};
 
     this.getResumeTime = function(){return m_current_time;};
@@ -169,26 +169,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
     // onResolved
     //  NOW PLAY THE VIDEO
-
-
-    this.loadSubtitles = function(url){
-        Logger.log("loadSubtitles called");
-
-        // MILAN: MOVED SUBTITLE REQUEST TO TTMLSubtitleModel.js
-        try{
-            m_subtitle_url = url.replace( 'media/', '' );
-            Logger.log( 'closed_caption_path = ' + m_subtitle_url );
-
-            var subtitleModelRequest = new TTMLSubtitleModelRequest(m_subtitle_url, onSubtitlesCallback);
-            subtitleModelRequest.startRequest();
-        }catch( e ){
-            Logger.log( '!!! EXCEPTION loadSubtitles' );
-            Logger.logObj( e );
-            m_subtitle_widget.setSubtitlesFailed();
-            //PlaybackReadyListener.notifySubtitlesError();
-            PlaybackReadyListener.notifyPlaybackReady();
-        }
-    }
 
     this.pause = function( state ){
         VideoManagerInstance.pause( state );
@@ -364,6 +344,69 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //m_ad_manager.sendVideoViewCallback();
         //ConvivaIntegration.attachStreamer()
     };
+
+    this.onTextDisplay = function(TextInfo){
+        //if(PlaybackReadyListener.m_show_subtitles == true ){
+            m_subtitle_widget.displayText( TextInfo );
+        //}
+    }
+
+    this.stCallback = null
+    this.loadSubtitles = function(url, cb){
+        Logger.log("loadSubtitles called");
+        This.stCallback = cb
+        // MILAN: MOVED SUBTITLE REQUEST TO TTMLSubtitleModel.js
+        try{
+            m_subtitle_url = url.replace( 'media/', '' );
+            Logger.log( 'closed_caption_path = ' + m_subtitle_url );
+
+            var subtitleModelRequest = new TTMLSubtitleModelRequest(m_subtitle_url, onSubtitlesCallback);
+            subtitleModelRequest.startRequest();
+        }catch( e ){
+            Logger.log( '!!! EXCEPTION loadSubtitles' );
+            Logger.logObj( e );
+            m_subtitle_widget.setSubtitlesFailed();
+            //PlaybackReadyListener.notifySubtitlesError();
+            PlaybackReadyListener.notifyPlaybackReady();
+        }
+    }
+    function onSubtitlesCallback( data, status ){
+        Logger.shout( 'onSubtitlesCallback ' + status );
+        console.dir(data)
+        // if (status !== 200) {
+        //     Logger.log("Failed to load subtitle: " + status);
+        // } else if (!m_disposed) {
+        //     Logger.log("Subtitle loaded");
+
+        //     try{
+        //         // MILAN: DATA PARSING MOVED TO TTMLSubtitleModel.js
+        //         var subtitle_lines = data.getParsedSubtitleObj.getSubtitleLines;
+
+        //         // Loop through each subtitle line and add playback marks to both
+        //         // begin and end position
+
+        //         //Add the offset here for subs mark.
+                
+        //         for( var subidx in subtitle_lines ){
+        //             var subtitle = subtitle_lines[ subidx ];
+        //             m_subtitle_start_marks[ subtitle.getBegin.seconds ] = subtitle;
+        //             m_subtitle_end_marks[ subtitle.getEnd.seconds ] = subtitle;
+        //             This.addPlaybackMark( subtitle.getBegin.seconds );
+        //             This.addPlaybackMark( subtitle.getEnd.seconds );
+        //         }
+        //         m_subtitle_widget.refreshWidget( data.getParsedSubtitleObj );
+        //          PlaybackReadyListener.subsLoaded();
+
+        //     }catch( e ){
+        //         Logger.log( '!!! EXCEPTION onSubtitlesCallback' );
+        //         Logger.logObj( e );
+        //         m_subtitle_widget.setSubtitlesFailed();
+        //         PlaybackReadyListener.notifyPlaybackReady();
+        //     }
+        // } else {
+        //     Logger.log("disposed of subtitles");
+        // }
+    }
 
     this.onStalled = function(){
         notifyListeners( new PlaybackStalledEvent( VideoManagerInstance.getPlaybackTimePTS() ) );
@@ -582,45 +625,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         This.addPlaybackMark( duration * .5 );
         This.addPlaybackMark( duration * .75 );
         This.addPlaybackMark( duration * .95 );
-    }
-
-
-    function onSubtitlesCallback( data, status ){
-        Logger.shout( 'onSubtitlesCallback' );
-
-        if (status !== 200) {
-            Logger.log("Failed to load subtitle: " + status);
-        } else if (!m_disposed) {
-            Logger.log("Subtitle loaded");
-
-            try{
-                // MILAN: DATA PARSING MOVED TO TTMLSubtitleModel.js
-                var subtitle_lines = data.getParsedSubtitleObj.getSubtitleLines;
-
-                // Loop through each subtitle line and add playback marks to both
-                // begin and end position
-
-                //Add the offset here for subs mark.
-                
-                for( var subidx in subtitle_lines ){
-                    var subtitle = subtitle_lines[ subidx ];
-                    m_subtitle_start_marks[ subtitle.getBegin.seconds ] = subtitle;
-                    m_subtitle_end_marks[ subtitle.getEnd.seconds ] = subtitle;
-                    This.addPlaybackMark( subtitle.getBegin.seconds );
-                    This.addPlaybackMark( subtitle.getEnd.seconds );
-                }
-                m_subtitle_widget.refreshWidget( data.getParsedSubtitleObj() );
-                PlaybackReadyListener.subsLoaded();
-
-            }catch( e ){
-                Logger.log( '!!! EXCEPTION onSubtitlesCallback' );
-                Logger.logObj( e );
-                m_subtitle_widget.setSubtitlesFailed();
-                PlaybackReadyListener.notifyPlaybackReady();
-            }
-        } else {
-            Logger.log("disposed of subtitles");
-        }
     }
 
     function processAdSlots(){

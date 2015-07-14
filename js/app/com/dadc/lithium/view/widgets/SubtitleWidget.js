@@ -60,6 +60,14 @@ var SubtitleWidget = function( SubtitlesObj ) {
         }
     }
 
+    this.displayText =  function(TextInfo){
+        this.removeSubtitleFromScreen();
+                //if ( SubtitleLineObj ){
+                    Logger.log("DISPLAY Subtitle: "+ TextInfo.text);
+                    m_subtitle_container.addChild( getTextContainer( TextInfo.text ));
+
+    }
+
     function initWidget(){
 
     }

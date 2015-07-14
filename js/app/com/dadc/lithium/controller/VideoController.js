@@ -63,7 +63,7 @@ var VideoController = function( ParentControllerObj )
             // on-start: add the IG layer
             m_master_container.addChild( IGVideoObj.getIGLayer().getDisplayNode() );
             m_current_ig_video = IGVideoObj;
-            this.inAd   = true
+            This.inAd   = true
             Logger.log("added...");
             Logger.log("current ig video: ");
             Logger.logObj( m_current_ig_video );
@@ -75,7 +75,7 @@ var VideoController = function( ParentControllerObj )
     // INNOVID INTEGRATION: listen for ig videos ending
     this.notifyIGVideoEnded = function( IGVideoObj ){
         console.log("IG VIDEO HAS ENDED")
-        this.inAd   = false
+        This.inAd   = false
         // on-end: remove the IG layer
         if( IGVideoObj == m_current_ig_video ){
             // INNOVID TODO: CONFIRM THAT LITHIUM ALLOWS US TO REMOVE CHILDREN LIKE THIS
@@ -272,7 +272,7 @@ var VideoController = function( ParentControllerObj )
 
 
         m_media_details_obj = MediaDetailsObj;
-        this.mediaObj = MediaDetailsObj
+        This.mediaObj = MediaDetailsObj
         // console.log("2 prepareToOpen with")
         // console.log(currentAudioVideoUrl)
         // console.log(subtitleUrl)
@@ -295,7 +295,7 @@ var VideoController = function( ParentControllerObj )
                 }
                 Logger.log("1NEW Subtitle URL: " + subtitleUrl);
                 AnalyticsManagerInstance.subTitleOnEvent(  );
-                this.m_show_subtitles = true;
+                This.m_show_subtitles = true;
 
             }
             else{
@@ -304,7 +304,7 @@ var VideoController = function( ParentControllerObj )
                 if(m_crackle_video){
                     m_crackle_video.setSubtitleContainer(null)
                 }
-                this.m_show_subtitles = false;
+                This.m_show_subtitles = false;
             }
 
             //Is the media url the same?
@@ -448,7 +448,7 @@ var VideoController = function( ParentControllerObj )
             nextVideoContinueOverlay.navLeft();
             return;
         }
-        if(!this.inAd){
+        if(!This.inAd){
             if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
                 if(subtitleChooserController !== null){
                     subtitleChooserController.navLeft()
@@ -482,7 +482,7 @@ var VideoController = function( ParentControllerObj )
             nextVideoContinueOverlay.navRight();
             return;
         }
-        if(!this.inAd){
+        if(!This.inAd){
             if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
                 if(subtitleChooserController !== null){
                     subtitleChooserController.navRight()
@@ -511,7 +511,7 @@ var VideoController = function( ParentControllerObj )
 
     this.navDown = function(){
         Logger.log( 'navDown' );
-        if(!this.inAd){
+        if(!This.inAd){
             if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
                 if(subtitleChooserController !== null){
                     subtitleChooserController.navDown()
@@ -546,7 +546,7 @@ var VideoController = function( ParentControllerObj )
             VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_crackle_video.getResumeTime() );
             VideoManagerInstance.stop();
             VideoManagerInstance.close();
-            this.playNext()
+            This.playNext()
             return;
         }
         
@@ -561,7 +561,7 @@ var VideoController = function( ParentControllerObj )
 
             closeNextVideoContinueOverlay()
         }
-        if(!this.inAd){
+        if(!This.inAd){
             if( m_seek_direction && m_crackle_video.isPlaying() ){
                 toggleTimeline();
                 m_seek_direction = null;
@@ -585,7 +585,7 @@ var VideoController = function( ParentControllerObj )
     }
 
     this.startPressed = function(){
-        if(!this.inAd){
+        if(!This.inAd){
             if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying()  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
                 if(subtitleChooserController !== null){
                     //subtitleChooserController.startPressed()
@@ -604,7 +604,7 @@ var VideoController = function( ParentControllerObj )
         }
     }
     this.circlePressed = function(){
-        if(!this.inAd){
+        if(!This.inAd){
             if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ){
                 if(subtitleChooserController !== null){
                     subtitleChooserController.enterPressed()
@@ -630,7 +630,7 @@ var VideoController = function( ParentControllerObj )
                 VideoManagerInstance.close();
 
                 m_parent_controller_obj.requestingParentAction(
-                    {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: this}
+                    {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: This}
                 );
             }
         }
@@ -643,7 +643,7 @@ var VideoController = function( ParentControllerObj )
     {
 
         if(VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
-            if(!this.inAd)
+            if(!This.inAd)
             {
                 if(subtitleChooserController !== null){
                     subtitleChooserController.trianglePressed()
@@ -716,11 +716,12 @@ var VideoController = function( ParentControllerObj )
                 if(!subsLoaded){
                     subsLoaded = true;
                      m_crackle_video.loadSubtitles(ccFile);
-                }
                 Logger.log("2NEW Subtitle URL: " + ccFile);
                 AnalyticsManagerInstance.subTitleOnEvent(  );
-                this.m_show_subtitles = true;
+                This.m_show_subtitles = true;
                 m_crackle_video.setSubtitleContainer(m_subtitle_container)
+                //m_crackle_video.togglePause()
+                }
 
             }
             else{
@@ -731,13 +732,13 @@ var VideoController = function( ParentControllerObj )
                     m_crackle_video.togglePause()
                 }
 
-                this.m_show_subtitles = false;
+                This.m_show_subtitles = false;
                 currentSubtitleUrl = null;
                 m_timeline_widget.setPauseStatus(false);
             }
         }
         else if(ccFile == currentSubtitleUrl && ccFile == null) {
-            this.m_show_subtitles = false;
+            This.m_show_subtitles = false;
             m_crackle_video.setSubtitleContainer(null)
             m_crackle_video.togglePause()
         }
@@ -754,7 +755,7 @@ var VideoController = function( ParentControllerObj )
 
     this.navUp = function(){
         Logger.log( 'navUp' );
-        if(!this.inAd){
+        if(!This.inAd){
             if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
                 if(subtitleChooserController !== null){
                     subtitleChooserController.navUp()
@@ -812,7 +813,7 @@ var VideoController = function( ParentControllerObj )
         }
     }
     this.remoteStop = function(){
-        this.circlePressed();
+        This.circlePressed();
     }
 
     this.playNext = function(){
@@ -863,14 +864,14 @@ var VideoController = function( ParentControllerObj )
             var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length-1)?currentMediaListIndex+1:0 //Loop back if you need to
             if(nextIndex !== startingMediaListIndex && totalVideosPlayed<5){
 
-                this.playNext();
+                This.playNext();
             }
             else{
                 
                 VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), 0);
                 
                 m_parent_controller_obj.requestingParentAction(
-                    {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: this}
+                    {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_STOPPED, calling_controller: This}
                 );
             }
         }
@@ -879,7 +880,7 @@ var VideoController = function( ParentControllerObj )
             Logger.log( '!!! EXCEPTION notifyPlaybackEnded' );
             Logger.logObj( e );
             m_parent_controller_obj.requestingParentAction(
-                {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_ERROR, calling_controller: this}
+                {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_ERROR, calling_controller: This}
             );
         }
     };
@@ -888,11 +889,11 @@ var VideoController = function( ParentControllerObj )
         Logger.log("notifyAdPlaybackStarting called in VideoController");
         m_timeline_widget.setVisible( false );
         m_seek_direction = null;
-        this.inAd = true;
+        This.inAd = true;
     };
 
     this.notifyAdEnd = function(){
-        this.inAd = false;
+        This.inAd = false;
     }
     this.notifyAdPlaybackStalling = function(){
         Logger.log("notifyAdPlaybackStalling called in VideoController");
@@ -902,9 +903,9 @@ var VideoController = function( ParentControllerObj )
     this.notifyPlaybackError = function(){
         Logger.log( 'VideoController !!!!!!!!!!! PLAYBACK ERROR !!!!!!!!!!!!' );
         m_parent_controller_obj.requestingParentAction(
-            {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_ERROR, calling_controller: this}
+            {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_ERROR, calling_controller: This}
         );
-        this.inAd = false
+        This.inAd = false
     };
 
     function startPlayback(){
@@ -919,7 +920,7 @@ var VideoController = function( ParentControllerObj )
             Logger.log( '!!! EXCEPTION notifyPlaybackReady VideoController' );
             Logger.logObj( e );
             m_parent_controller_obj.requestingParentAction(
-                {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_ERROR, calling_controller: this}
+                {action: ApplicationController.OPERATIONS.VIDEO_PLAYBACK_ERROR, calling_controller: This}
             );
         }
     }

@@ -100,6 +100,7 @@ VideoManager = function(){
         m_core_video_obj.onPlaying = onPlaying;
         m_core_video_obj.onStalled = onStalled;
         m_core_video_obj.onTimeUpdate = onTimeUpdate;
+        //m_core_video_obj.onTextDisplay = onTextDisplay;
        
         // if(m_core_video_obj.streamType == "m3u8"){
         //     if(ConvivaIntegration.sessionId == null){
@@ -215,9 +216,26 @@ VideoManager = function(){
     
     function onPlaying(){
         Logger.log("core onPlaying called");
-        console.dir(m_core_video_obj.availableTextTracks) 
+        // console.dir(m_core_video_obj.availableTextTracks)
+        // m_core_video_obj.currentTextTrackType = "CAPTION_TYPE_CEA_608_CC01";
+
         if( m_current_jsvideo != null )
             m_current_jsvideo.onPlaying();
+    }
+
+    function onTextDisplay(TextInfo){
+        Logger.log("core onText called ");
+        console.dir(TextInfo)
+        var at = m_core_video_obj.availableTextTracks
+        if (at.length ){
+            m_core_video_obj.currentTextTrackType = at[0];
+            
+        }
+        if( m_current_jsvideo != null )
+            m_current_jsvideo.onTextDisplay(TextInfo);
+
+        return -1
+
     }
     
     function onStalled(){
