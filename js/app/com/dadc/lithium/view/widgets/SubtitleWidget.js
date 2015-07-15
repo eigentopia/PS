@@ -47,8 +47,8 @@ var SubtitleWidget = function( SubtitlesObj ) {
             //     currentSubtitle = SubtitleLineObj.getText()
                 this.removeSubtitleFromScreen();
                 //if ( SubtitleLineObj ){
-                    Logger.log("Subtitle: "+ SubtitleLineObj.getText());
-                    m_subtitle_container.addChild( getTextContainer( SubtitleLineObj.getText() ) );
+                    Logger.log("Subtitle: "+ SubtitleLineObj.getText);
+                    m_subtitle_container.addChild( getTextContainer( SubtitleLineObj.getText ) );
 
                 //}else{
                  //   Logger.log("SubtitleLineObj does not exist, will not add");

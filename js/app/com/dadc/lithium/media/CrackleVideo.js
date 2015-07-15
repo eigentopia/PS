@@ -61,6 +61,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         PlaybackErrorListener.notifyIGVideoEnded( IGVideoObj );
     };
 
+    var uplynkAdOffsets = []
+    //Playback URL is here. Bad. 
     this.notifyUplynkUpdated = function(data, status){
         Logger.log( 'Uplynk parse status = ' + status );
         if(data !== null && status == 200){
@@ -78,6 +80,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                         This.addPlaybackMark( time_position );
                     }
                 }
+
                 m_video_url = adManager.adsData.playURL //+ "&sid="+adManager.adsData.sid
                 PlaybackReadyListener.notifyPlaybackReady();
             }
@@ -94,9 +97,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         // if marks have not been finalized, more can be added.
         if( ! m_marks_finalized ){
             m_playback_marks_tc[ m_playback_marks_tc.length ] = double_time_in_seconds;
-            //Logger.log("mark added @ " +  double_time_in_seconds );
+            Logger.log(m_playback_marks_tc.length + " mark added @ " +  double_time_in_seconds );
         }else{
-            //Logger.log("mark not added");
+            Logger.log("mark not added");
         }
     };
 
@@ -372,40 +375,60 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     }
     function onSubtitlesCallback( data, status ){
         Logger.shout( 'onSubtitlesCallback ' + status );
-        console.dir(data)
-        // if (status !== 200) {
-        //     Logger.log("Failed to load subtitle: " + status);
-        // } else if (!m_disposed) {
-        //     Logger.log("Subtitle loaded");
+        //console.dir(data)
+        if (status !== 200) {
+            Logger.log("Failed to load subtitle: " + status);
+        } else if (!m_disposed) {
+            Logger.log("Subtitle loaded");
 
-        //     try{
-        //         // MILAN: DATA PARSING MOVED TO TTMLSubtitleModel.js
-        //         var subtitle_lines = data.getParsedSubtitleObj.getSubtitleLines;
-
-        //         // Loop through each subtitle line and add playback marks to both
-        //         // begin and end position
-
-        //         //Add the offset here for subs mark.
+            if(status !== 200){
+                Logger.log( '!!! EXCEPTION onSubtitlesCallback' );
+                m_subtitle_widget.setSubtitlesFailed();
+                PlaybackReadyListener.notifyPlaybackReady()
+            }
+            else{
                 
-        //         for( var subidx in subtitle_lines ){
-        //             var subtitle = subtitle_lines[ subidx ];
-        //             m_subtitle_start_marks[ subtitle.getBegin.seconds ] = subtitle;
-        //             m_subtitle_end_marks[ subtitle.getEnd.seconds ] = subtitle;
-        //             This.addPlaybackMark( subtitle.getBegin.seconds );
-        //             This.addPlaybackMark( subtitle.getEnd.seconds );
-        //         }
-        //         m_subtitle_widget.refreshWidget( data.getParsedSubtitleObj );
-        //          PlaybackReadyListener.subsLoaded();
+                // MILAN: DATA PARSING MOVED TO TTMLSubtitleModel.js
+                var subtitle_lines = data.getSubtitleLines;
 
-        //     }catch( e ){
-        //         Logger.log( '!!! EXCEPTION onSubtitlesCallback' );
-        //         Logger.logObj( e );
-        //         m_subtitle_widget.setSubtitlesFailed();
-        //         PlaybackReadyListener.notifyPlaybackReady();
-        //     }
-        // } else {
-        //     Logger.log("disposed of subtitles");
-        // }
+                // Loop through each subtitle line and add playback marks to both
+                // begin and end position
+
+                //Add the offset here for subs mark.
+                var adArray = adManager.adsData.ad_info.slots
+                
+                for( var subidx in subtitle_lines ){
+                    var adOffsetTime = 0
+                    var subtitle = subtitle_lines[ subidx ];
+                    var startMark = subtitle.getBegin.seconds
+                    var endMark = subtitle.getEnd.seconds
+                    if(adArray.length){
+                        for (var i= 0 ; i<adArray.length; i++){
+                            var ad = adArray[i]
+                            if(endMark > ad.end_time){
+                                adOffsetTime += ad.end_time - ad.start_time;
+                            }
+                            else if( (ad.start_time >= startMark) && (ad.end_time <= endMark) ){
+                                console.log("inside")
+                                adOffsetTime += ad.end_time - ad.start_time;
+                            }
+                        }
+                    }
+                    console.log("adOffsetTime "+ adOffsetTime)
+                    m_subtitle_start_marks[ startMark + adOffsetTime ] = subtitle;
+                    m_subtitle_end_marks[ endMark + adOffsetTime ] = subtitle;
+                    This.addPlaybackMark( startMark + adOffsetTime );
+                    This.addPlaybackMark( endMark + adOffsetTime );
+                }
+
+
+                m_subtitle_widget.refreshWidget( data.getParsedSubtitleObj );
+                PlaybackReadyListener.subsLoaded();
+            }
+        } else {
+            
+            Logger.log("disposed of subtitles");
+        }
     }
 
     this.onStalled = function(){

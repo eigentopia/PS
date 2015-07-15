@@ -29,10 +29,10 @@ var TTMLSubtitleModelRequest = function( subtitle_url, callback ){
          Http.request(subtitle_url, "GET", null, null, function(idata, istatus){
             if(idata != null && istatus == 200){
                 if(callback){
-                    Logger.log("FILE::: " + idata);
+                    //Logger.log("FILE::: " + idata);
                     //Logger.logObj(data);
-                    var subtitle_data = new TTMLSubtitleModel( idata, format );
-                    callback( subtitle_data, istatus );
+                    var subtitle_data = new TTMLSubtitleModel( idata, format, callback );
+                    //callback( subtitle_data, istatus );
                 }
             }
             else{
@@ -107,14 +107,12 @@ var TTMLSubtitleModelRequest = function( subtitle_url, callback ){
     }
 }
 
-var TTMLSubtitleModel = function( data, format){
+var TTMLSubtitleModel = function( data, format, cb){
     console.log("SUBMODEL GETS")
     console.dir(data)
     this.m_data = data;
     this.m_format = format;
     var parsed_subtitle_obj = null;
-
-    this.getParsedSubtitleObj = parsed_subtitle_obj;
 
     switch (this.m_format) {
         case TTMLSubtitleModel.FORMATS.M4T:
@@ -128,6 +126,9 @@ var TTMLSubtitleModel = function( data, format){
             parsed_subtitle_obj = TTMLSubtitle.createSubtitles( xmlDoc );
             break;
     }
+    this.getParsedSubtitleObj = parsed_subtitle_obj;
+
+    cb(parsed_subtitle_obj, 200)
     //console.dir(parsed_subtitle_obj)
 }
 
