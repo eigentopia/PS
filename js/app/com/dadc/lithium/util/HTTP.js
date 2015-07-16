@@ -215,14 +215,3 @@ var Http = function(){
     }
 
 }()
-
-/**
- * Authentication class. Used to talk in a secured way with Crackle servers.
- * 
- * We can make a request to an URL `url` using the following syntax:
- * 
- * var httpClientObj = engine.createHttpClient();
- * var httpRequestObj =  httpClientObj.createRequest( "GET", url, {headers: AuthenticationInstance.getAuthorizationHeader( url )} );
- *
- *
- */

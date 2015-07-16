@@ -38,6 +38,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     var adManager = Uplynk;
     This.inAd = false;
     var playingAd = null
+    This.preRollPlayed = false
 
     if( !m_video_url ){
         PlaybackErrorListener.notifyPlaybackError( This );
@@ -76,7 +77,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
                     m_playlists[ time_position ] = slot
                     //Logger.log( 'creating ad slot at ' + time_position );
-                    if( time_position > 0 && time_position < parseInt( m_media_details_obj.getDurationInSeconds() ) ){
+                    if( time_position >= 0 && time_position <= parseInt( m_media_details_obj.getDurationInSeconds() ) ){
                         This.addPlaybackMark( time_position );
                     }
                 }
@@ -197,6 +198,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         }
     };
 
+    function playPreroll(){
+
+    }
+
     // DETECT MARK REACHED EVENTS AND DISPATCH
     this.onTimeUpdate = function( currentTime, currentPTS ){
 
@@ -219,6 +224,13 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 m_is_playing = true;
                 playingAd = null
                 This.inAd = false
+                if(!This.preRollPlayed){
+                    This.preRollPlayed = true
+                    if(timeBeforePreroll>0){
+                        m_current_time = timeBeforePreroll
+                        timeBeforePreroll =0
+                    }
+                }
                 PlaybackReadyListener.notifyAdEnd()           
             }
         }
@@ -235,6 +247,11 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
                 Logger.log("------------- mark hit! " +  time_pos );
                 Logger.log("------------- mark number is: " +  mark_number );
+                if(time_pos > 0  && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() && adManager.hasPreroll && !This.preRollPlayed){
+                    timeBeforePreroll = time_pos
+                    playAd(0)
+                    return
+                }
 
                 // Playlist mark?
                 if ( m_playlists[ time_pos ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
@@ -243,7 +260,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                     //if( m_current_timem_playlists[ time_pos ].start_time + m_playlists[ time_pos ].durtation && This.inAd == false){
                         //This.inAd = true
                     //}
-                    Logger.log( 'playlist mark' );
+                    Logger.log( 'playlist AD mark' );
                     //VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_current_time)
                     VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), parseInt(m_current_time + m_playlists[ time_pos ].duration ))
                     playAd( time_pos );
@@ -354,10 +371,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //}
     }
 
-    this.stCallback = null
-    this.loadSubtitles = function(url, cb){
+    //this.stCallback = null
+    this.loadSubtitles = function(url){
         Logger.log("loadSubtitles called");
-        This.stCallback = cb
+        //This.stCallback = cb
         // MILAN: MOVED SUBTITLE REQUEST TO TTMLSubtitleModel.js
         try{
             m_subtitle_url = url.replace( 'media/', '' );
@@ -581,12 +598,13 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         
     };
 
-    
+var timeBeforePreroll = 0;    
     function playAd( adIndex ){
         //Uplynk- pause for innovid, hide timeline for everything else.
         Logger.log("play ad called: index " + adIndex);
         if( typeof m_playlists[ adIndex ] !== "undefined" ){
             if(adIndex == 0){
+                //This.preRollPlayed = true;
                 //ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
                 //ConvivaIntegration.adStart();
             }
