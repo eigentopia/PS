@@ -30,7 +30,7 @@ var ADForgiveness = function()
 
         m_timer = engine.getTimer();
 	    m_isCounting = true;
-        Logger.log( "ADForgiveness.startTimer() | timer: " + m_timer );
+        //Logger.log( "ADForgiveness.startTimer() | timer: " + m_timer );
     };
 
     this.podComplete = false;

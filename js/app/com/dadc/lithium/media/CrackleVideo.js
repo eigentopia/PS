@@ -198,9 +198,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         }
     };
 
-    function playPreroll(){
-
-    }
 
     // DETECT MARK REACHED EVENTS AND DISPATCH
     this.onTimeUpdate = function( currentTime, currentPTS ){
@@ -229,6 +226,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                     if(timeBeforePreroll>0){
                         m_current_time = timeBeforePreroll
                         timeBeforePreroll =0
+                        VideoManagerInstance.setCurrentTime( m_current_time );
                     }
                 }
                 PlaybackReadyListener.notifyAdEnd()           
@@ -240,6 +238,11 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
         for( var i = 0; i < m_playback_marks_tc.length; i++ ){
             // MILAN: ADDED >= FOR FIRST TIMECHECK
+            if(m_current_time > 0  && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness()) && adManager.hasPreroll && !This.preRollPlayed){
+                timeBeforePreroll = m_current_time
+                playPreroll()
+                return
+            }
 
             if( m_playback_marks_tc[i] >= m_previous_time && m_playback_marks_tc[i] < m_current_time && ( ( m_current_time - 2 ) < m_playback_marks_tc[i] ) ){
                 var mark_number = m_playback_marks_map[ m_playback_marks_tc[ i ] ];
@@ -247,11 +250,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
                 Logger.log("------------- mark hit! " +  time_pos );
                 Logger.log("------------- mark number is: " +  mark_number );
-                if(time_pos > 0  && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() && adManager.hasPreroll && !This.preRollPlayed){
-                    timeBeforePreroll = time_pos
-                    playAd(0)
-                    return
-                }
 
                 // Playlist mark?
                 if ( m_playlists[ time_pos ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
@@ -598,7 +596,19 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         
     };
 
-var timeBeforePreroll = 0;    
+var timeBeforePreroll = 0;
+    function playPreroll(){
+        This.inAd = true;
+        playingAd = m_playlists[0]
+        if( m_subtitle_container ) removeSubtitleContainer();
+                m_current_time = 0;
+        VideoManagerInstance.setCurrentTime( 0 );
+        PlaybackReadyListener.notifyAdPlaybackStarting();
+
+            //ConvivaIntegration.detachStreamer();
+    
+    }
+
     function playAd( adIndex ){
         //Uplynk- pause for innovid, hide timeline for everything else.
         Logger.log("play ad called: index " + adIndex);
