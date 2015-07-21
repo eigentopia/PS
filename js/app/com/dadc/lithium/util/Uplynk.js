@@ -4,6 +4,7 @@ var Uplynk = (function(){
 	self.adsData = {};
 	self.receivedAds = false
     self.hasPreroll = false
+    self.preRollDuration = 0;
 
 	self.getAds = function(url, cb){
 		//http://content.uplynk.com/preplay/ext/e8773f7770a44dbd886eee4fca16a66b/2448594.json?ad=&ad.locationDesc=_us_movies&ad.bumper=93731bf8cac142e4b99cf5844a9668dc&ad.preroll=1&extsid=1&ad.metr=7&euid=
@@ -28,11 +29,17 @@ var Uplynk = (function(){
     	var adsInSlot = Array();
     	var slotIndex = 1;
     	var slot = null;
+        self.preRollDuration = 0;
 
     	for (var i = 0; i < ads.length; i++) {
     	    var ad = ads[i];
             if(ad.slot = 'pre'){
+                console.log('preSLot duration '+  ad.duration)
                 self.hasPreroll = true;
+                //weird condition- slot can be labeled as pre but have a later start time?
+                if(ad.start_time == self.preRollDuration){
+                    self.preRollDuration += ad.duration
+                }
             }
     	    //console.log(JSON.stringify(ad))
     		if (slot != ad.slot) {

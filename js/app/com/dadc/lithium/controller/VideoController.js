@@ -52,6 +52,10 @@ var VideoController = function( ParentControllerObj )
 
     this.audioVideoUrlSwitch = false;
 
+    //For disabling the controls during Uplynk ad.
+    this.inAd = false
+    
+
         // INNOVID INTEGRATION: maintain a reference to any IG videos that are playing
     var m_current_ig_video = undefined;
 
@@ -884,7 +888,7 @@ var VideoController = function( ParentControllerObj )
             );
         }
     };
-    this.inAd = false
+    
     this.notifyAdPlaybackStarting = function(){
         Logger.log("notifyAdPlaybackStarting called in VideoController");
         m_timeline_widget.setVisible( false );
