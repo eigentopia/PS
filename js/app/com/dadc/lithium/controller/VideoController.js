@@ -588,6 +588,22 @@ var VideoController = function( ParentControllerObj )
         }
     }
 
+    this.resumeFrom = function(time){
+        toggleTimeline();
+        m_seek_direction = null;
+        if( m_crackle_video.isPaused() ){
+            m_timeline_widget.setPauseStatus( false );
+            m_crackle_video.togglePause();
+        }
+        Logger.log( 'setting resume from time to ' + time );
+        m_crackle_video.setCurrentTime( time );
+
+        // Setting to zero here so timeline can be reupdated regardless
+        // of what the "real" current time is
+        m_last_time = 0;
+            
+    }
+
     this.startPressed = function(){
         if(!This.inAd){
             if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying()  && nextVideoOverlay == null && nextVideoContinueOverlay == null){

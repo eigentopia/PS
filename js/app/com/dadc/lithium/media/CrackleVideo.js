@@ -229,6 +229,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
      Logger.log( "-" );
         m_previous_time = m_current_time;
         m_current_time = currentTime;
+        //m_is_playing = false
         // Check if we have fired video started omniture event
         // If not, fire it
         if ( m_omni_events.indexOf( CrackleVideo.OMNIEVENTS.VIDEOSTARTED ) < 0 ){
@@ -242,27 +243,30 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             //for uplynk ads
             if(playingAd != null && (playingAd.end_time && m_current_time >= playingAd.end_time)){
                 console.log("After AD")
+                PlaybackReadyListener.inAd = false
+                This.inAd = false
+                
                 if(!This.preRollPlayed){
                     console.log("PreRoll not played")
                     This.preRollPlayed = true
-                    if(timeBeforePreroll>0 && timeBeforePreroll <playingAd.end_time){
-                        VideoManagerInstance.setCurrentTime(timeBeforePreroll)
-                        timeBeforePreroll=0
+                    if(timeBeforePreroll>0 && timeBeforePreroll > playingAd.end_time){
+                        //This.togglePause()
+                        //PlaybackReadyListener.resumeFrom(timeBeforePreroll)
+                        This.setCurrentTime(timeBeforePreroll)
+                        //timeBeforePreroll=0
                     }
                 }
                 
                 //VideoProgressManagerInstance.setProgress(m_media_details_obj.getID(), m_current_time)
                 
-                PlaybackReadyListener.inAd = false
                 playingAd = null
-                This.inAd = false
-                return;      
+                //return;      
             }
         }
         else{
-            if(!m_is_playing){
+            //if(!m_is_playing){
                 m_is_playing = true;
-            }
+            //}
         }
 
         for( var i = 0; i < m_playback_marks_tc.length; i++ ){
@@ -537,7 +541,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         var last_diff = 99999999;
         var last_ad = -1;
 
-        //m_is_playing = false;
+        m_is_playing = true;
 
         m_subtitle_widget.displaySubtitleLine( null );
         console.log("JS SETCURRENT "+ time_pos)
@@ -594,6 +598,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         return m_is_paused;
     };
     this.isPlaying = function(){
+        console.log("isplaying "+ m_is_playing )
         return m_is_playing;
     };
     this.setSubtitleContainer = function( subtitle_container ){
