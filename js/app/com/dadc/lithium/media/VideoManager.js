@@ -24,7 +24,7 @@ VideoManager = function(){
     var m_last_video_time = 0;
     var m_last_video_time_recorded_at = 0;
     var m_unchanged_video_time_ticks = 0;
-    
+
     this.getDisplayNode = function(){
         return m_root_node;
     }
@@ -141,7 +141,7 @@ VideoManager = function(){
     
     this.setCurrentTime = function( time ){
         Logger.log("VideoManager.setCurrentTime: " + time);
-        m_core_video_obj.currentTime = time;
+        m_core_video_obj.currentTime = parseFloat(time);
     }
     this.setDimensions = function( width, height ){
         Logger.log( 'setDimensions() width = ' + width + ' height = ' + height );

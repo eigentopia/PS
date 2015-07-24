@@ -165,6 +165,12 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         else
         {
             Logger.log("subtitles are not required OR are already resolved");
+            //Make sure we have an end mark for the next video overlay
+            currentVideoEndCreditMark = m_media_details_obj.data.EndCreditStartMarkInMilliSeconds/1000;
+            if(m_media_details_obj.data.EndCreditStartMarkInMilliSeconds == null){
+                currentVideoEndCreditMark = m_media_details_obj.data.DurationInSeconds - 10
+            }
+
             playCrackleVideo()
         }
     };
@@ -176,24 +182,16 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     {
         Logger.log("CrackleVideo.playCrackleVideo()");
         
-        //Scrub from somewhere to zero- play preroll or not?
-        if(adManager.hasPreroll){
-            timeBeforePreroll = m_current_time
+        
+        if(adManager.hasPreroll && m_current_time > 0){
+            timeBeforeAd = m_current_time
             m_current_time = 0
         }
 
-                //This needs to be moved.
-        currentVideoEndCreditMark = m_media_details_obj.data.EndCreditStartMarkInMilliSeconds/1000;
-        if(m_media_details_obj.data.EndCreditStartMarkInMilliSeconds == null){
-            currentVideoEndCreditMark = m_media_details_obj.data.DurationInSeconds - 10
-        }
 
         VideoManagerInstance.play( This )
 
     };
-
-    // onResolved
-    //  NOW PLAY THE VIDEO
 
     this.pause = function( state ){
         VideoManagerInstance.pause( state );
@@ -219,16 +217,76 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         }
     };
 
+    this.setCurrentTime = function( time_pos ){
+        var prev_time = m_current_time;
+        var last_diff = 99999999;
+        var last_ad = -1;
+
+        m_is_playing = true;
+
+        m_subtitle_widget.displaySubtitleLine( null );
+        //console.log("JS SETCURRENT "+ time_pos)
+
+        //You've already seen the preroll?
+        if( time_pos < adManager.preRollDuration){
+            if(adManager.hasPreroll && This.preRollPlayed){
+                time_pos +=  adManager.preRollDuration
+            }
+        }
+
+        if( time_pos >= m_media_details_obj.getDurationInSeconds() ){
+            PlaybackReadyListener.notifyPlaybackEnded();
+            return;
+        }
+
+        //Set the time to the begining of an ad break if you seek in to one?
+        var adArray = adManager.adsData.ad_info.slots
+        for(var i=0;i <adArray.length; i++){
+            var ad = adArray[i]
+            if((ad.start_time && time_pos >= ad.start_time) && (ad.end_time && time_pos <= ad.end_time) ){
+                if( ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && 
+                    m_current_time < currentVideoEndCreditMark){
+                    //m_is_playing = false
+                    timeBeforeAd = m_current_time
+                    time_pos = ad.start_time
+                }
+                else{
+                    //m_is_playing = true
+                    time_pos = ad.end_time +.01
+                }
+                
+                break
+            }
+
+        }
+
+        m_current_time = time_pos;
+        VideoManagerInstance.setCurrentTime( m_current_time );
+
+        Logger.log( 'CrackleVideo.setCurrentTime ' +time_pos);
+        Logger.log( 'CrackleVideo.DURATION' +m_media_details_obj.getDurationInSeconds());
+
+    };
+
+    function preRollEnded(){
+        console.log("PreRoll ended")
+        This.preRollPlayed = true
+        if(timeBeforeAd>0){
+            m_current_time = timeBeforeAd
+            This.setCurrentTime(timeBeforeAd)
+            timeBeforeAd=0
+        }
+    }
 
     // DETECT MARK REACHED EVENTS AND DISPATCH
     this.onTimeUpdate = function( currentTime, currentPTS ){
 
-       Logger.log("currentTime: " + currentTime );
-     Logger.log("currentPTS: " + currentPTS );
-     Logger.log("m_current_time: " +m_current_time);
-     Logger.log( "-" );
+        // Logger.log("currentTime: " + currentTime );
+        // Logger.log("currentPTS: " + currentPTS );
+        // Logger.log("m_current_time: " +m_current_time);
+        // Logger.log( "-" );
         m_previous_time = m_current_time;
-        m_current_time = currentTime;
+        m_current_time = currentTime
         //m_is_playing = false
         // Check if we have fired video started omniture event
         // If not, fire it
@@ -239,28 +297,23 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         }
         //check for inad here
         if(This.inAd == true){
-            console.log("IN AD")
+            //console.log("IN AD")
+            m_is_playing = false
             //for uplynk ads
             if(playingAd != null && (playingAd.end_time && m_current_time >= playingAd.end_time)){
-                console.log("After AD")
+               // console.log("After AD")
                 PlaybackReadyListener.inAd = false
                 This.inAd = false
+                playingAd = null
                 
                 if(!This.preRollPlayed){
-                    console.log("PreRoll not played")
-                    This.preRollPlayed = true
-                    if(timeBeforePreroll>0 && timeBeforePreroll > playingAd.end_time){
-                        //This.togglePause()
-                        //PlaybackReadyListener.resumeFrom(timeBeforePreroll)
-                        This.setCurrentTime(timeBeforePreroll)
-                        //timeBeforePreroll=0
-                    }
+                   // console.log("PreRoll not played")
+                   preRollEnded()
                 }
                 
                 //VideoProgressManagerInstance.setProgress(m_media_details_obj.getID(), m_current_time)
                 
-                playingAd = null
-                //return;      
+                return;      
             }
         }
         else{
@@ -536,56 +589,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //Logger.log( 'm_media_details_obj.getDurationInSeconds() = ' + m_media_details_obj.getDurationInSeconds() );
         return time_pos;
     };
-    this.setCurrentTime = function( time_pos ){
-        var prev_time = m_current_time;
-        var last_diff = 99999999;
-        var last_ad = -1;
 
-        m_is_playing = true;
-
-        m_subtitle_widget.displaySubtitleLine( null );
-        console.log("JS SETCURRENT "+ time_pos)
-
-        //You've already seen the preroll?
-        if( time_pos < adManager.preRollDuration){
-            if(adManager.hasPreroll && This.preRollPlayed){
-                time_pos +=  adManager.preRollDuration
-            }
-        }
-
-        // if( time_pos === m_media_details_obj.getDurationInSeconds() || time_pos > m_media_details_obj.getDurationInSeconds() ){
-        //     PlaybackReadyListener.notifyPlaybackEnded();
-        //     return;
-        // }
-
-        //Set the time to the begining of an ad break if you seek in to one?
-        // var adArray = adManager.adsData.ad_info.slots
-        // for(var i=0;i <adArray.length; i++){
-        //     var ad = adArray[i]
-        //     if((ad.start_time && time_pos >= ad.start_time) && (ad.end_time && time_pos <= ad.end_time) ){
-        //         if( ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && 
-        //             m_current_time < currentVideoEndCreditMark){
-        //             m_is_playing = false
-        //             time_pos = ad.start_time
-        //         }
-        //         else{
-        //             m_is_playing = true
-        //             time_pos = ad.end_time +.01
-        //         }
-                
-        //         break
-        //     }
-
-        // }
-
-        m_current_time = time_pos;
-        VideoManagerInstance.setCurrentTime( time_pos );
-
-        //m_is_paused = false;
-        Logger.log( 'CrackleVideo.setCurrentTime ' +time_pos);
-        Logger.log( 'CrackleVideo.DURATION' +m_media_details_obj.getDurationInSeconds());
-
-    };
     this.togglePause = function(){
         m_is_paused = !m_is_paused;
         if(m_is_paused){
@@ -598,7 +602,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         return m_is_paused;
     };
     this.isPlaying = function(){
-        console.log("isplaying "+ m_is_playing )
+        //console.log("isplaying "+ m_is_playing )
         return m_is_playing;
     };
     this.setSubtitleContainer = function( subtitle_container ){
@@ -618,7 +622,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         
     };
 
-var timeBeforePreroll = 0;
+var timeBeforeAd = 0;
 
     function playAd( adIndex ){
         //Uplynk- pause for innovid, hide timeline for everything else.
