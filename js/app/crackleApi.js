@@ -340,7 +340,7 @@ var CrackleApi = {
 
 include( "js/app/com/dadc/lithium/util/UtilLibrary.js" );
 include( "js/app/com/dadc/lithium/util/StorageManager.js" );
-include( "js/app/com/dadc/lithium/util/md5.js")
+include( "js/app/com/dadc/lithium/util/sha1.js")
 
 var PlaystationConfig = {
         setConfig:function(cb){
@@ -379,7 +379,7 @@ var PlaystationConfig = {
                             StorageManagerInstance.set( 'api_hostname', apiUrl );
 
                             CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
-                            PlaystationConfig.hashedDeviceID = engine.stats.device.id
+                            PlaystationConfig.hashedDeviceID = Crypto.HMAC( Crypto.SHA1, engine.stats.device.id, engine.stats.device.platform )
 
                             //CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
                             //CrackleApi.apiUrl = "https://ps3-api-es.crackle.com/Service.svc/"

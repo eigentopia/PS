@@ -2,14 +2,16 @@
  * Wrap the functionality to send the ComScore Audience analytic.
  */
 
-include( "js/app/com/dadc/lithium/util/md5.js" );
+include( "js/app/com/dadc/lithium/util/sha1.js" );
 include( "js/app/com/dadc/lithium/util/HTTP.js" );
 //include( "js/app/thirdparty/streamsense.trilithium.js");
 include( "js/app/thirdparty/streamsense.trilithium.4.1408.01.js");
 
 var Comscore = function(){
     var platform = engine.stats.device.platform
-    var hashedDeviceID = CryptoJS.MD5( engine.stats.device.id );
+    var deviceID = engine.stats.device.id;
+
+    var hashedDeviceID = Crypto.HMAC( Crypto.SHA1, deviceID, platform )
     var comscoreId = '3000012';
     var streamsense = null;
     var contentPart = 0;
