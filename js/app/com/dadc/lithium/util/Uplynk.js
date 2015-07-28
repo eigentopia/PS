@@ -1,3 +1,6 @@
+
+include( "js/app/com/dadc/lithium/util/SHA1.js" );
+
 var Uplynk = (function(){
 
 	var self = {}
@@ -74,7 +77,25 @@ var Uplynk = (function(){
 
         newUrl += urlToJson
 
-    	return "http://" + newUrl +"&hlsver=4"
+        //Add stuff for Freewheel
+        var deviceID =  engine.stats.device.id ;
+        var userId = StorageManagerInstance.get('userId')
+        var vcid = (userId)?userId:hashedDeviceID
+
+        var platformName = "PlayStation3"
+        
+        if(engine.stats.device.platform == "ps4"){
+            platformName = "PlayStation4"
+        }
+
+        var adKV =  "&ad.vcid="+Crypto.HMAC( Crypto.SHA1, vcid, platformName )+
+                    "&ad.kv=k1," +engine.storage.local.age + 
+                    ",k2,"+ engine.storage.local.gender + 
+                    ",comscore_platform," + platformName +
+                    ",comscore_device," + platformName 
+
+        //HLS Version 4 has best support
+    	return "http://" + newUrl +"&hlsver=4" + adKV
 
     }
 
