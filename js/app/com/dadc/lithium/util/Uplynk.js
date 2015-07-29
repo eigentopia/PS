@@ -92,7 +92,8 @@ var Uplynk = (function(){
                     "&ad.kv=k1," +engine.storage.local.age + 
                     ",k2,"+ engine.storage.local.gender + 
                     ",comscore_platform," + platformName +
-                    ",comscore_device," + platformName 
+                    ",comscore_device," + platformName+
+                    ",_fw_did_android_id," + Crypto.HMAC( Crypto.SHA1, hashedDeviceID, platformName )
 
         //HLS Version 4 has best support
     	return "http://" + newUrl +"&hlsver=4" + adKV
