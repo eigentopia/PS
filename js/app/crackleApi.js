@@ -366,6 +366,7 @@ var PlaystationConfig = {
                                     apiUrl = supportedRegions[ i ].ApiHostName;
                                     lang = supportedRegions[ i ].Language;
                                     PlaystationConfig.forcedRegistration = supportedRegions[ i ].ForcedRegistrationOn
+                                    console.log("API URL "+ apiUrl)
                                     break;
                                 }
                             }
@@ -375,14 +376,16 @@ var PlaystationConfig = {
                                 cb && cb(null)
                                 return;
                             }
+
                             // should not need this- on CrackleApi now
                             StorageManagerInstance.set( 'api_hostname', apiUrl );
 
                             CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
-                            PlaystationConfig.hashedDeviceID = Crypto.HMAC( Crypto.SHA1, engine.stats.device.id, engine.stats.device.platform )
-
+                            
+                            //CrackleApi.apiUrl = "https://staging-v1-api-us.crackle.com/Service.svc/"
                             //CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
                             //CrackleApi.apiUrl = "https://ps3-api-es.crackle.com/Service.svc/"
+                            PlaystationConfig.hashedDeviceID = Crypto.HMAC( Crypto.SHA1, engine.stats.device.id, engine.stats.device.platform )
                                 
                             if(engine.stats.locale && engine.stats.locale == "fr_FR"){
                                 StorageManagerInstance.set( 'lang', 'fr');

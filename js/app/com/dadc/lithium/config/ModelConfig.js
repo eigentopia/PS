@@ -8,7 +8,8 @@ ModelConfig.getServerURLRoot = function(){
 
     // STAGING
     //return  "https://staging-api-us.crackle.com/Service.svc/";
-
+    //return  "https://staging-v1-api-us.crackle.com/Service.svc/";
+    
     // STATIC PRODUCTION
 //    return "https://api.crackle.com/Service.svc/";
 
