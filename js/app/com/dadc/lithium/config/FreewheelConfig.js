@@ -76,7 +76,8 @@ var FreewheelConfig = function()
                 ";k1=" +engine.storage.local.age + 
                     "&k2="+ engine.storage.local.gender + 
                 ";comscore_platform=" + platformName +
-                    "&comscore_device=" + platformName
+                    "&comscore_device=" + platformName+
+                    "&_fw_did_android_id=" + Crypto.HMAC( Crypto.SHA1, hashedDeviceID, platformName )
 
        Logger.log("FreewheelConfig.getFreeWheelURL() - url: " + output);
 
