@@ -54,7 +54,7 @@ var GeoCountryController = function( ParentControllerObj ){
             StorageManagerInstance.set( StorageManager.STORAGE_KEYS.IPADDRESS, GeoCountryObj.getIPAddress() );
             
             if( LoggerConfig.GeocodeConfig.hasOwnProperty( 'FAKE_COUNTRY' ) && LoggerConfig.GeocodeConfig.FAKE_COUNTRY ){
-                StorageManagerInstance.set( 'geocode', LoggerConfig.GeocodeConfig.CONFIG.FAKE_COUNTRY );
+                StorageManagerInstance.set( 'geocode', LoggerConfig.GeocodeConfig.FAKE_COUNTRY );
                 m_is_invalid_region = false;
                 var app_config_request = new AppConfigRequest( onAppConfigResponse );
 
@@ -76,7 +76,6 @@ var GeoCountryController = function( ParentControllerObj ){
     }
     
     function getLanguageByCountry( country ){
-        // SETTING SPANISH AS DEFAULT
         var lang;
         var l_country = country;
         
@@ -122,7 +121,8 @@ var GeoCountryController = function( ParentControllerObj ){
                     ParentControllerObj.requestingParentAction( {action: ApplicationController.OPERATIONS.INVALID_REGION, calling_controller: this} );
                     return;
                 }
-
+                
+                Logger.log('Stored Geo ' + StorageManagerInstance.get( 'geocode' ) )
                 Logger.log('setting language to ' + AppConfigObj.getSupportedRegionList().getLanguageByCountryCode( StorageManagerInstance.get( 'geocode' ) ) );
                 StorageManagerInstance.set( 'api_hostname', AppConfigObj.getSupportedRegionList().getApiHostnameByCountryCode( StorageManagerInstance.get( 'geocode' ) ) );
                 if(engine.stats.locale && engine.stats.locale == "fr_FR"){

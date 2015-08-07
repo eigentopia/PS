@@ -80,7 +80,7 @@ var Uplynk = (function(){
         //Add stuff for Freewheel
         var deviceID =  engine.stats.device.id ;
         var userId = StorageManagerInstance.get('userId')
-        var vcid = (userId)?userId:hashedDeviceID
+        var vcid = (userId)?userId:Crypto.HMAC( Crypto.SHA1, deviceID, platformName )
 
         var platformName = "PlayStation3"
         
@@ -88,12 +88,15 @@ var Uplynk = (function(){
             platformName = "PlayStation4"
         }
 
-        var adKV =  "&ad.vcid="+Crypto.HMAC( Crypto.SHA1, vcid, platformName )+
-                    "&ad.kv=k1," +engine.storage.local.age + 
-                    ",k2,"+ engine.storage.local.gender + 
-                    ",comscore_platform," + platformName +
-                    ",comscore_device," + platformName+
-                    ",_fw_did_android_id," + Crypto.HMAC( Crypto.SHA1, hashedDeviceID, platformName )
+        var adKV =  "&ad.vcid="             + vcid +
+                    "&ad.kv=k1,"            + engine.storage.local.age + 
+                    ",k2,"                  + engine.storage.local.gender + 
+                    ",comscore_platform,"   + platformName +
+                    ",comscore_device,"     + platformName +
+                    ",_fw_did_android_id,"  + Crypto.HMAC( Crypto.SHA1, deviceID, platformName )
+
+                    //DEBUG
+                    +"&ad._debug=crackle_test"
 
         //HLS Version 4 has best support
     	return "http://" + newUrl +"&hlsver=4" + adKV

@@ -344,17 +344,22 @@ include( "js/app/com/dadc/lithium/util/sha1.js")
 
 var PlaystationConfig = {
         setConfig:function(cb){
-            //This has to be the most absrud set of design choices ever made. 3 calls to set up the app.
+            //First, where are you?
             CrackleApi.Config.geo(function(data, status){
                 if(data !== null){
                     var id = data.ID
                     var cc = data.CountryCode
                     var cn = data.CountryName
                     var ip = data.IPAddress
+                    
+                    if( LoggerConfig.GeocodeConfig.hasOwnProperty( 'FAKE_COUNTRY' ) && LoggerConfig.GeocodeConfig.FAKE_COUNTRY ){
+                        console.log("Found a fake " + LoggerConfig.GeocodeConfig.FAKE_COUNTRY)
+                        cc = LoggerConfig.GeocodeConfig.FAKE_COUNTRY;
+                    }
                     StorageManagerInstance.set( 'geocode', cc);
-                    //StorageManagerInstance.set( 'IPADDRESS', GeoCountryObj.getIPAddress() );
                     StorageManagerInstance.set( StorageManager.STORAGE_KEYS.IPADDRESS, ip );
                     
+                    //Second, based on where you are, which API URL should we use?
                     CrackleApi.Config.app(function(configdata, status){
                         if(configdata !== null){
                             var supportedRegions = configdata.SupportedRegions;
@@ -377,9 +382,8 @@ var PlaystationConfig = {
                                 return;
                             }
 
-                            // should not need this- on CrackleApi now
-                            StorageManagerInstance.set( 'api_hostname', apiUrl );
 
+                            StorageManagerInstance.set( 'api_hostname', apiUrl );
                             CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
                             
                             //CrackleApi.apiUrl = "https://staging-v1-api-us.crackle.com/Service.svc/"
