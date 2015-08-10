@@ -1,5 +1,5 @@
 
-include( "js/app/com/dadc/lithium/util/SHA1.js" );
+include( "js/app/com/dadc/lithium/util/sha1.js" );
 
 var Uplynk = (function(){
 
@@ -79,6 +79,7 @@ var Uplynk = (function(){
 
         //Add stuff for Freewheel
         var deviceID =  engine.stats.device.id ;
+        var platformName = engine.stats.device.platform
         var userId = StorageManagerInstance.get('userId')
         var vcid = (userId)?userId:Crypto.HMAC( Crypto.SHA1, deviceID, platformName )
 

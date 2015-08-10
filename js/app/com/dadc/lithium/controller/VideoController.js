@@ -50,8 +50,6 @@ var VideoController = function( ParentControllerObj )
     var continueCalled = false
     var userOptOut = false
 
-    this.audioVideoUrlSwitch = false;
-
     //For disabling the controls during Uplynk ad.
     this.inAd = false
     
@@ -259,7 +257,6 @@ var VideoController = function( ParentControllerObj )
     this.mediaObj = null;
     this.prepareToOpen = function( MediaDetailsObj, audioVideoUrl, subtitleUrl )
     {
-        This.audioVideoUrlSwitch = false;
         userOptOut = false
         //Add stuff here for the video stream
         // console.log("1 prepareToOpen with")
@@ -295,7 +292,7 @@ var VideoController = function( ParentControllerObj )
             if(subtitleUrl != null){
                 if(!subsLoaded){
                     subsLoaded = true;
-                     m_crackle_video.loadSubtitles(subtitleUrl);
+                    m_crackle_video.loadSubtitles(subtitleUrl);
                 }
                 Logger.log("1NEW Subtitle URL: " + subtitleUrl);
                 AnalyticsManagerInstance.subTitleOnEvent(  );
@@ -303,8 +300,6 @@ var VideoController = function( ParentControllerObj )
 
             }
             else{
-                AnalyticsManagerInstance.subTitleOffEvent(  );
-
                 if(m_crackle_video){
                     m_crackle_video.setSubtitleContainer(null)
                 }
@@ -313,7 +308,7 @@ var VideoController = function( ParentControllerObj )
 
             //Is the media url the same?
             if(currentAudioVideoUrl == audioVideoUrl){
-                if(htis.m_show_subtitles ){
+                if(This.m_show_subtitles ){
                     m_crackle_video.setSubtitleContainer(m_subtitle_container)
                 }
                 else{
@@ -327,12 +322,11 @@ var VideoController = function( ParentControllerObj )
 
         //have you given me a AVURL?
         if(audioVideoUrl){
-            This.audioVideoUrlSwitch = true;
             currentAudioVideoUrl = audioVideoUrl
         }
         else{
             var avUrls = MediaDetailsObj.getMediaURLs()
-            if(avUrls != null){
+            if(avUrls != null){ //Make sure the media is there
                 currentAudioVideoUrl = MediaDetailsObj.getMediaURLs()[0].Path;
             }
             else{
@@ -727,6 +721,7 @@ var VideoController = function( ParentControllerObj )
         subtitleChooserController = null;
         isFocused = true;
 
+        //Need new video if new AVUrl
         if(avFile != currentAudioVideoUrl){
             if(ccFile != currentSubtitleUrl){
                 //reset all of it
@@ -738,21 +733,21 @@ var VideoController = function( ParentControllerObj )
 
         }
         else if(ccFile != currentSubtitleUrl){
-            //get the file and parse it, tuen on subs
+            
             currentSubtitleUrl = ccFile
-            if(ccFile != null){
+            if(ccFile != null){ //get the file and parse it, turn on subs
                 if(!subsLoaded){
                     subsLoaded = true;
                      m_crackle_video.loadSubtitles(ccFile);
-                Logger.log("2NEW Subtitle URL: " + ccFile);
-                AnalyticsManagerInstance.subTitleOnEvent(  );
-                This.m_show_subtitles = true;
-                m_crackle_video.setSubtitleContainer(m_subtitle_container)
-                //m_crackle_video.togglePause()
+                    Logger.log("2NEW Subtitle URL: " + ccFile);
+                    AnalyticsManagerInstance.subTitleOnEvent(  );
+                    This.m_show_subtitles = true;
+                    m_crackle_video.setSubtitleContainer(m_subtitle_container)
+                    //m_crackle_video.togglePause()
                 }
 
             }
-            else{
+            else{ //no file returned from chooser, shut them off
                 AnalyticsManagerInstance.subTitleOffEvent(  );
 
                 if(m_crackle_video){
@@ -764,11 +759,6 @@ var VideoController = function( ParentControllerObj )
                 currentSubtitleUrl = null;
                 m_timeline_widget.setPauseStatus(false);
             }
-        }
-        else if(ccFile == currentSubtitleUrl && ccFile == null) {
-            This.m_show_subtitles = false;
-            m_crackle_video.setSubtitleContainer(null)
-            m_crackle_video.togglePause()
         }
         else{
             m_crackle_video.togglePause()

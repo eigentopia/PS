@@ -21,7 +21,7 @@ LoggerConfig.GeocodeConfig = {
     //FAKE_COUNTRY: 'BR',
     
     // FORCING TO MX
-    FAKE_COUNTRY: 'MX' 
+    //FAKE_COUNTRY: 'MX' 
 }
 
 LoggerConfig.PSN = {
