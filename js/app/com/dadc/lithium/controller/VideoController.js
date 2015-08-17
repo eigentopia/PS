@@ -376,7 +376,7 @@ var VideoController = function( ParentControllerObj )
             totalVideosPlayed ++
             continueCalled = false;
             
-            m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, This, This );
+            m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, m_last_time, This, This );
             m_crackle_video.setSubtitleContainer(m_subtitle_container)
 
             //check here if next item is show or movie
@@ -738,7 +738,7 @@ var VideoController = function( ParentControllerObj )
             if(ccFile != null){ //get the file and parse it, turn on subs
                 if(!subsLoaded){
                     subsLoaded = true;
-                     m_crackle_video.loadSubtitles(ccFile);
+                    m_crackle_video.loadSubtitles(ccFile);
                     Logger.log("2NEW Subtitle URL: " + ccFile);
                     AnalyticsManagerInstance.subTitleOnEvent(  );
                     This.m_show_subtitles = true;

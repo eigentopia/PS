@@ -7,7 +7,7 @@ include( "js/app/com/dadc/lithium/parsers/TTMLSubtitle.js" );
 include( "js/app/com/dadc/lithium/model/TTMLSubtitleModel.js" );
 
 
-var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, PlaybackReadyListener, PlaybackErrorListener )
+var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, startTime, PlaybackReadyListener, PlaybackErrorListener )
 {
     Logger.shout( "NEW CRACKLE VIDEO CREATED " + audioVideoUrl );
     var This                    = this;
@@ -115,7 +115,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     this.getVideoURL = function(){return m_video_url + "&hlsver=4";};
     this.getMediaDetailsObj = function(){return m_media_details_obj;};
 
-    this.getResumeTime = function(){return m_current_time;};
+    this.getResumeTime = function(){return startTime;};
     this.getCurrentTime = function(){return m_current_time;};
     this.getWidth = function(){
         try{
@@ -476,11 +476,18 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //console.dir(data)
         if (status !== 200) {
             Logger.log("Failed to load subtitle: " + status);
+            Logger.log( '!!! EXCEPTION onSubtitlesCallback' );
+
+            m_subtitle_url = null
+            m_subtitle_widget.setSubtitlesFailed();
+            PlaybackReadyListener.notifyPlaybackReady()
         } else if (!m_disposed) {
             Logger.log("Subtitle loaded");
 
             if(status !== 200){
                 Logger.log( '!!! EXCEPTION onSubtitlesCallback' );
+
+                m_subtitle_url = null
                 m_subtitle_widget.setSubtitlesFailed();
                 PlaybackReadyListener.notifyPlaybackReady()
             }
