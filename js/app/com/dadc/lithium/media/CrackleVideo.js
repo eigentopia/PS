@@ -480,7 +480,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
 
             m_subtitle_url = null
             m_subtitle_widget.setSubtitlesFailed();
-            PlaybackReadyListener.notifyPlaybackReady()
+            PlaybackReadyListener.subsFailed()
         } else if (!m_disposed) {
             Logger.log("Subtitle loaded");
 
@@ -489,7 +489,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
 
                 m_subtitle_url = null
                 m_subtitle_widget.setSubtitlesFailed();
-                PlaybackReadyListener.notifyPlaybackReady()
+                PlaybackReadyListener.subsFailed()
             }
             else{
                 

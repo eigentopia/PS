@@ -736,15 +736,13 @@ var VideoController = function( ParentControllerObj )
             
             currentSubtitleUrl = ccFile
             if(ccFile != null){ //get the file and parse it, turn on subs
-                if(!subsLoaded){
-                    subsLoaded = true;
-                    m_crackle_video.loadSubtitles(ccFile);
-                    Logger.log("2NEW Subtitle URL: " + ccFile);
-                    AnalyticsManagerInstance.subTitleOnEvent(  );
-                    This.m_show_subtitles = true;
-                    m_crackle_video.setSubtitleContainer(m_subtitle_container)
-                    //m_crackle_video.togglePause()
-                }
+
+                m_crackle_video.loadSubtitles(ccFile);
+                Logger.log("2NEW Subtitle URL: " + ccFile);
+                // AnalyticsManagerInstance.subTitleOnEvent(  );
+                // This.m_show_subtitles = true;
+                // m_crackle_video.setSubtitleContainer(m_subtitle_container)
+
 
             }
             else{ //no file returned from chooser, shut them off
@@ -766,9 +764,20 @@ var VideoController = function( ParentControllerObj )
     }
 
     this.subsLoaded = function(){
+        AnalyticsManagerInstance.subTitleOnEvent(  );
+        This.m_show_subtitles = true;
+        m_crackle_video.setSubtitleContainer(m_subtitle_container)
         m_crackle_video.togglePause()
         m_timeline_widget.setPauseStatus(false);
 
+    }
+
+    this.subsFailed = function(){
+        m_crackle_video.setSubtitleContainer(null)
+        This.m_show_subtitles = false;
+        currentSubtitleUrl = null;
+        m_crackle_video.togglePause()
+        m_timeline_widget.setPauseStatus(false);
     }
 
     this.navUp = function(){
