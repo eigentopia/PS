@@ -292,7 +292,15 @@ var VideoController = function( ParentControllerObj )
             if(subtitleUrl != null){
                 if(!subsLoaded){
                     subsLoaded = true;
-                    m_crackle_video.loadSubtitles(subtitleUrl);
+                    var tt = url.replace( 'media/', '' );
+                    //m_crackle_video.loadSubtitles(subtitleUrl);
+                    var video  = VideoManagerInstance.getCoreVideo()
+                    video.addTimedTextTrack(tt, "Track01", "EN", "caption")
+                    video.timedTextTrackSetPosAndDim(video.x, video.y, video.width, video.height)
+                    track = video.textTracks[0];
+//            Logger.logObj( track );
+                    track.resumeTrack();
+
                 }
                 Logger.log("1NEW Subtitle URL: " + subtitleUrl);
                 AnalyticsManagerInstance.subTitleOnEvent(  );
@@ -736,7 +744,16 @@ var VideoController = function( ParentControllerObj )
             
             currentSubtitleUrl = ccFile
             if(ccFile != null){ //get the file and parse it, turn on subs
-
+            //     var tt = ccFile.replace( 'media/', '' );
+            //     console.log("CC File "+ tt)
+            //     var video  = VideoManagerInstance.getCoreVideo()
+            //     video.addTimedTextTrack(tt, "Track01", "EN", "subtitles")
+            //     console.log ("TT "+ video.x +" "+video.y+" "+ video.width+" "+ video.height);
+            //     video.timedTextTrackSetPosAndDim(video.x, video.y, video.width, video.height)
+            //     This.notifyPlaybackReady()
+            //     track = video.textTracks[0];
+            // Logger.logObj( track );
+                //track.resumeTrack();
                 m_crackle_video.loadSubtitles(ccFile);
                 Logger.log("2NEW Subtitle URL: " + ccFile);
                 // AnalyticsManagerInstance.subTitleOnEvent(  );

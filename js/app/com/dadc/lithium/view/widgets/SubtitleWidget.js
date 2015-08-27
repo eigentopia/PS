@@ -33,21 +33,21 @@ var SubtitleWidget = function( SubtitlesObj ) {
     	return m_root_node;
     };
     this.removeSubtitleFromScreen = function(){
-        Logger.log("removing a sub from the screen. children to sound off.")
+       // Logger.log("removing a sub from the screen. children to sound off.")
         while ( m_subtitle_container.numChildren > 0 ){
-            Logger.log("removing next child...");
+         //   Logger.log("removing next child...");
             m_subtitle_container.removeChildAt( 0 );
         }
     }
 
     this.displaySubtitleLine = function( SubtitleLineObj ){
         if(SubtitleLineObj){
-            Logger.log("Current Subtitle: "+currentSubtitle);
+            //Logger.log("Current Subtitle: "+currentSubtitle);
             // if(currentSubtitle != SubtitleLineObj.getText()){
             //     currentSubtitle = SubtitleLineObj.getText()
                 this.removeSubtitleFromScreen();
                 //if ( SubtitleLineObj ){
-                    Logger.log("Subtitle: "+ SubtitleLineObj.getText);
+                    //Logger.log("Subtitle: "+ SubtitleLineObj.getText);
                     m_subtitle_container.addChild( getTextContainer( SubtitleLineObj.getText ) );
 
                 //}else{
@@ -63,7 +63,7 @@ var SubtitleWidget = function( SubtitlesObj ) {
     this.displayText =  function(TextInfo){
         this.removeSubtitleFromScreen();
                 //if ( SubtitleLineObj ){
-                    Logger.log("DISPLAY Subtitle: "+ TextInfo.text);
+                    //Logger.log("DISPLAY Subtitle: "+ TextInfo.text);
                     m_subtitle_container.addChild( getTextContainer( TextInfo.text ));
 
     }
@@ -72,7 +72,7 @@ var SubtitleWidget = function( SubtitlesObj ) {
 
     }
     function getTextContainer( message ){
-        Logger.log("getTextContainer for message: " + message);
+        //Logger.log("getTextContainer for message: " + message);
         var tblock;
         var shadowBlock;
         var messages = message.split( TTMLSubtitle.CONFIG.BREAK_LINES );
@@ -106,6 +106,6 @@ var SubtitleWidget = function( SubtitlesObj ) {
             Logger.log("subtitleWidget.getTextContainer() failed...")
         }
 
-            Logger.log("returning container");
+            //Logger.log("returning container");
             return container;
         }};

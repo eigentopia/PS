@@ -111,6 +111,16 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
             Logger.log("mark not added");
         }
     };
+    this.addSubsMark = function (start, end){
+        if( ! m_marks_finalized ){
+            sub_marks_tc[sub_marks_tc.length] = start;
+            Logger.log(m_playback_marks_tc.length + " sub start mark added @ " +  start );
+            sub_marks_tc[sub_marks_tc.length] = end;
+            Logger.log(m_playback_marks_tc.length + " sub end mark added @ " +  end );
+        }else{
+            Logger.log("mark not added");
+        }
+    }
 
     this.getVideoURL = function(){return m_video_url + "&hlsver=4";};
     this.getMediaDetailsObj = function(){return m_media_details_obj;};
@@ -252,7 +262,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
                 }
                 else{
                     //m_is_playing = true
-                    time_pos = ad.end_time +.01
+                    time_pos = ad.end_time +0.01
                 }
                 
                 break
@@ -305,15 +315,15 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
                 PlaybackReadyListener.inAd = false
                 This.inAd = false
                 playingAd = null
+
+                if( m_subtitle_container ) addSubtitleContainer();
                 
-                if(!This.preRollPlayed){
-                   // console.log("PreRoll not played")
-                   preRollEnded()
+                if(adManager.hasPreroll && !This.preRollPlayed){
+                        // console.log("PreRoll not played")
+                    preRollEnded()
                 }
-                
+                return
                 //VideoProgressManagerInstance.setProgress(m_media_details_obj.getID(), m_current_time)
-                
-                return;      
             }
         }
         else{
@@ -378,27 +388,40 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
                             break;
                     }
                 }
-
-
-                if(PlaybackReadyListener.m_show_subtitles == true ){
-                    // Subtitles end mark
-                    if( m_subtitle_end_marks[ time_pos] ){
-                        Logger.log( 'sub end_mark: ' + m_subtitle_end_marks[ time_pos ] );
-                        m_subtitle_widget.displaySubtitleLine( null );
-                    }
-
-                    // Subtitles start mark
-                    if( m_subtitle_start_marks[ time_pos ] ){
-                        Logger.log( 'sub start_mark: ' + m_subtitle_start_marks[ time_pos ]  );
-                        m_subtitle_widget.displaySubtitleLine( m_subtitle_start_marks[ time_pos ] );
-                    }
-                }
-                break;
             }
-
+        }
+        if(PlaybackReadyListener.m_show_subtitles == true ){
+            doSubs(m_previous_time, m_current_time)
         }
     };
-    
+
+    function doSubs(pt, ct){
+        for( var i = 0; i < sub_marks_tc.length; i++ ){
+        // MILAN: ADDED >= FOR FIRST TIMECHECK
+
+            if( sub_marks_tc[i] >= pt && 
+                sub_marks_tc[i] < ct && 
+                ( ( ct - 2 ) < sub_marks_tc[i] ) ){
+                var time_pos = sub_marks_tc[ i ];
+
+
+                // Subtitles end mark
+                if( m_subtitle_end_marks[ time_pos] ){
+                    //Logger.log( 'sub end_mark: ' +time_pos  );
+                    m_subtitle_widget.displaySubtitleLine( null );
+                }
+
+                // Subtitles start mark
+                if( m_subtitle_start_marks[ time_pos ] ){
+                    //Logger.log( 'sub start_mark: ' + time_pos   );
+                    m_subtitle_widget.displaySubtitleLine( m_subtitle_start_marks[ time_pos ] );
+                }
+
+                break;
+            }
+        }
+    }
+    var sub_marks_tc = []
     this.onEnded = function(){
         //Uplynk
         Logger.log( 'CrackleVideo onEnded()' );
@@ -501,6 +524,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
 
                 //Add the offset here for subs mark.
                 var adArray = adManager.adsData.ad_info.slots
+                var adSlot = 0
                 
                 for( var subidx in subtitle_lines ){
                     var adOffsetTime = 0
@@ -512,17 +536,18 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
                             var ad = adArray[i]
                             if(endMark > ad.end_time){
                                 adOffsetTime += ad.end_time - ad.start_time;
+
                             }
-                            else if( (ad.start_time >= startMark) && (ad.end_time <= endMark) ){
+                            else if( (startMark >= ad.start_time ) && (endMark <= ad.end_time ) ){
                                 console.log("inside")
                                 adOffsetTime += ad.end_time - ad.start_time;
                             }
                         }
                     }
+                    console.log("startMark "+ startMark + " adOffsetTime " + adOffsetTime)
                     m_subtitle_start_marks[ startMark + adOffsetTime ] = subtitle;
                     m_subtitle_end_marks[ endMark + adOffsetTime ] = subtitle;
-                    This.addPlaybackMark( startMark + adOffsetTime );
-                    This.addPlaybackMark( endMark + adOffsetTime );
+                    This.addSubsMark( startMark + adOffsetTime, endMark+adOffsetTime );
                 }
 
 
@@ -629,7 +654,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
         
     };
 
-var timeBeforeAd = 0;
+    var timeBeforeAd = 0;
 
     function playAd( adIndex ){
         //Uplynk- pause for innovid, hide timeline for everything else.
@@ -715,20 +740,6 @@ var timeBeforeAd = 0;
             }
         }
     }
-    function adUplynkMarks(){
-        var slots = adManager.adsData.ad_info.slots
-        //Uplynk - if an innovid go get the ad and put it in the slot.
-        for( var i = 0; i < slots.length; i++ ){
-            var slot = slots[i]
-            var time_position = parseInt(slot.start_time );
-
-            m_playlists[ time_position ] = slot
-            //Logger.log( 'creating ad slot at ' + time_position );
-            if( time_position > 0 && time_position < parseInt( m_media_details_obj.getDurationInSeconds() ) ){
-                This.addPlaybackMark( time_position );
-            }
-        }
-    }
 
     function finalizePlaybackMarks(){
         m_playback_marks_tc.sort( function( a, b ){return a - b;} );
@@ -737,7 +748,6 @@ var timeBeforeAd = 0;
             m_playback_marks_map[ m_playback_marks_tc[ i ] ] = ( i + 1 );
         }
     }
-
 
     function notifyListeners( playbackEventObj ){
         Logger.log("notifyListeners called in CrackleVideo");
