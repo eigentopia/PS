@@ -18,7 +18,7 @@ var VideoController = function( ParentControllerObj )
         m_timeline_widget.getDisplayNode().y = 870;
 
     var m_subtitle_container        = engine.createContainer();
-    m_subtitle_container.y = 900;
+    m_subtitle_container.y = 885;
     var m_crackle_video;
     var m_media_details_obj;
 
@@ -292,14 +292,14 @@ var VideoController = function( ParentControllerObj )
             if(subtitleUrl != null){
                 if(!subsLoaded){
                     subsLoaded = true;
-                    var tt = url.replace( 'media/', '' );
-                    //m_crackle_video.loadSubtitles(subtitleUrl);
-                    var video  = VideoManagerInstance.getCoreVideo()
-                    video.addTimedTextTrack(tt, "Track01", "EN", "caption")
-                    video.timedTextTrackSetPosAndDim(video.x, video.y, video.width, video.height)
-                    track = video.textTracks[0];
-//            Logger.logObj( track );
-                    track.resumeTrack();
+                    m_crackle_video.loadSubtitles(subtitleUrl);
+//                     var tt = url.replace( 'media/', '' );
+//                     var video  = VideoManagerInstance.getCoreVideo()
+//                     video.addTimedTextTrack(tt, "Track01", "EN", "caption")
+//                     video.timedTextTrackSetPosAndDim(video.x, video.y, video.width, video.height)
+//                     track = video.textTracks[0];
+// //            Logger.logObj( track );
+//                     track.resumeTrack();
 
                 }
                 Logger.log("1NEW Subtitle URL: " + subtitleUrl);
@@ -359,7 +359,10 @@ var VideoController = function( ParentControllerObj )
         m_master_container.addChild( getBackgroundContainer() );
         m_master_container.addChild( m_loading_widget.getDisplayNode() );
         m_master_container.addChild( VideoManagerInstance.getDisplayNode() );
+        
+
         m_master_container.addChild( m_subtitle_container );
+
         m_master_container.addChild( m_timeline_widget.getDisplayNode() );
 
 

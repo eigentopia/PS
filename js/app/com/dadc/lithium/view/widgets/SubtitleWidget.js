@@ -5,6 +5,7 @@ include( "js/app/com/dadc/lithium/parsers/TTMLSubtitle.js" );
  */
 var SubtitleWidget = function( SubtitlesObj ) {
     var m_root_node             = engine.createContainer();
+    //m_root_node.width = 1920
     var m_subtitle_container    = engine.createContainer();
     m_root_node.addChild( m_subtitle_container );
 
@@ -33,11 +34,14 @@ var SubtitleWidget = function( SubtitlesObj ) {
     	return m_root_node;
     };
     this.removeSubtitleFromScreen = function(){
+
+                tblock.text = ""
+                shadowBlock.text = ""
        // Logger.log("removing a sub from the screen. children to sound off.")
-        while ( m_subtitle_container.numChildren > 0 ){
-         //   Logger.log("removing next child...");
-            m_subtitle_container.removeChildAt( 0 );
-        }
+        // while ( m_subtitle_container.numChildren > 0 ){
+        //  //   Logger.log("removing next child...");
+        //     m_subtitle_container.removeChildAt( 0 );
+        // }
     }
 
     this.displaySubtitleLine = function( SubtitleLineObj ){
@@ -48,14 +52,15 @@ var SubtitleWidget = function( SubtitlesObj ) {
                 this.removeSubtitleFromScreen();
                 //if ( SubtitleLineObj ){
                     //Logger.log("Subtitle: "+ SubtitleLineObj.getText);
-                    m_subtitle_container.addChild( getTextContainer( SubtitleLineObj.getText ) );
+                    //m_subtitle_container.addChild( getTextContainer( SubtitleLineObj.getText ) );
 
                 //}else{
                  //   Logger.log("SubtitleLineObj does not exist, will not add");
                 //}
             //}
+            getTextContainer( SubtitleLineObj.getText )
         }else{
-             Logger.log("SubtitleLineObj null");
+            //Logger.log("SubtitleLineObj null");
             this.removeSubtitleFromScreen();
         }
     }
@@ -71,35 +76,41 @@ var SubtitleWidget = function( SubtitlesObj ) {
     function initWidget(){
 
     }
+    
+    var tblock = engine.createTextBlock( "", FontLibraryInstance.getFont_SUBTITLE(), 1920  );
+    var shadowBlock= engine.createTextBlock( "", FontLibraryInstance.getFont_SUBTITLESHADOW(), 1920 );
+    shadowBlock.x = tblock.x+1
+    shadowBlock.y = tblock.y+1
+    
+    var subsContainer = engine.createContainer();
+    
+    m_subtitle_container.addChild(subsContainer);
+    subsContainer.addChild( shadowBlock );
+    subsContainer.addChild( tblock );
     function getTextContainer( message ){
-        //Logger.log("getTextContainer for message: " + message);
-        var tblock;
-        var shadowBlock;
-        var messages = message.split( TTMLSubtitle.CONFIG.BREAK_LINES );
-        var container = engine.createContainer();
+        //Logger.log("getTextContainer for message: " + message)
+        var parsedMessage = message.replace( /<br>/g, '\n' );
+        //var container = engine.createContainer();
 
         // DAN: engine.createTextBlock failed, surrounding with a try-catch in hopes to "skip" the offending subtitle
         try
         {
-            for( var i = 0; i < messages.length; i++ ){
-                var tmp_container = engine.createContainer();
+            //for( var i = 0; i < messages.length; i++ ){
                 //var shader = ShaderCreatorInstance.createGlowShader( 4, RGBLibraryInstance.getBLACK( 1 ), RGBLibraryInstance.getWHITE( 1 ) );
 
-                tblock = engine.createTextBlock( messages[ i ], FontLibraryInstance.getFont_SUBTITLE(), 1700 );
-                shadowBlock = engine.createTextBlock( messages[ i ], FontLibraryInstance.getFont_SUBTITLESHADOW(), 1080 );
+                tblock.text = parsedMessage
+                shadowBlock.text = parsedMessage
             //            tblock.shader = shader;
                 // disabled the glow shader
 
-                tmp_container.addChild( shadowBlock );
-                tmp_container.addChild( tblock );
+                subsContainer.x = 1920 / 2 - tblock.naturalWidth /2
+                //m_subtitle_container.addChild(subsContainer);
+                //tblock.y = -10
 
-                tblock.x = 1920 / 2 - tblock.naturalWidth / 2;
-                tblock.y = -( ( messages.length - 1 ) - i ) * 50;
-                shadowBlock.x = tblock.x+1
-                shadowBlock.y = tblock.y+1
-
-                container.addChild( tmp_container );
-            }
+                // shadowBlock.x = tblock.x+1
+                // shadowBlock.y = tblock.y+1
+                // //container.addChild( tmp_container );
+            //}
         }
         catch(e)
         {
@@ -107,5 +118,10 @@ var SubtitleWidget = function( SubtitlesObj ) {
         }
 
             //Logger.log("returning container");
-            return container;
-        }};
+            //return container;
+    }
+
+    function displaySub(){
+        m_subtitle_container.addChild(subsContainer);
+    }
+};
