@@ -36,7 +36,7 @@ var Uplynk = (function(){
 
     	for (var i = 0; i < ads.length; i++) {
     	    var ad = ads[i];
-            if(ad.slot = 'pre'){
+            if(ad.slot = 'pre' && ad.start_time == 0){
                 console.log('preSLot duration '+  ad.duration)
                 self.hasPreroll = true;
                 //weird condition- slot can be labeled as pre but have a later start time?

@@ -7,7 +7,7 @@ include( "js/app/com/dadc/lithium/parsers/TTMLSubtitle.js" );
 include( "js/app/com/dadc/lithium/model/TTMLSubtitleModel.js" );
 
 
-var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, startTime, PlaybackReadyListener, PlaybackErrorListener )
+var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, PlaybackReadyListener, PlaybackErrorListener )
 {
     Logger.shout( "NEW CRACKLE VIDEO CREATED " + audioVideoUrl );
     var This                    = this;
@@ -84,11 +84,11 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
 
                 m_video_url = adManager.adsData.playURL //+ "&sid="+adManager.adsData.sid
 
-                // if(adManager.hasPreroll){
+                if(adManager.hasPreroll){
 
-                //     timeBeforePreroll = m_current_time
-                //     m_current_time = 0
-                // }  
+                    timeBeforePreroll = m_current_time
+                    m_current_time = 0
+                }  
 
             }
             
@@ -111,12 +111,14 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
             Logger.log("mark not added");
         }
     };
+
+    //Wow needed this because all marks were added to one big pool
     this.addSubsMark = function (start, end){
         if( ! m_marks_finalized ){
             sub_marks_tc[sub_marks_tc.length] = start;
-            Logger.log(m_playback_marks_tc.length + " sub start mark added @ " +  start );
+            //Logger.log(m_playback_marks_tc.length + " sub start mark added @ " +  start );
             sub_marks_tc[sub_marks_tc.length] = end;
-            Logger.log(m_playback_marks_tc.length + " sub end mark added @ " +  end );
+            //Logger.log(m_playback_marks_tc.length + " sub end mark added @ " +  end );
         }else{
             Logger.log("mark not added");
         }
@@ -125,7 +127,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
     this.getVideoURL = function(){return m_video_url + "&hlsver=4";};
     this.getMediaDetailsObj = function(){return m_media_details_obj;};
 
-    this.getResumeTime = function(){return startTime;};
+    this.getResumeTime = function(){return m_current_time;};
     this.getCurrentTime = function(){return m_current_time;};
     this.getWidth = function(){
         try{
@@ -190,9 +192,13 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
 // local func to start CrackleVideo
     function playCrackleVideo()
     {
-        Logger.log("CrackleVideo.playCrackleVideo()");
-        
-        
+        Logger.log("CrackleVideo.playCrackleVideo() at:"+m_current_time);
+
+        if( VideoProgressManagerInstance.getProgress( MediaDetailsObj.getID() ) ){
+            Logger.log( 'PLAY setting progress time to ' + VideoProgressManagerInstance.getProgress( MediaDetailsObj.getID() ) );
+
+            m_current_time = VideoProgressManagerInstance.getProgress( MediaDetailsObj.getID() );
+        }
         if(adManager.hasPreroll && m_current_time > 0){
             timeBeforeAd = m_current_time
             m_current_time = 0
@@ -395,6 +401,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
         }
     };
 
+    var sub_marks_tc = []
     function doSubs(pt, ct){
         for( var i = 0; i < sub_marks_tc.length; i++ ){
         // MILAN: ADDED >= FOR FIRST TIMECHECK
@@ -421,7 +428,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
             }
         }
     }
-    var sub_marks_tc = []
     this.onEnded = function(){
         //Uplynk
         Logger.log( 'CrackleVideo onEnded()' );
@@ -544,7 +550,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, start
                             }
                         }
                     }
-                    console.log("startMark "+ startMark + " adOffsetTime " + adOffsetTime)
                     m_subtitle_start_marks[ startMark + adOffsetTime ] = subtitle;
                     m_subtitle_end_marks[ endMark + adOffsetTime ] = subtitle;
                     This.addSubsMark( startMark + adOffsetTime, endMark+adOffsetTime );

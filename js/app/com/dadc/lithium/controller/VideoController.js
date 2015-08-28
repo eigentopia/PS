@@ -386,8 +386,8 @@ var VideoController = function( ParentControllerObj )
 
             totalVideosPlayed ++
             continueCalled = false;
-            
-            m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, m_last_time, This, This );
+            console.log("prepareToOpen is setting CrackleVideo to "+ m_last_time)
+            m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, This, This );
             m_crackle_video.setSubtitleContainer(m_subtitle_container)
 
             //check here if next item is show or movie
@@ -451,6 +451,7 @@ var VideoController = function( ParentControllerObj )
 
             
             if(m_last_time>0){
+                console.log("Prepare to open time:"+m_last_time)
                 m_crackle_video.setCurrentTime(m_last_time)
                 if(m_crackle_video.isPaused()){
                     m_crackle_video.togglePause();
