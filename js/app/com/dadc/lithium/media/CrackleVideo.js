@@ -487,6 +487,11 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //This.stCallback = cb
         // MILAN: MOVED SUBTITLE REQUEST TO TTMLSubtitleModel.js
         try{
+            //Clear them here. Reload conditions in VidController.
+            m_subtitle_start_marks = []
+            m_subtitle_end_marks = []
+            sub_marks_tc = []
+
             m_subtitle_url = url.replace( 'media/', '' );
             Logger.log( 'closed_caption_path = ' + m_subtitle_url );
 

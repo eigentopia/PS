@@ -722,6 +722,7 @@ var VideoController = function( ParentControllerObj )
         subtitleChooserController.setFocus();
     }
 
+var previousSubUrl=""
     this.closeSubtitleChooser = function(avFile, ccFile){
         m_root_node.removeChild( subtitleChooserController.getDisplayNode() );
        
@@ -758,12 +759,17 @@ var VideoController = function( ParentControllerObj )
             //     track = video.textTracks[0];
             // Logger.logObj( track );
                 //track.resumeTrack();
-                m_crackle_video.loadSubtitles(ccFile);
-                Logger.log("2NEW Subtitle URL: " + ccFile);
                 // AnalyticsManagerInstance.subTitleOnEvent(  );
                 // This.m_show_subtitles = true;
                 // m_crackle_video.setSubtitleContainer(m_subtitle_container)
-
+                if(previousSubUrl != ccFile){
+                    previousSubUrl = ccFile;
+                    m_crackle_video.loadSubtitles(ccFile);
+                    Logger.log("2NEW Subtitle URL: " + ccFile);
+                }
+                else{
+                    This.subsLoaded();
+                }
 
             }
             else{ //no file returned from chooser, shut them off
