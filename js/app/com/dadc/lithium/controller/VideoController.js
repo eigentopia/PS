@@ -173,8 +173,10 @@ var VideoController = function( ParentControllerObj )
                 // let my layer know!
                 m_current_ig_video.getIGLayer().update( engine_timer );
             }
-
-            m_loading_widget.update( engine_timer );
+            if(m_master_container.contains(m_loading_widget.getDisplayNode())){
+                m_loading_widget.update( engine_timer );
+            }
+            
             if( m_crackle_video && m_timeline_widget.isVisible() && m_crackle_video.getCurrentTime() > m_last_time + 1 ){
                 m_last_time = m_crackle_video.getCurrentTime();
                 m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
@@ -200,7 +202,7 @@ var VideoController = function( ParentControllerObj )
                     openNextVideoOverlay();       
                 }
             }
-         }
+        }
     };
 
     function openNextVideoContinueOverlay(){
@@ -646,6 +648,7 @@ var VideoController = function( ParentControllerObj )
                 }
                 // TODO: Maybe check if resume time is equal to movie's length and then restart the movie?
                 //
+                previousSubUrl = null;
                 if(nextVideoOverlay != null){
                     userOptOut = true;
                     closeNextVideoOverlay();
@@ -724,15 +727,6 @@ var VideoController = function( ParentControllerObj )
 
 var previousSubUrl=""
     this.closeSubtitleChooser = function(avFile, ccFile){
-        m_root_node.removeChild( subtitleChooserController.getDisplayNode() );
-       
-        subtitleChooserController.unsetFocus();
-        subtitleChooserController.close();
-        // if( m_subtitle_chooser_controller.getDisplayNode() && m_content_container.contains( m_subtitle_chooser_controller.getDisplayNode() ) )
-        //     m_content_container.removeChild( m_subtitle_chooser_controller.getDisplayNode() );
-        subtitleChooserController.destroy();
-        subtitleChooserController = null;
-        isFocused = true;
 
         //Need new video if new AVUrl
         if(avFile != currentAudioVideoUrl){
@@ -774,7 +768,7 @@ var previousSubUrl=""
             }
             else{ //no file returned from chooser, shut them off
                 AnalyticsManagerInstance.subTitleOffEvent(  );
-
+                This.removeChooser()
                 if(m_crackle_video){
                     m_crackle_video.setSubtitleContainer(null)
                     m_crackle_video.togglePause()
@@ -786,11 +780,25 @@ var previousSubUrl=""
             }
         }
         else{
+            This.removeChooser()
             m_crackle_video.togglePause()
         }
     }
 
+    this.removeChooser = function(){
+        m_root_node.removeChild( subtitleChooserController.getDisplayNode() );
+       
+        subtitleChooserController.unsetFocus();
+        subtitleChooserController.close();
+        // if( m_subtitle_chooser_controller.getDisplayNode() && m_content_container.contains( m_subtitle_chooser_controller.getDisplayNode() ) )
+        //     m_content_container.removeChild( m_subtitle_chooser_controller.getDisplayNode() );
+        subtitleChooserController.destroy();
+        subtitleChooserController = null;
+        isFocused = true;
+    }
+
     this.subsLoaded = function(){
+        This.removeChooser()
         AnalyticsManagerInstance.subTitleOnEvent(  );
         This.m_show_subtitles = true;
         m_crackle_video.setSubtitleContainer(m_subtitle_container)
@@ -800,6 +808,7 @@ var previousSubUrl=""
     }
 
     this.subsFailed = function(){
+        This.removeChooser()
         m_crackle_video.setSubtitleContainer(null)
         This.m_show_subtitles = false;
         currentSubtitleUrl = null;
@@ -938,6 +947,11 @@ var previousSubUrl=""
             );
         }
     };
+    this.removeLoader = function(){
+        if(m_master_container.contains(m_loading_widget.getDisplayNode())){
+            m_master_container.removeChild(m_loading_widget.getDisplayNode());
+        }
+    }
     
     this.notifyAdPlaybackStarting = function(){
         Logger.log("notifyAdPlaybackStarting called in VideoController");
@@ -968,6 +982,7 @@ var previousSubUrl=""
         {
             m_crackle_video.play();
             m_timeline_widget.refreshWidget( 0, m_media_details_obj.getDurationInSeconds(), m_crackle_video.getAdTimePositions() );
+            //m_master_container.removeChild(m_loading_widget.getDisplayNode())
         }
         catch( e )
         {

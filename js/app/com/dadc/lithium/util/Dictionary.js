@@ -31,6 +31,12 @@ var Dictionary = function()
 var Dictionary = new Dictionary();
 
 Dictionary.TEXT = {
+    LOADING:{
+        'en': 'Loading',
+        'pt': 'Oprimir',
+        'es': 'Cargar',
+        'fr': 'Charger'       
+    },
     NOW_WITH:{
         'en': 'Register for FREE and take your playlists with you.',
         'pt': 'Inscreva-se gratuitamente e tenha suas listas de filmes sempre disponíveis.',

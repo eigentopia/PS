@@ -5,7 +5,7 @@ var SubtitleChooserController = function( ParentControllerObj){
     var m_parent_controller_obj     = ParentControllerObj;
     var m_root_node                 = engine.createContainer();
     var m_master_container          = engine.createContainer();
-    var m_is_focussed               = false;
+    var m_is_focused               = false;
     var m_callback_func             = null;
     var m_subtitle_chooser_widget;
     var mediaDetailsObj;
@@ -20,11 +20,12 @@ var SubtitleChooserController = function( ParentControllerObj){
         if( m_root_node && m_root_node.contains( m_master_container ) ) m_root_node.removeChild( m_master_container );
     };
     this.setFocus = function(){
-        m_is_focussed = true;
+        m_is_focused = true;
     }
     this.unsetFocus = function(){
-        m_is_focussed = false;
-    }    
+        m_is_focused = false;
+    } 
+
     this.update = function( engine_timer ){
         if( LoggerConfig.CONFIG.UPDATE_DEBUG ) Logger.log( 'SubtitleChooserController update() ' + engine_timer );
     };
@@ -112,7 +113,7 @@ var SubtitleChooserController = function( ParentControllerObj){
     this.trianglePressed = function(){
         var files = m_subtitle_chooser_widget.getSelectedFiles()
         m_parent_controller_obj.closeSubtitleChooser(files.audioVideo, files.cc);
-
+        m_subtitle_chooser_widget.loadingMode()
         // m_parent_controller_obj.requestingParentAction(
         //     {action: ApplicationController.OPERATIONS.CLOSE_SUBTITLE_CHOOSER, MediaDetailsObj:mediaDetailsObj, avFile:files.audioVideo, ccFile:files.cc, calling_controller: this}
         // );

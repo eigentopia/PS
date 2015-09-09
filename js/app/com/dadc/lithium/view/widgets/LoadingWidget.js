@@ -20,8 +20,9 @@ var LoadingWidget = function( ) {
     }
     this.update = function( engine_timer ){
         if( LoggerConfig.CONFIG.UPDATE_DEBUG ) Logger.log( 'LoadingWidget update() ' + engine_timer );
-        
+    
         if ( m_master_container && engine_timer > m_last_engine_timer + 0.2 ){
+
             m_last_engine_timer = engine_timer;
             m_master_container.rotationZ++;
         }        

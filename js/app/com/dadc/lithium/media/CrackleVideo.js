@@ -469,6 +469,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     // ads will flag the ADForgiveness object to disregard this call when neccessary
         ADForgivenessInstance.startTimer();
         notifyListeners( new PlayingEvent( VideoManagerInstance.getPlaybackTimePTS() ) );
+        PlaybackReadyListener.removeLoader();
         //Comscore.sendPlay(m_current_time * 1000)
         // DAN & MILAN: videoView analytic call
         //m_ad_manager.sendVideoViewCallback();
