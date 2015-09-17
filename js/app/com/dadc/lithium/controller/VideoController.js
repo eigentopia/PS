@@ -321,12 +321,19 @@ var VideoController = function( ParentControllerObj )
             }
         }
 
+        //have you given me a AVURL?
         if(audioVideoUrl){
-            This.audioVideoUrlSwitch = true;
             currentAudioVideoUrl = audioVideoUrl
         }
         else{
-            currentAudioVideoUrl = MediaDetailsObj.getMediaURLs()[0].Path;
+            var avUrls = MediaDetailsObj.getMediaURLs()
+            if(avUrls != null){ //Make sure the media is there
+                currentAudioVideoUrl = MediaDetailsObj.getMediaURLs()[0].Path;
+            }
+            else{
+                ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );
+                return;
+            }
         }
         
         //this is the default path
