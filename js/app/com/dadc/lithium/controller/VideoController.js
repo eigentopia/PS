@@ -253,7 +253,25 @@ var VideoController = function( ParentControllerObj )
 
         currentMediaList = mediaList
     }
-    var nextvideo
+    var nextvideo;
+
+    this.subsLoaded = function(){
+    
+        AnalyticsManagerInstance.subTitleOnEvent(  );
+        This.m_show_subtitles = true;
+        m_crackle_video.setSubtitleContainer(m_subtitle_container)
+        m_crackle_video.togglePause()
+        m_timeline_widget.setPauseStatus(false);
+
+    }
+
+    this.subsFailed = function(){
+        m_crackle_video.setSubtitleContainer(null)
+        This.m_show_subtitles = false;
+        currentSubtitleUrl = null;
+        m_crackle_video.togglePause()
+        m_timeline_widget.setPauseStatus(false);
+    }
 
     this.prepareToOpen = function( MediaDetailsObj, audioVideoUrl, subtitleUrl )
     {
@@ -729,6 +747,8 @@ var VideoController = function( ParentControllerObj )
 
         media_details_request.startRequest();
     }
+
+    var previousSubUrl=""
 
 
     /// potentially an issue

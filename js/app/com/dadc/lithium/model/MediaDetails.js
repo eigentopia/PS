@@ -187,14 +187,9 @@ var MediaDetails = function( json_data ){
 
     this.getMediaURLs = function(){
         var mediaUrls =[]
-        
-        //Uplynk change the url
-        //var defaultMediaUrl = getVideoURLFromList(this.m_data.MediaURLs);
-        var defaultMediaUrl = getUplynkURLFromList(this.m_data.MediaURLs);
-
-        // Error here if no URL
-        if(defaultMediaUrl != null){
-            //LL must be here for text display
+        //LL must be here for text display
+        try{
+            var defaultMediaUrl = getVideoURLFromList(this.m_data.MediaURLs);
             defaultMediaUrl.LocalizedLanguage = this.m_data.LocalizedLanguage;
 
             mediaUrls.push(defaultMediaUrl)
@@ -209,19 +204,17 @@ var MediaDetails = function( json_data ){
                 var relatedItems = this.m_data.RelatedItemsByMPM;
                 for(var item = 0; item< relatedItems.length;item++){
                     if(relatedItems[item].MediaURLs && relatedItems[item].MediaURLs.length > 0){
-                        //Uplynk url
-                        //var url = getVideoURLFromList(this.m_data.MediaURLs);
-                        var url = getUplynkURLFromList( relatedItems[item].MediaURLs);
+                        var url = getVideoURLFromList( relatedItems[item].MediaURLs);
                         //LL must be here for text display
                         url.LocalizedLanguage = relatedItems[item].LocalizedLanguage
                         mediaUrls.push(url);
                     }
                 }
             }
-
+                
             return mediaUrls;
         }
-        else{ 
+        catch(e){
             return null
         }
     };
