@@ -187,31 +187,43 @@ var MediaDetails = function( json_data ){
 
     this.getMediaURLs = function(){
         var mediaUrls =[]
-        var defaultMediaUrl = getVideoURLFromList(this.m_data.MediaURLs);
-        //LL must be here for text display
-        defaultMediaUrl.LocalizedLanguage = this.m_data.LocalizedLanguage;
+        
+        //Uplynk change the url
+        //var defaultMediaUrl = getVideoURLFromList(this.m_data.MediaURLs);
+        var defaultMediaUrl = getUplynkURLFromList(this.m_data.MediaURLs);
 
-        mediaUrls.push(defaultMediaUrl)
-        // console.log("URLS")
-        // console.dir(mediaUrls)
-        // console.dir(this.m_data.MediaURLs)
+        // Error here if no URL
+        if(defaultMediaUrl != null){
+            //LL must be here for text display
+            defaultMediaUrl.LocalizedLanguage = this.m_data.LocalizedLanguage;
 
-        //So this is where related things are hidden
-        //m_data.RelatedItemsByMPM[ofObjects].LocalizedLanguage - for display in Row
-        //m_data.RelatedItemsByMPM[ofObjects].MediaUrls[ofObjects].Path
-        if(this.m_data.RelatedItemsByMPM && this.m_data.RelatedItemsByMPM.length > 0){
-            var relatedItems = this.m_data.RelatedItemsByMPM;
-            for(var item = 0; item< relatedItems.length;item++){
-                if(relatedItems[item].MediaURLs && relatedItems[item].MediaURLs.length > 0){
-                    var url = getVideoURLFromList( relatedItems[item].MediaURLs);
-                    //LL must be here for text display
-                    url.LocalizedLanguage = relatedItems[item].LocalizedLanguage
-                    mediaUrls.push(url);
+            mediaUrls.push(defaultMediaUrl)
+            // console.log("URLS")
+            // console.dir(mediaUrls)
+            // console.dir(this.m_data.MediaURLs)
+
+            //So this is where related things are hidden
+            //m_data.RelatedItemsByMPM[ofObjects].LocalizedLanguage - for display in Row
+            //m_data.RelatedItemsByMPM[ofObjects].MediaUrls[ofObjects].Path
+            if(this.m_data.RelatedItemsByMPM && this.m_data.RelatedItemsByMPM.length > 0){
+                var relatedItems = this.m_data.RelatedItemsByMPM;
+                for(var item = 0; item< relatedItems.length;item++){
+                    if(relatedItems[item].MediaURLs && relatedItems[item].MediaURLs.length > 0){
+                        //Uplynk url
+                        //var url = getVideoURLFromList(this.m_data.MediaURLs);
+                        var url = getUplynkURLFromList( relatedItems[item].MediaURLs);
+                        //LL must be here for text display
+                        url.LocalizedLanguage = relatedItems[item].LocalizedLanguage
+                        mediaUrls.push(url);
+                    }
                 }
             }
-        }
 
-        return mediaUrls;
+            return mediaUrls;
+        }
+        else{ 
+            return null
+        }
     };
 
     this.getClosedCaptionFiles = function(){
