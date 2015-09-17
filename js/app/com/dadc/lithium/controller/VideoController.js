@@ -31,6 +31,10 @@ var VideoController = function( ParentControllerObj )
     var m_subtitles_ready = false;
     var m_show_subtitles = LoggerConfig.CONFIG.SHOW_SUBTITLES ? true : false;
 
+    if(StorageManagerInstance.get('lang') == 'es'){
+        m_show_subtitles = true;
+    }
+
     var m_seek_direction = null;
     var m_last_seek_timer;
 
@@ -281,7 +285,7 @@ var VideoController = function( ParentControllerObj )
         }
         console.log("END CREDIT MARK "+currentVideoEndCreditMark)
 
-        if(currentSubtitleUrl != subtitleUrl){
+        if(m_crackle_video && currentSubtitleUrl != subtitleUrl){
 
             currentSubtitleUrl = subtitleUrl
             if(subtitleUrl != null){
@@ -365,6 +369,8 @@ var VideoController = function( ParentControllerObj )
 
             totalVideosPlayed ++
             continueCalled = false;
+
+            currentSubtitleUrl = subtitleUrl
             
             m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, This, This );
             m_crackle_video.setSubtitleContainer(m_subtitle_container)

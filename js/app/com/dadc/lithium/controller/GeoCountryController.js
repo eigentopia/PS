@@ -54,7 +54,7 @@ var GeoCountryController = function( ParentControllerObj ){
             StorageManagerInstance.set( StorageManager.STORAGE_KEYS.IPADDRESS, GeoCountryObj.getIPAddress() );
             
             if( LoggerConfig.GeocodeConfig.hasOwnProperty( 'FAKE_COUNTRY' ) && LoggerConfig.GeocodeConfig.FAKE_COUNTRY ){
-                StorageManagerInstance.set( 'geocode', LoggerConfig.GeocodeConfig.CONFIG.FAKE_COUNTRY );
+                StorageManagerInstance.set( 'geocode', LoggerConfig.GeocodeConfig.FAKE_COUNTRY );
                 m_is_invalid_region = false;
                 var app_config_request = new AppConfigRequest( onAppConfigResponse );
 

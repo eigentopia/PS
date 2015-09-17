@@ -390,6 +390,12 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             if( m_subtitle_container ){
                 addSubtitleContainer();
             }
+            Logger.log("SUBS URL: " + m_subtitle_url)
+            if( m_subtitle_url && ! m_subtitle_widget.subtitlesObjectReady() )
+            {
+                Logger.log("subtitles are required and not ready yet. will begin the loading process");
+                This.loadSubtitles(m_subtitle_url);
+            }
             
             playCrackleVideo();
         

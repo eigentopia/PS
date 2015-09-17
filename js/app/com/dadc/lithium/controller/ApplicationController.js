@@ -997,6 +997,17 @@ var ApplicationController = function( screenObj ){
                 repeatPSNCheck( function(){
                     m_controller_before_video_started = m_focused_controller;
                     var videoContextList = []
+                    
+                    var mediaObj = json_data_args.MediaDetailsObj
+
+                    var cc = null;
+                    
+                    //Special for MX- load subs.
+                    if(StorageManagerInstance.get('lang') == 'es'){
+                        var closed_caption_files = mediaObj.getClosedCaptionFiles().slice(0);
+                        cc = closed_caption_files[0].Path
+                    }
+
                     //Keep the context if coming from a list so we can next video
                     if(m_controller_before_video_started.getControllerName() =='RecommendedWatchlistController' ||
                         m_controller_before_video_started.getControllerName() == "ShowDetailsController"||
@@ -1022,8 +1033,9 @@ var ApplicationController = function( screenObj ){
                         m_video_controller.open();
                         screenObj.addChild( m_video_controller.getDisplayNode() );
 
+
                         // NOTE: CALLING PREPARE AFTER OPEN, WHY?
-                        m_video_controller.prepareToOpen( json_data_args.MediaDetailsObj, null, null);
+                        m_video_controller.prepareToOpen( mediaObj, null, cc);
 
 
                     }
@@ -1041,13 +1053,12 @@ var ApplicationController = function( screenObj ){
                             else{
                                 //SAMPLE URL
                                 //http://api.crackle.com/Service.svc/featured/movies/all/us/30?format=json
-                                    var boo = FeaturedObj;
 
-                                         // Folderlist> playlist> medialist
-                                    videoContextList = FeaturedObj.m_data.Items
-                                    videoContextList.splice(0,0,json_data_args.MediaDetailsObj)
-                                    //Add it to the object we are passing videoController
-                                    json_data_args.MediaDetailsObj.videoContextList = videoContextList
+                                     // Folderlist> playlist> medialist
+                                videoContextList = FeaturedObj.m_data.Items
+                                videoContextList.splice(0,0,json_data_args.MediaDetailsObj)
+                                //Add it to the object we are passing videoController
+                                json_data_args.MediaDetailsObj.videoContextList = videoContextList
 
                             }
                             // Wey: This fixes timeline bug where pending focused controller
@@ -1062,7 +1073,7 @@ var ApplicationController = function( screenObj ){
                             screenObj.addChild( m_video_controller.getDisplayNode() );
 
                             // NOTE: CALLING PREPARE AFTER OPEN, WHY?
-                            m_video_controller.prepareToOpen( json_data_args.MediaDetailsObj, null, null);
+                            m_video_controller.prepareToOpen( json_data_args.MediaDetailsObj, null, cc);
                         })
                         
                         request.startRequest();
