@@ -256,7 +256,7 @@ var VideoController = function( ParentControllerObj )
     var nextvideo;
 
     this.subsLoaded = function(){
-    
+        This.removeChooser()
         AnalyticsManagerInstance.subTitleOnEvent(  );
         This.m_show_subtitles = true;
         m_crackle_video.setSubtitleContainer(m_subtitle_container)
@@ -266,6 +266,7 @@ var VideoController = function( ParentControllerObj )
     }
 
     this.subsFailed = function(){
+        This.removeChooser()
         m_crackle_video.setSubtitleContainer(null)
         This.m_show_subtitles = false;
         currentSubtitleUrl = null;
@@ -659,10 +660,10 @@ var VideoController = function( ParentControllerObj )
                 //m_crackle_video.setCurrentTime( m_timeline_widget.getSeekTime() );
 
                 m_last_time = m_crackle_video.getCurrentTime();
-
-                m_parent_controller_obj.requestingParentAction(
-                    {action: ApplicationController.OPERATIONS.OPEN_SUBTITLE_CHOOSER, MediaDetailsObj:m_media_details_obj, currentAV:currentAudioVideoUrl, currentCC:currentSubtitleUrl, calling_controller: this}
-                );
+                openSubtitleChooser();
+                // m_parent_controller_obj.requestingParentAction(
+                //     {action: ApplicationController.OPERATIONS.OPEN_SUBTITLE_CHOOSER, MediaDetailsObj:m_media_details_obj, currentAV:currentAudioVideoUrl, currentCC:currentSubtitleUrl, calling_controller: this}
+                // );
             }
         }
 
@@ -671,6 +672,18 @@ var VideoController = function( ParentControllerObj )
             m_current_ig_video.getIGLayer().trianglePressed();
         }
     }
+
+    function openSubtitleChooser(){
+        subtitleChooserController = new SubtitleChooserController( This );
+        // subtitleDisplay.x=600
+        // subtitleDisplay.y=600
+        isFocused = false
+        subtitleChooserController.prepareToOpen(m_media_details_obj, currentAudioVideoUrl, currentSubtitleUrl );
+        var subtitleDisplay = subtitleChooserController.getDisplayNode()
+        m_root_node.addChild(subtitleDisplay);
+        subtitleChooserController.setFocus();
+    }
+
     this.navUp = function(){
         Logger.log( 'navUp' );
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
@@ -749,6 +762,76 @@ var VideoController = function( ParentControllerObj )
     }
 
     var previousSubUrl=""
+    this.closeSubtitleChooser = function(avFile, ccFile){
+
+        //Need new video if new AVUrl
+        if(avFile != currentAudioVideoUrl){
+            if(ccFile != currentSubtitleUrl){
+                //reset all of it
+                This.prepareToOpen(m_media_details_obj, avFile, ccFile);
+            }
+            else{ //just the avFile
+                This.prepareToOpen(m_media_details_obj, avFile, currentSubtitleUrl);
+            }
+
+        }
+        else if(ccFile != currentSubtitleUrl){
+            
+            currentSubtitleUrl = ccFile
+            if(ccFile != null){ //get the file and parse it, turn on subs
+            //     var tt = ccFile.replace( 'media/', '' );
+            //     console.log("CC File "+ tt)
+            //     var video  = VideoManagerInstance.getCoreVideo()
+            //     video.addTimedTextTrack(tt, "Track01", "EN", "subtitles")
+            //     console.log ("TT "+ video.x +" "+video.y+" "+ video.width+" "+ video.height);
+            //     video.timedTextTrackSetPosAndDim(video.x, video.y, video.width, video.height)
+            //     This.notifyPlaybackReady()
+            //     track = video.textTracks[0];
+            // Logger.logObj( track );
+                //track.resumeTrack();
+                // AnalyticsManagerInstance.subTitleOnEvent(  );
+                // This.m_show_subtitles = true;
+                // m_crackle_video.setSubtitleContainer(m_subtitle_container)
+                if(previousSubUrl != ccFile){
+                    previousSubUrl = ccFile;
+                    m_crackle_video.loadSubtitles(ccFile);
+                    Logger.log("2NEW Subtitle URL: " + ccFile);
+                }
+                else{
+                    This.subsLoaded();
+                }
+
+            }
+            else{ //no file returned from chooser, shut them off
+                AnalyticsManagerInstance.subTitleOffEvent(  );
+                This.removeChooser()
+                if(m_crackle_video){
+                    m_crackle_video.setSubtitleContainer(null)
+                    m_crackle_video.togglePause()
+                }
+
+                This.m_show_subtitles = false;
+                currentSubtitleUrl = null;
+                m_timeline_widget.setPauseStatus(false);
+            }
+        }
+        else{
+            This.removeChooser()
+            m_crackle_video.togglePause()
+        }
+    }
+
+    this.removeChooser = function(){
+        m_root_node.removeChild( subtitleChooserController.getDisplayNode() );
+       
+        subtitleChooserController.unsetFocus();
+        subtitleChooserController.close();
+        // if( m_subtitle_chooser_controller.getDisplayNode() && m_content_container.contains( m_subtitle_chooser_controller.getDisplayNode() ) )
+        //     m_content_container.removeChild( m_subtitle_chooser_controller.getDisplayNode() );
+        subtitleChooserController.destroy();
+        subtitleChooserController = null;
+        isFocused = true;
+    }
 
 
     /// potentially an issue

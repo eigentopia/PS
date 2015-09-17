@@ -19,6 +19,36 @@ var SubtitleChooserWidget = function( MediaDetailsObj, currentAV, currentCC ) {
     var selectedAV = currentAV
     var selectedCC = currentCC
 
+    this.loadingMode = function(){
+       while (m_root_node.numChildren >0){
+            m_root_node.removeChildAt(0)
+       }
+
+        var selector_container = engine.createContainer();
+        selector_container.width = 300;
+        selector_container.height = 200;
+        
+        m_root_node.addChild (selector_container)
+        
+        var bg_slate = ShaderCreatorInstance.create9SliceShader( AssetLoaderInstance.getImage( "Artwork/subtitle_bg.png" ), 14, 14,[ 255/255, 255/255, 255/255, 0.8 ] );
+        selector_container.addChild( bg_slate );
+
+        bg_slate.width = 300;
+        bg_slate.height = 200;
+        // console.log("**********")
+        // console.log(chooserHeight , ccRow, mediaRow)
+        // console.dir(audio_title)
+        selector_container.x = 1920/2 - ( bg_slate.width/2 );
+        selector_container.y = 1080/2 - (bg_slate.height/2) 
+
+        var loadingText =  engine.createTextBlock( /*Dictionary.getText( Dictionary.TEXT.LOADING )*/"Loading", FontLibraryInstance.getFont_ERRORBUTTON(), 300 );
+        loadingText.x = selector_container.width/2 - loadingText.naturalWidth/2;
+        loadingText.y = selector_container.height/2 -loadingText.naturalHeight/2;
+        selector_container.addChild( loadingText );
+
+    }
+
+
     // MILAN: SP and PT "select" word is much longer than EN so I added offset for the two of them. 
     // Not sure if this is the best way to do this??? Need to ask Ben about it! 
     // Maybe it's possible to get width of text area or something like that???
@@ -143,6 +173,7 @@ var SubtitleChooserWidget = function( MediaDetailsObj, currentAV, currentCC ) {
         subtitle_title.y = 35;
         selector_container.addChild( subtitle_title );
         
+        // Always include
         if( closed_caption_files ){
             closed_caption_files.unshift({
                 Locale: 'Off',

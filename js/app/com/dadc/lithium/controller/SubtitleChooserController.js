@@ -111,10 +111,10 @@ var SubtitleChooserController = function( ParentControllerObj){
     }
     this.trianglePressed = function(){
         var files = m_subtitle_chooser_widget.getSelectedFiles()
-
-        m_parent_controller_obj.requestingParentAction(
-            {action: ApplicationController.OPERATIONS.CLOSE_SUBTITLE_CHOOSER, MediaDetailsObj:mediaDetailsObj, avFile:files.audioVideo, ccFile:files.cc, calling_controller: this}
-        );
+        m_parent_controller_obj.closeSubtitleChooser(files.audioVideo, files.cc);
+        // m_parent_controller_obj.requestingParentAction(
+        //     {action: ApplicationController.OPERATIONS.CLOSE_SUBTITLE_CHOOSER, MediaDetailsObj:mediaDetailsObj, avFile:files.audioVideo, ccFile:files.cc, calling_controller: this}
+        // );
         
     }
     
