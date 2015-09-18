@@ -644,9 +644,14 @@ var VideoController = function( ParentControllerObj )
     this.trianglePressed = function()
     {
 
-        if(m_is_focussed && VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
+        if(VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
             if(m_crackle_video.isPlaying() )
             {
+
+                if(subtitleChooserController !== null){
+                    subtitleChooserController.trianglePressed()
+                    return
+                }
                 m_timeline_widget.setVisible(false)
                 //toggleTimeline();
                // m_timeline_widget.setVisible(false)
@@ -671,17 +676,6 @@ var VideoController = function( ParentControllerObj )
         if( m_current_ig_video != undefined ){
             m_current_ig_video.getIGLayer().trianglePressed();
         }
-    }
-
-    function openSubtitleChooser(){
-        subtitleChooserController = new SubtitleChooserController( This );
-        // subtitleDisplay.x=600
-        // subtitleDisplay.y=600
-        isFocused = false
-        subtitleChooserController.prepareToOpen(m_media_details_obj, currentAudioVideoUrl, currentSubtitleUrl );
-        var subtitleDisplay = subtitleChooserController.getDisplayNode()
-        m_root_node.addChild(subtitleDisplay);
-        subtitleChooserController.setFocus();
     }
 
     this.navUp = function(){
@@ -759,6 +753,17 @@ var VideoController = function( ParentControllerObj )
         });
 
         media_details_request.startRequest();
+    }
+
+    function openSubtitleChooser(){
+        subtitleChooserController = new SubtitleChooserController( This );
+        // subtitleDisplay.x=600
+        // subtitleDisplay.y=600
+        isFocused = false
+        subtitleChooserController.prepareToOpen(currentAudioVideoUrl, currentSubtitleUrl );
+        var subtitleDisplay = subtitleChooserController.getDisplayNode()
+        m_root_node.addChild(subtitleDisplay);
+        subtitleChooserController.setFocus();
     }
 
     var previousSubUrl=""

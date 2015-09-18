@@ -253,7 +253,7 @@ var ApplicationController = function( screenObj ){
                 m_geo_country_controller.prepareToOpen();
                 m_present_controllers.push( m_geo_country_controller );
 
-                PlaystationConfig.setConfig(function(thing){console.log(thing)})
+                //PlaystationConfig.setConfig(function(thing){console.log(thing)})
 
                 if(localStorage.userEmailAddress && localStorage.userId ){
                     crackleUser.email = localStorage.userEmailAddress
