@@ -572,26 +572,26 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
     function playAd( adIndex ){
         Logger.log("play ad called: index " + adIndex);
-        if( typeof m_playlists[ adIndex ] !== "undefined" ){
-            if(adIndex == 0){
-                //ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
-                //ConvivaIntegration.adStart();
-            }
-            m_is_playing = false;
-            if( m_subtitle_container ) removeSubtitleContainer();
+        // if( typeof m_playlists[ adIndex ] !== "undefined" ){
+        //     if(adIndex == 0){
+        //         //ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
+        //         //ConvivaIntegration.adStart();
+        //     }
+        //     m_is_playing = false;
+        //     if( m_subtitle_container ) removeSubtitleContainer();
 
-            //ConvivaIntegration.detachStreamer();
+        //     //ConvivaIntegration.detachStreamer();
 
-            PlaybackReadyListener.notifyAdPlaybackStarting();
-            m_playlists[ adIndex ].play(adIndex);
+        //     PlaybackReadyListener.notifyAdPlaybackStarting();
+        //     m_playlists[ adIndex ].play(adIndex);
             
             
-            return true;
-        }
-        else{
+        //     return true;
+        // }
+        // else{
             Logger.log("CrackleVideo.playAd(" + adIndex + ") - index in m_playlists is undefined");
             return false;
-        }
+        //}
     }
 
     function removeSubtitleContainer(){
@@ -668,7 +668,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 }
 
                 //PlaybackReadyListener.notifySubtitlesReady();
-                m_subtitle_widget.refreshWidget( data.getParsedSubtitleObj() );
+                m_subtitle_widget.refreshWidget( data.getSubtitleLines );
                 PlaybackReadyListener.subsLoaded();
                 //PlaybackReadyListener.notifyPlaybackReady();
 

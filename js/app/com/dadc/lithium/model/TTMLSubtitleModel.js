@@ -96,8 +96,7 @@ var TTMLSubtitleModel = function( data, format){
     this.m_format = format;
     var parsed_subtitle_obj = null;
 
-    this.getParsedSubtitleObj               = function(){return parsed_subtitle_obj;}
-
+    
     switch (this.m_format) {
         case TTMLSubtitleModel.FORMATS.M4T:
             var parser = new M4TParser();
@@ -110,6 +109,9 @@ var TTMLSubtitleModel = function( data, format){
             parsed_subtitle_obj = TTMLSubtitle.createSubtitles( xmlDoc );
             break;
     }
+    this.getParsedSubtitleObj               = function(){return parsed_subtitle_obj;}
+    
+    this.getSubtitleLines = parsed_subtitle_obj;
 }
 
 TTMLSubtitleModel.FORMATS = {
