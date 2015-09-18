@@ -479,6 +479,11 @@ var VideoController = function( ParentControllerObj )
             return;
         }
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
+            if(subtitleChooserController !== null){
+                subtitleChooserController.navLeft()
+                return
+            }
+            
             m_last_seek_timer = engine.getTimer();
             m_seek_direction = VideoController.SEEK_DIRECTION.RW;
 
@@ -508,6 +513,10 @@ var VideoController = function( ParentControllerObj )
         }
 
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
+            if(subtitleChooserController !== null){
+                subtitleChooserController.navRight()
+                return
+            }
             m_last_seek_timer = engine.getTimer();
             m_seek_direction = VideoController.SEEK_DIRECTION.FW;
 
@@ -533,6 +542,10 @@ var VideoController = function( ParentControllerObj )
     this.navDown = function(){
         Logger.log( 'navDown' );
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
+            if(subtitleChooserController !== null){
+                subtitleChooserController.navDown()
+                return
+            }
             if( !m_timeline_widget.isVisible() ){
                 m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
                 m_timeline_widget.showCursor();
@@ -552,6 +565,10 @@ var VideoController = function( ParentControllerObj )
     }
     this.enterPressed = function(){
         Logger.log( 'VideoController enterPressed' );
+        if(subtitleChooserController !== null){
+            subtitleChooserController.enterPressed()
+            return
+        }
         
         if(nextVideoOverlay){
                         // store video progress
@@ -598,6 +615,10 @@ var VideoController = function( ParentControllerObj )
     this.startPressed = function(){
 
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPlaying()  && nextVideoOverlay == null && nextVideoContinueOverlay == null){
+            if(subtitleChooserController !== null){
+                return
+            }
+
             m_crackle_video.togglePause();
             m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
             m_timeline_widget.showCursor();
@@ -619,7 +640,12 @@ var VideoController = function( ParentControllerObj )
                 closeNextVideoOverlay();
                 return;
             }
-        
+
+            if(subtitleChooserController !== null){
+                subtitleChooserController.enterPressed()
+                return
+            }   
+            previousSubUrl = null
             // if(nextVideoContinueOverlay != null){
             //     return;
             // }
@@ -681,6 +707,11 @@ var VideoController = function( ParentControllerObj )
     this.navUp = function(){
         Logger.log( 'navUp' );
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && nextVideoOverlay == null && nextVideoContinueOverlay == null){
+            if(subtitleChooserController !== null){
+                subtitleChooserController.navUp()
+                return
+            }
+
             if( !m_timeline_widget.isVisible() ){
                 m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
                 m_timeline_widget.showCursor();
@@ -699,6 +730,9 @@ var VideoController = function( ParentControllerObj )
 
     this.remotePlay = function(){
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && m_crackle_video.isPaused() ){
+            if(subtitleChooserController !== null){
+                return       
+            }
             m_crackle_video.togglePause();
             m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
             m_timeline_widget.showCursor();
@@ -713,6 +747,9 @@ var VideoController = function( ParentControllerObj )
     }
     this.remotePause = function(){
         if( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video && !m_crackle_video.isPaused() ){
+            if(subtitleChooserController !== null){
+                return       
+            }
             m_crackle_video.togglePause();
             m_timeline_widget.setTime( m_crackle_video.getCurrentTime() );
             m_timeline_widget.showCursor();
@@ -755,12 +792,13 @@ var VideoController = function( ParentControllerObj )
         media_details_request.startRequest();
     }
 
+    var subtitleChooserController= null;
     function openSubtitleChooser(){
         subtitleChooserController = new SubtitleChooserController( This );
         // subtitleDisplay.x=600
         // subtitleDisplay.y=600
         isFocused = false
-        subtitleChooserController.prepareToOpen(currentAudioVideoUrl, currentSubtitleUrl );
+        subtitleChooserController.prepareToOpen(m_media_details_obj, currentAudioVideoUrl, currentSubtitleUrl );
         var subtitleDisplay = subtitleChooserController.getDisplayNode()
         m_root_node.addChild(subtitleDisplay);
         subtitleChooserController.setFocus();
