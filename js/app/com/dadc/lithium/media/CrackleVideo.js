@@ -547,26 +547,26 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
     function playAd( adIndex ){
         Logger.log("play ad called: index " + adIndex);
-        // if( typeof m_playlists[ adIndex ] !== "undefined" ){
-        //     if(adIndex == 0){
-        //         //ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
-        //         //ConvivaIntegration.adStart();
-        //     }
-        //     m_is_playing = false;
-        //     if( m_subtitle_container ) removeSubtitleContainer();
+        if( typeof m_playlists[ adIndex ] !== "undefined" ){
+            if(adIndex == 0){
+                //ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
+                //ConvivaIntegration.adStart();
+            }
+            m_is_playing = false;
+            if( m_subtitle_container ) removeSubtitleContainer();
 
-        //     //ConvivaIntegration.detachStreamer();
+            //ConvivaIntegration.detachStreamer();
 
-        //     PlaybackReadyListener.notifyAdPlaybackStarting();
-        //     m_playlists[ adIndex ].play(adIndex);
+            PlaybackReadyListener.notifyAdPlaybackStarting();
+            m_playlists[ adIndex ].play(adIndex);
             
             
-        //     return true;
-        // }
-        // else{
+            return true;
+        }
+        else{
             Logger.log("CrackleVideo.playAd(" + adIndex + ") - index in m_playlists is undefined");
             return false;
-        //}
+        }
     }
 
     function removeSubtitleContainer(){
@@ -647,14 +647,14 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
             try{
                 // MILAN: DATA PARSING MOVED TO TTMLSubtitleModel.js
-                var subtitle_lines = data.getSubtitleLines();
+                var subtitle_lines = data.getSubtitleLines;
 
                 // Loop through each subtitle line and add playback marks to both
                 // begin and end position
                 for( var subidx in subtitle_lines ){
                     var subtitle = subtitle_lines[ subidx ];
-                    var startMark = subtitle.getBegin().seconds
-                    var endMark = subtitle.getEnd().seconds
+                    var startMark = subtitle.getBegin.seconds
+                    var endMark = subtitle.getEnd.seconds
                     m_subtitle_start_marks[ startMark  ] = subtitle;
                     m_subtitle_end_marks[ endMark  ] = subtitle;
                     This.addSubsMark( startMark , endMark);

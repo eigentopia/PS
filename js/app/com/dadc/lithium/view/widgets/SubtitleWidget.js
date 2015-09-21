@@ -44,7 +44,7 @@ var SubtitleWidget = function( SubtitlesObj ) {
         this.removeSubtitleFromScreen();
         if ( SubtitleLineObj ){
             Logger.log("SubtitleLineObj exists, will add");
-            m_subtitle_container.addChild( getTextContainer( SubtitleLineObj.getText() ) );
+            m_subtitle_container.addChild( getTextContainer( SubtitleLineObj.getText ) );
 
         }else{
             Logger.log("SubtitleLineObj does not exist, will not add");

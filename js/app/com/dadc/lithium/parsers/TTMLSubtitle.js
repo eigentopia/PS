@@ -144,24 +144,24 @@ TTMLSubtitle.parseTime = function( time ){
 TTMLSubtitle.Subtitles = function(){
     var m_subtitle_lines = [];
 
-    this.getSubtitleLines = function(){return m_subtitle_lines;}
+    this.getSubtitleLines = m_subtitle_lines; 
     
-    this.getSubtitleBetween = function( start_seconds, end_seconds ){
-        for ( var i in m_subtitle_lines ){
-            var sec_begin = m_subtitle_lines[ i ].getBegin().seconds;
-            var sec_end = m_subtitle_lines[ i ].getEnd().seconds;
+    // this.getSubtitleBetween = function( start_seconds, end_seconds ){
+    //     for ( var i in m_subtitle_lines ){
+    //         var sec_begin = m_subtitle_lines[ i ].getBegin().seconds;
+    //         var sec_end = m_subtitle_lines[ i ].getEnd().seconds;
             
-            if ( sec_begin <= start_seconds && sec_end >= end_seconds ){
-                return m_subtitle_lines[ i ];
-            }
-        }
+    //         if ( sec_begin <= start_seconds && sec_end >= end_seconds ){
+    //             return m_subtitle_lines[ i ];
+    //         }
+    //     }
         
-        return null;
-    }
+    //     return null;
+    // }
     
 
     this.addLine = function( begin, end, text ){
-        var subtitle_line = new TTMLSubtitle.SubtitleLine( begin, end, text );
+        var subtitle_line ={getBegin:begin, getEnd:end, getText:text}// new TTMLSubtitle.SubtitleLine( begin, end, text );
         m_subtitle_lines.push( subtitle_line );
     }
 }
@@ -174,9 +174,9 @@ TTMLSubtitle.SubtitleLine = function( begin, end, text ){
     var m_end = end;
     var m_text = text;
 
-    this.getBegin = function(){return m_begin;}
-    this.getEnd = function(){return m_end;}
-    this.getText = function(){return m_text;}
+    this.getBegin = m_begin;
+    this.getEnd =  m_end;
+    this.getText = m_text;
 }
     
 TTMLSubtitle.SubtitleText = function( text, style, alignment ){
