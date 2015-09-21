@@ -25,9 +25,25 @@ var TTMLSubtitleModelRequest = function( subtitle_url, callback ){
     var This = this;
 
     this.startRequest = function( ){
-        http_retries = 0;
-        initHttpRequest();
-        httpRequestObj.start();
+        console.log("CALLING START")
+         Http.request(url, "GET", null, null, function(idata, istatus){
+            if(idata != null && istatus == 200){
+                if(callback){
+                    //Logger.log("FILE::: " + idata);
+                    //Logger.logObj(data);
+                    var subtitle_data = new TTMLSubtitleModel( idata, format, callback );
+                    //callback( subtitle_data, istatus );
+                }
+            }
+            else{
+                if(callback){
+                    callback(null, istatus)
+                }
+            }
+        }, false)
+        // http_retries = 0;
+        // initHttpRequest();
+        // httpRequestObj.start();
 
         /*try{
             var httpClient = engine.createHttpClient();
@@ -78,8 +94,8 @@ var TTMLSubtitleModelRequest = function( subtitle_url, callback ){
             callback( null, status );
         }else {
             try{
-//                Logger.log("FILE::: " + data);
-//                Logger.logObj(data);
+               Logger.log("FILE::: " + data);
+                               Logger.logObj(data);
                 var subtitle_data = new TTMLSubtitleModel( data, format );
                 callback( subtitle_data, status );
             }catch( e ){
@@ -91,28 +107,31 @@ var TTMLSubtitleModelRequest = function( subtitle_url, callback ){
     }
 }
 
-var TTMLSubtitleModel = function( data, format){
+var TTMLSubtitleModel = function( data, format, cb){
+    console.log("SUBMODEL GETS")
+    //console.dir(data)
     this.m_data = data;
     this.m_format = format;
     var parsed_subtitle_obj = null;
 
-    
-    switch (this.m_format) {
+    switch (format) {
         case TTMLSubtitleModel.FORMATS.M4T:
             var parser = new M4TParser();
-            var xmlDocArr = parser.parseString(this.m_data);
+            var xmlDocArr = parser.parseString(data);
             parsed_subtitle_obj = TTMLSubtitle.createSubtitlesM4T( xmlDocArr );
             break;
         case TTMLSubtitleModel.FORMATS.XML:
             var parser = new XMLParser();
-            var xmlDoc = parser.parseString( this.m_data );
+            var xmlDoc = parser.parseString( data );
             parsed_subtitle_obj = TTMLSubtitle.createSubtitles( xmlDoc );
             break;
     }
-    this.getParsedSubtitleObj               = function(){return parsed_subtitle_obj;}
-    
-    this.getSubtitleLines = parsed_subtitle_obj;
+    //this.getParsedSubtitleObj = parsed_subtitle_obj;
+
+    cb(parsed_subtitle_obj, 200)
+    //console.dir(parsed_subtitle_obj)
 }
+
 
 TTMLSubtitleModel.FORMATS = {
     XML: 'xml',

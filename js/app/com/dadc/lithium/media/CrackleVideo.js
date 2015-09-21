@@ -199,31 +199,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
     };
 
-    // onResolved
-    //  NOW PLAY THE VIDEO
-    this.loadSubtitles = function(url){
-        Logger.log("loadSubtitles called");
-        //This.stCallback = cb
-        // MILAN: MOVED SUBTITLE REQUEST TO TTMLSubtitleModel.js
-        try{
-            //Clear them here. Reload conditions in VidController.
-            m_subtitle_start_marks = []
-            m_subtitle_end_marks = []
-            sub_marks_tc = []
-
-            m_subtitle_url = url.replace( 'media/', '' );
-            Logger.log( 'closed_caption_path = ' + m_subtitle_url );
-
-            var subtitleModelRequest = new TTMLSubtitleModelRequest(m_subtitle_url, onSubtitlesCallback);
-            subtitleModelRequest.startRequest();
-        }catch( e ){
-            Logger.log( '!!! EXCEPTION loadSubtitles' );
-            Logger.logObj( e );
-            m_subtitle_widget.setSubtitlesFailed();
-            //PlaybackReadyListener.notifySubtitlesError();
-            PlaybackReadyListener.notifyPlaybackReady();
-        }
-    }
 
     this.pause = function( state ){
         VideoManagerInstance.pause( state );
@@ -633,6 +608,30 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         This.addPlaybackMark( duration * .95 );
     }
 
+    this.loadSubtitles = function(url){
+        Logger.log("loadSubtitles called");
+        //This.stCallback = cb
+        // MILAN: MOVED SUBTITLE REQUEST TO TTMLSubtitleModel.js
+        try{
+            //Clear them here. Reload conditions in VidController.
+            m_subtitle_start_marks = []
+            m_subtitle_end_marks = []
+            sub_marks_tc = []
+
+            m_subtitle_url = url.replace( 'media/', '' );
+            Logger.log( 'closed_caption_path = ' + m_subtitle_url );
+
+            var subtitleModelRequest = new TTMLSubtitleModelRequest(m_subtitle_url, onSubtitlesCallback);
+            subtitleModelRequest.startRequest();
+        }catch( e ){
+            Logger.log( '!!! EXCEPTION loadSubtitles' );
+            Logger.logObj( e );
+            m_subtitle_widget.setSubtitlesFailed();
+            //PlaybackReadyListener.notifySubtitlesError();
+            PlaybackReadyListener.notifyPlaybackReady();
+        }
+    }
+
 
     function onSubtitlesCallback( data, status ){
         Logger.shout( 'onSubtitlesCallback' );
@@ -642,26 +641,20 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             m_subtitle_url = null
             m_subtitle_widget.setSubtitlesFailed();
             PlaybackReadyListener.subsFailed()
-        } else if (!m_disposed) {
-            Logger.log("Subtitle loaded");
-            if(status !== 200){
-                Logger.log( '!!! EXCEPTION onSubtitlesCallback' );
-
-                m_subtitle_url = null
-                m_subtitle_widget.setSubtitlesFailed();
-                PlaybackReadyListener.subsFailed()
-            }
+            return
+        }
+        if (!m_disposed) {
 
             try{
                 // MILAN: DATA PARSING MOVED TO TTMLSubtitleModel.js
-                var subtitle_lines = data.getSubtitleLines;
+                var subtitle_lines = data.getSubtitleLines();
 
                 // Loop through each subtitle line and add playback marks to both
                 // begin and end position
                 for( var subidx in subtitle_lines ){
                     var subtitle = subtitle_lines[ subidx ];
-                    var startMark = subtitle.getBegin.seconds
-                    var endMark = subtitle.getEnd.seconds
+                    var startMark = subtitle.getBegin().seconds
+                    var endMark = subtitle.getEnd().seconds
                     m_subtitle_start_marks[ startMark  ] = subtitle;
                     m_subtitle_end_marks[ endMark  ] = subtitle;
                     This.addSubsMark( startMark , endMark);
@@ -680,6 +673,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 PlaybackReadyListener.notifyPlaybackReady();
             }
         } else {
+            m_subtitle_url = null
             Logger.log("disposed of subtitles");
         }
     }

@@ -48,10 +48,12 @@ var Http = function(){
             httpRequestObj.cancel();
         }
     }
-    this.request = function(url, method, sendbody, headers, callback){
+    this.request = function(url, method, sendbody, headers, callback, doAuth){
         var me = {};
         me.config = {};
         me.url = url;
+
+        me.doAuth=(doAuth !== undefined)?doAuth:true
         //var d = new Date();
         //me.url = url +"&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
         console.log("request " + me.url)
@@ -68,11 +70,12 @@ var Http = function(){
             startRequest();
         }
     }
-    this.requestJSON = function(url, method, sendbody, headers, callback){
+    this.requestJSON = function(url, method, sendbody, headers, callback, doAuth){
         var me = {};
         me.config = {};
         me.url = url;
         me.json = true;
+        me.doAuth=(doAuth !== undefined)?doAuth:true
         //var d = new Date();
         //me.url = url +"&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
         console.log("requestJSON " + me.url)
