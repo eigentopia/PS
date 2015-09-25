@@ -865,14 +865,16 @@ var VideoController = function( ParentControllerObj )
     }
 
     this.removeChooser = function(){
-        m_root_node.removeChild( subtitleChooserController.getDisplayNode() );
-       
-        subtitleChooserController.unsetFocus();
-        subtitleChooserController.close();
-        // if( m_subtitle_chooser_controller.getDisplayNode() && m_content_container.contains( m_subtitle_chooser_controller.getDisplayNode() ) )
-        //     m_content_container.removeChild( m_subtitle_chooser_controller.getDisplayNode() );
-        subtitleChooserController.destroy();
-        subtitleChooserController = null;
+        if(subtitleChooserController !== null){
+            m_root_node.removeChild( subtitleChooserController.getDisplayNode() );
+           
+            subtitleChooserController.unsetFocus();
+            subtitleChooserController.close();
+            // if( m_subtitle_chooser_controller.getDisplayNode() && m_content_container.contains( m_subtitle_chooser_controller.getDisplayNode() ) )
+            //     m_content_container.removeChild( m_subtitle_chooser_controller.getDisplayNode() );
+            subtitleChooserController.destroy();
+            subtitleChooserController = null;
+        }
         isFocused = true;
     }
 

@@ -1003,7 +1003,7 @@ var ApplicationController = function( screenObj ){
                     var cc = null;
                     
                     //Special for MX- load subs.
-                    if(StorageManagerInstance.get('lang') == 'es'){
+                    if(StorageManagerInstance.get('lang') == 'es' || LoggerConfig.CONFIG.SHOW_SUBTITLES === true){
                         var closed_caption_files = mediaObj.getClosedCaptionFiles().slice(0);
                         cc = closed_caption_files[0].Path
                     }

@@ -9,7 +9,7 @@ LoggerConfig.CONFIG = {
     SKIP_ADS: false,
     PSN_CHECK: true, 
     DISABLE_LOGS: false,
-    SHOW_SUBTITLES: true,
+    SHOW_SUBTITLES: false,
     SECURE:false
 };
 
