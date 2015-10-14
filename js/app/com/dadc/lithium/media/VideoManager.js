@@ -120,7 +120,7 @@ VideoManager = function(){
     }
     this.pause = function( state ){
         m_video_time_on_play_before_timeupdate = undefined;
-        m_core_video_obj.pause( state );
+        m_core_video_obj && m_core_video_obj.pause( state );
     }
     this.getCurrentVideoTime = function(){
         if( m_current_jsvideo != null ){

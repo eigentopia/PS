@@ -258,6 +258,9 @@ var ApplicationController = function( screenObj ){
                 if(localStorage.userEmailAddress && localStorage.userId ){
                     crackleUser.email = localStorage.userEmailAddress
                     crackleUser.id =   localStorage.userId
+                    crackleUser.age = localStorage.userAge
+                    crackleUser.gender = localStorage.userGender
+
                     ApplicationController.getUserPauseResumeList(function(success){
                         if (success){
                             progressList = true;
@@ -1003,9 +1006,9 @@ var ApplicationController = function( screenObj ){
                     var cc = null;
                     
                     //Special for MX- load subs.
-                    if(StorageManagerInstance.get('lang') == 'es' || LoggerConfig.CONFIG.SHOW_SUBTITLES === true){
+                    if(StorageManagerInstance.get('lang') == 'es' || StorageManagerInstance.get('lang') == 'br' || LoggerConfig.CONFIG.SHOW_SUBTITLES === true){
                         var closed_caption_files = mediaObj.getClosedCaptionFiles().slice(0);
-                        cc = closed_caption_files[0].Path
+                        cc = (closed_caption_files.length>0)?closed_caption_files[0].Path:null
                     }
 
                     //Keep the context if coming from a list so we can next video

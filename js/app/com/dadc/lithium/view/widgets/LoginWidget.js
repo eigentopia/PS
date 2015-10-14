@@ -66,7 +66,7 @@ var LoginWidget = function( widgController) {
             else if (ssoResponse.CrackleUserId) {
 
                 StorageManagerInstance.set('deviceAuth', 'true')
-                if(!user.age || user.age ==''){
+                //if(!user.age || user.age ==''){
                     CrackleApi.User.moreUserInfo(ssoResponse, function(fullData){
                         ApplicationController.setUserInfo(fullData)
                         if(widgController.previousScreen == null){
@@ -83,23 +83,23 @@ var LoginWidget = function( widgController) {
 
                         }
                     })
-                }
-                else{
-                    ApplicationController.setCrackleUser(ssoResponse)
-                    if(widgController.previousScreen == null){
-                        statusScreen && logOutNode.removeChild(statusScreen)
-                        activationText && m_master_container.removeChild(activationText)
-                        statusScreen =  showHome()
-                        logOutNode.addChild(statusScreen);
-                        m_master_container.addChild( logOutNode );
-                        m_master_container.width = logOutNode.naturalWidth;
-                        m_master_container.height = logOutNode.naturalHeight;
-                    }
-                    else{
-                        widgController.openPreviousController();
+                //}
+                // else{
+                //     ApplicationController.setCrackleUser(ssoResponse)
+                //     if(widgController.previousScreen == null){
+                //         statusScreen && logOutNode.removeChild(statusScreen)
+                //         activationText && m_master_container.removeChild(activationText)
+                //         statusScreen =  showHome()
+                //         logOutNode.addChild(statusScreen);
+                //         m_master_container.addChild( logOutNode );
+                //         m_master_container.width = logOutNode.naturalWidth;
+                //         m_master_container.height = logOutNode.naturalHeight;
+                //     }
+                //     else{
+                //         widgController.openPreviousController();
 
-                    }
-                }
+                //     }
+                //}
             }
             else if (ssoResponse.error) {
                 if (ssoResponse.error != 'authing') {

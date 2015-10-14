@@ -48,10 +48,11 @@ var Http = function(){
             httpRequestObj.cancel();
         }
     }
-    this.request = function(url, method, sendbody, headers, callback, doAuth){
+    this.request = function(url, method, sendbody, headers, callback, doAuth, convert){
         var me = {};
         me.config = {};
         me.url = url;
+        me.convert = convert;
 
         me.doAuth=(doAuth !== undefined)?doAuth:true
         //var d = new Date();
@@ -115,13 +116,17 @@ var Http = function(){
         return resp;
     }
 
-    function startRequest(){
-            busy = true
-            http_retries = 0;
-            api_retries = 0;
-            currentRequest = queue.shift()
-            initHttpRequest();
+    function startRequest(convert){
+        busy = true
+        http_retries = 0;
+        api_retries = 0;
+        currentRequest = queue.shift()
+        initHttpRequest();
+        if(convert){
+            httpRequestObj.start({request:"xml", response:"json"});
+        }else{
             httpRequestObj.start();
+        }
     }
 
     function initHttpRequest(){
@@ -136,12 +141,14 @@ var Http = function(){
             currentRequest.config ={ headers: authorizationHeader( currentRequest.url ) }
         }
 
+        console.dir("CurrentRequest ",currentRequest)
         httpRequestObj = httpClientObj.createRequest( currentRequest.method, currentRequest.url, currentRequest.config, null );
         if(currentRequest.sendbody){
             httpRequestObj.sendBody(currentRequest.sendbody.data, currentRequest.sendbody.dataType);
         
         }
         httpRequestObj.onComplete = onRequestComplete;
+        httpRequestObj.onResponse = onResponse
     }
 
     function onRequestComplete ( data, status ){
@@ -205,6 +212,11 @@ var Http = function(){
             if(queue.length > 0){
                 startRequest();
             }
+    }
+
+    function onResponse( response ){
+        console.log("response: ");
+        console.dir(response)
     }
 
 

@@ -33,9 +33,9 @@ var SubtitleWidget = function( SubtitlesObj ) {
     	return m_root_node;
     };
     this.removeSubtitleFromScreen = function(){
-        Logger.log("removing a sub from the screen. children to sound off.")
+        //Logger.log("removing a sub from the screen. children to sound off.")
         while ( m_subtitle_container.numChildren > 0 ){
-            Logger.log("removing next child...");
+            //Logger.log("removing next child...");
             m_subtitle_container.removeChildAt( 0 );
         }
     }
@@ -43,11 +43,11 @@ var SubtitleWidget = function( SubtitlesObj ) {
     this.displaySubtitleLine = function( SubtitleLineObj ){
         this.removeSubtitleFromScreen();
         if ( SubtitleLineObj ){
-            Logger.log("SubtitleLineObj exists, will add");
+           // Logger.log("SubtitleLineObj exists, will add");
             m_subtitle_container.addChild( getTextContainer( SubtitleLineObj.getText ) );
 
         }else{
-            Logger.log("SubtitleLineObj does not exist, will not add");
+           // Logger.log("SubtitleLineObj does not exist, will not add");
         }
     }
 
@@ -55,7 +55,7 @@ var SubtitleWidget = function( SubtitlesObj ) {
 
     }
     function getTextContainer( message ){
-        Logger.log("getTextContainer for message: " + message);
+        //Logger.log("getTextContainer for message: " + message);
         var tblock;
         var shadowBlock;
         var messages = message.split( TTMLSubtitle.CONFIG.BREAK_LINES );
@@ -86,9 +86,9 @@ var SubtitleWidget = function( SubtitlesObj ) {
         }
         catch(e)
         {
-            Logger.log("subtitleWidget.getTextContainer() failed...")
+            //Logger.log("subtitleWidget.getTextContainer() failed...")
         }
 
-            Logger.log("returning container");
+            //Logger.log("returning container");
             return container;
         }};

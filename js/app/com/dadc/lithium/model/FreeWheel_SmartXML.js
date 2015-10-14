@@ -20,13 +20,14 @@ FreeWheelModel.FreeWheel_SmartXMLRequest = function( media_id, callback, freewhe
     var api_retries;
     var http_retries;
     var This = this;
+    //var fmtOption = { request: "xml", response: "json" }
 
     this.startRequest = function( )
     {
         http_retries = 0;
         api_retries = 0;
         initHttpRequest();
-        httpRequestObj.start();
+        httpRequestObj.start(/*fmtOption*/);
     };
 
     function initHttpRequest()
@@ -53,6 +54,7 @@ FreeWheelModel.FreeWheel_SmartXMLRequest = function( media_id, callback, freewhe
         }else {
             try{
                 var json_data = XMLParser_DAC.XMLToJSON( data );
+                //var json_data = data ;
                 if ( !json_data ||
                     (
                         json_data.siteSection &&
@@ -65,7 +67,7 @@ FreeWheelModel.FreeWheel_SmartXMLRequest = function( media_id, callback, freewhe
                 ){
                     api_retries++;
                     initHttpRequest();
-                    httpRequestObj.start();
+                    httpRequestObj.start(/*fmtOption*/);
                 }else{
                     callback( new FreeWheelModel.AdResponse( json_data ), status );
                 }

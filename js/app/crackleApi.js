@@ -388,7 +388,10 @@ var PlaystationConfig = {
                             
                             //CrackleApi.apiUrl = "https://staging-v1-api-us.crackle.com/Service.svc/"
                             //CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
-                            //CrackleApi.apiUrl = "https://ps3-api-es.crackle.com/Service.svc/"
+                            //ES
+                            // StorageManagerInstance.set( 'geocode', 'MX');
+                            // CrackleApi.apiUrl = "https://ps3-api-es.crackle.com/Service.svc/"
+                            
                             PlaystationConfig.hashedDeviceID = Crypto.HMAC( Crypto.SHA1, engine.stats.device.id, engine.stats.device.platform )
                                 
                             if(engine.stats.locale && engine.stats.locale == "fr_FR"){
