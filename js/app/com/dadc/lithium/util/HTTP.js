@@ -48,11 +48,11 @@ var Http = function(){
             httpRequestObj.cancel();
         }
     }
-    this.request = function(url, method, sendbody, headers, callback, doAuth, convert){
+    this.request = function(url, method, sendbody, headers, callback, doAuth){
         var me = {};
         me.config = {};
         me.url = url;
-        me.convert = convert;
+        //me.convert = convert;
 
         me.doAuth=(doAuth !== undefined)?doAuth:true
         //var d = new Date();
@@ -137,11 +137,10 @@ var Http = function(){
             httpClientObj.setCertificateAuthority( Config.CERT_VALIDATION );
         }
 
-        if(!currentRequest.config.headers){
+        if(!currentRequest.config.headers && currentRequest.doAuth){
             currentRequest.config ={ headers: authorizationHeader( currentRequest.url ) }
         }
 
-        console.dir("CurrentRequest ",currentRequest)
         httpRequestObj = httpClientObj.createRequest( currentRequest.method, currentRequest.url, currentRequest.config, null );
         if(currentRequest.sendbody){
             httpRequestObj.sendBody(currentRequest.sendbody.data, currentRequest.sendbody.dataType);
