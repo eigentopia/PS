@@ -307,6 +307,7 @@ var VideoController = function( ParentControllerObj )
         if(m_crackle_video && currentSubtitleUrl != subtitleUrl){
 
             currentSubtitleUrl = subtitleUrl
+
             if(subtitleUrl != null){
                 if(!subsLoaded){
                     subsLoaded = true;
@@ -342,6 +343,7 @@ var VideoController = function( ParentControllerObj )
 
         //have you given me a AVURL?
         if(audioVideoUrl){
+            This.audioVideoUrlSwitch = true
             currentAudioVideoUrl = audioVideoUrl
         }
         else{
@@ -384,7 +386,7 @@ var VideoController = function( ParentControllerObj )
                 currentMediaList = MediaDetailsObj.videoContextList
                 for (var i=0; i<MediaDetailsObj.videoContextList.length;i++){
                     if (MediaDetailsObj.data.ID == MediaDetailsObj.videoContextList[i].ID){
-                        console.log("FOUNNF "+ MediaDetailsObj.data.ID+ " AT "+ i)
+                        //console.log("FOUNNF "+ MediaDetailsObj.data.ID+ " AT "+ i)
                         startingMediaListIndex = i
                         currentMediaListIndex = i;
                     }
@@ -682,11 +684,11 @@ var VideoController = function( ParentControllerObj )
                 //toggleTimeline();
                // m_timeline_widget.setVisible(false)
                 //m_seek_direction = null;
-                if( ! m_crackle_video.isPaused() )
-                {
+                //if( ! m_crackle_video.isPaused() )
+                //{
                     m_timeline_widget.setPauseStatus( true );
-                    m_crackle_video.togglePause();
-                }
+                    m_crackle_video.pause(true);
+                ///}
                 //Logger.log( 'setting current time to ' + m_timeline_widget.getSeekTime() );
                 //m_crackle_video.setCurrentTime( m_timeline_widget.getSeekTime() );
 
@@ -807,6 +809,7 @@ var VideoController = function( ParentControllerObj )
     var previousSubUrl=""
     this.closeSubtitleChooser = function(avFile, ccFile){
 
+            This.removeChooser()
         //Need new video if new AVUrl
         if(avFile != currentAudioVideoUrl){
             if(ccFile != currentSubtitleUrl){

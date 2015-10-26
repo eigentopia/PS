@@ -201,6 +201,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
 
     this.pause = function( state ){
+        m_is_paused = state
         VideoManagerInstance.pause( state );
     };
     this.notifyPlaybackError = function(){
