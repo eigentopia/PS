@@ -260,12 +260,13 @@ var VideoController = function( ParentControllerObj )
         //subsLoaded = true
         This.m_show_subtitles = true;
         m_crackle_video.setSubtitleContainer(m_subtitle_container)
+        Logger.log("paused and Unpausing")
         if(m_crackle_video && m_crackle_video.isPaused()){
             m_crackle_video.togglePause()
-            m_timeline_widget.setPauseStatus(false);
-            
+            m_timeline_widget.setPauseStatus(false);   
         }
         else{
+            Logger.log("playback ready")
             This.notifyPlaybackReady();
         }
 
@@ -327,7 +328,7 @@ var VideoController = function( ParentControllerObj )
         //Special for MX- load subs but only if english is the default stream
         if(StorageManagerInstance.get('lang') == 'es' || StorageManagerInstance.get('lang') == 'br' || LoggerConfig.CONFIG.SHOW_SUBTITLES === true){
             if(avUrlLanguage == "Inglés"){
-                var closed_caption_files = mediaObj.getClosedCaptionFiles().slice(0);
+                var closed_caption_files = MediaDetailsObj.getClosedCaptionFiles().slice(0);
                 currentSubtitleUrl = (closed_caption_files.length>0)?closed_caption_files[0].Path:null
             }
         }
