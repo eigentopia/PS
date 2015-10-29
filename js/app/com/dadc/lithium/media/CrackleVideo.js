@@ -199,7 +199,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
     };
 
-
     this.pause = function( state ){
         m_is_paused = state
         VideoManagerInstance.pause( state );
@@ -209,7 +208,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
     this.stop = function(){
         Logger.log("stop called in CrackleVideo");
-        if( VideoManagerInstance.getCurrentJSVideo() === this ){
+        if( VideoManagerInstance.getCurrentJSVideo() === This ){
             try{
                 Logger.log("will stop");
                 m_disposed = true;
@@ -608,28 +607,34 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         This.addPlaybackMark( duration * .75 );
         This.addPlaybackMark( duration * .95 );
     }
-
+    var currentSubtitleUrl = null
     this.loadSubtitles = function(url){
         Logger.log("loadSubtitles called");
-        //This.stCallback = cb
-        // MILAN: MOVED SUBTITLE REQUEST TO TTMLSubtitleModel.js
-        try{
-            //Clear them here. Reload conditions in VidController.
-            m_subtitle_start_marks = []
-            m_subtitle_end_marks = []
-            sub_marks_tc = []
+        if(currentSubtitleUrl !== url){
+            // MILAN: MOVED SUBTITLE REQUEST TO TTMLSubtitleModel.js
+            try{
+                currentSubtitleUrl = url;
+                //Clear them here. Reload conditions in VidController.
+                m_subtitle_start_marks = []
+                m_subtitle_end_marks = []
+                sub_marks_tc = []
 
-            m_subtitle_url = url.replace( 'media/', '' );
-            Logger.log( 'closed_caption_path = ' + m_subtitle_url );
+                m_subtitle_url = url.replace( 'media/', '' );
+                Logger.log( 'closed_caption_path = ' + m_subtitle_url );
 
-            var subtitleModelRequest = new TTMLSubtitleModelRequest(m_subtitle_url, onSubtitlesCallback);
-            subtitleModelRequest.startRequest();
-        }catch( e ){
-            Logger.log( '!!! EXCEPTION loadSubtitles' );
-            Logger.logObj( e );
-            m_subtitle_widget.setSubtitlesFailed();
-            //PlaybackReadyListener.notifySubtitlesError();
-            PlaybackReadyListener.notifyPlaybackReady();
+                var subtitleModelRequest = new TTMLSubtitleModelRequest(m_subtitle_url, onSubtitlesCallback);
+                subtitleModelRequest.startRequest();
+            }catch( e ){
+                currentSubtitleUrl = null
+                Logger.log( '!!! EXCEPTION loadSubtitles' );
+                Logger.logObj( e );
+                m_subtitle_widget.setSubtitlesFailed();
+                //PlaybackReadyListener.notifySubtitlesError();
+                PlaybackReadyListener.notifyPlaybackReady();
+            }
+        }
+        else{
+            PlaybackReadyListener.subtitlesLoaded();
         }
     }
 
@@ -663,7 +668,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
                 //PlaybackReadyListener.notifySubtitlesReady();
                 m_subtitle_widget.refreshWidget( data.getSubtitleLines );
-                PlaybackReadyListener.subsLoaded();
+                PlaybackReadyListener.subtitlesLoaded();
                 //PlaybackReadyListener.notifyPlaybackReady();
 
             }catch( e ){

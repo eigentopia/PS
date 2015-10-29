@@ -28,12 +28,12 @@ var VideoController = function( ParentControllerObj )
         m_loading_widget.getDisplayNode().y = (1080 * 0.5) - ( AssetLoaderInstance.getImage( "Artwork/loading.png" ).height * 0.5 );
 
     var m_playback_ready = false;
-    var m_subtitles_ready = false;
+    //var m_subtitles_ready = false;
     var m_show_subtitles = LoggerConfig.CONFIG.SHOW_SUBTITLES ? true : false;
 
-    if(StorageManagerInstance.get('lang') == 'es'){
-        m_show_subtitles = true;
-    }
+    // if(StorageManagerInstance.get('lang') == 'es'){
+    //     m_show_subtitles = true;
+    // }
 
     var m_seek_direction = null;
     var m_last_seek_timer;
@@ -120,7 +120,7 @@ var VideoController = function( ParentControllerObj )
 
     this.close = function( )
     {
-        subsLoaded = false
+        //subsLoaded = false
         if( m_root_node.contains( m_master_container ) )
             m_root_node.removeChild( m_master_container );
         if( m_crackle_video )
@@ -246,7 +246,7 @@ var VideoController = function( ParentControllerObj )
 
     var currentAudioVideoUrl=null; 
     var currentSubtitleUrl=null;
-    var subsLoaded = false
+    //var subsLoaded = false
 
     //should be called before prepareToOpen
     this.setMediaList = function (mediaList){
@@ -255,13 +255,19 @@ var VideoController = function( ParentControllerObj )
     }
     var nextvideo;
 
-    this.subsLoaded = function(){
-        This.removeChooser()
+    this.subtitlesLoaded = function(){
         AnalyticsManagerInstance.subTitleOnEvent(  );
+        //subsLoaded = true
         This.m_show_subtitles = true;
         m_crackle_video.setSubtitleContainer(m_subtitle_container)
-        m_crackle_video.togglePause()
-        m_timeline_widget.setPauseStatus(false);
+        if(m_crackle_video && m_crackle_video.isPaused()){
+            m_crackle_video.togglePause()
+            m_timeline_widget.setPauseStatus(false);
+            
+        }
+        else{
+            This.notifyPlaybackReady();
+        }
 
     }
 
@@ -278,10 +284,6 @@ var VideoController = function( ParentControllerObj )
     {
         This.audioVideoUrlSwitch = false;
         userOptOut = false
-        //Add stuff here for the video stream
-        // console.log("1 prepareToOpen with")
-        // console.log(audioVideoUrl)
-        // console.dir(MediaDetailsObj.getMediaURLs())
 
         //Is everything the same?
         if(m_media_details_obj == MediaDetailsObj && currentSubtitleUrl == subtitleUrl && currentAudioVideoUrl == audioVideoUrl){
@@ -291,69 +293,42 @@ var VideoController = function( ParentControllerObj )
             }
         }
 
-
+        //Set the MediaObj
         m_media_details_obj = MediaDetailsObj;
 
-        // console.log("2 prepareToOpen with")
-        // console.log(currentAudioVideoUrl)
-        // console.log(subtitleUrl)
-        console.log("EndCreditStartMarkInMilliSeconds "+ MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds)
+        //End Credit mark for the NextVideo thing
         currentVideoEndCreditMark = MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds/1000;
         if(MediaDetailsObj.data.EndCreditStartMarkInMilliSeconds == null){
             currentVideoEndCreditMark = MediaDetailsObj.data.DurationInSeconds - 10
         }
-        console.log("END CREDIT MARK "+currentVideoEndCreditMark)
+        
 
-        if(m_crackle_video && currentSubtitleUrl != subtitleUrl){
-
-            currentSubtitleUrl = subtitleUrl
-
-            if(subtitleUrl != null){
-                if(!subsLoaded){
-                    subsLoaded = true;
-                     m_crackle_video.loadSubtitles(subtitleUrl);
-                }
-                Logger.log("NEW Subtitle URL: " + subtitleUrl);
-                AnalyticsManagerInstance.subTitleOnEvent(  );
-                m_show_subtitles = true;
-
-            }
-            else{
-                AnalyticsManagerInstance.subTitleOffEvent(  );
-
-                if(m_crackle_video){
-                    m_crackle_video.setSubtitleContainer(null)
-                }
-                m_show_subtitles = false;
-            }
-
-            //Is the media url the same?
-            if(currentAudioVideoUrl == audioVideoUrl){
-                if(m_show_subtitles ){
-                    m_crackle_video.setSubtitleContainer(m_subtitle_container)
-                }
-                else{
-                     m_crackle_video.setSubtitleContainer(null)   
-                }
-                m_crackle_video.togglePause()
-                m_timeline_widget.setPauseStatus(false);
-                return;
-            }
-        }
-
+                    
         //have you given me a AVURL?
-        if(audioVideoUrl){
-            This.audioVideoUrlSwitch = true
-            currentAudioVideoUrl = audioVideoUrl
+        var avUrlLanguage;
+        if (audioVideoUrl !== null){ //True if changed from overlay
+
+            if(audioVideoUrl !== currentAudioVideoUrl){
+                This.audioVideoUrlSwitch = true
+                currentAudioVideoUrl = audioVideoUrl
+            }
         }
-        else{
+        else{ //This is the path from App Controller
             var avUrls = MediaDetailsObj.getMediaURLs()
             if(avUrls != null){ //Make sure the media is there
                 currentAudioVideoUrl = MediaDetailsObj.getMediaURLs()[0].Path;
+                avUrlLanguage = MediaDetailsObj.getMediaURLs()[0].LocalizedLanguage
             }
             else{
                 ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );
                 return;
+            }
+        }
+        //Special for MX- load subs but only if english is the default stream
+        if(StorageManagerInstance.get('lang') == 'es' || StorageManagerInstance.get('lang') == 'br' || LoggerConfig.CONFIG.SHOW_SUBTITLES === true){
+            if(avUrlLanguage == "Inglés"){
+                var closed_caption_files = mediaObj.getClosedCaptionFiles().slice(0);
+                currentSubtitleUrl = (closed_caption_files.length>0)?closed_caption_files[0].Path:null
             }
         }
         
@@ -398,8 +373,7 @@ var VideoController = function( ParentControllerObj )
             totalVideosPlayed ++
             continueCalled = false;
 
-            currentSubtitleUrl = subtitleUrl
-            
+            //var cc = null;
             m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, This, This );
             m_crackle_video.setSubtitleContainer(m_subtitle_container)
 
@@ -806,64 +780,57 @@ var VideoController = function( ParentControllerObj )
         subtitleChooserController.setFocus();
     }
 
-    var previousSubUrl=""
+    var previousSubUrl=null
     this.closeSubtitleChooser = function(avFile, ccFile){
 
-            This.removeChooser()
+        This.removeChooser()
         //Need new video if new AVUrl
-        if(avFile != currentAudioVideoUrl){
-            if(ccFile != currentSubtitleUrl){
+        if(avFile !== currentAudioVideoUrl){
+            totalVideosPlayed = totalVideosPlayed -1
+            if(ccFile !== currentSubtitleUrl){
                 //reset all of it
+                currentSubtitleUrl = ccFile
                 This.prepareToOpen(m_media_details_obj, avFile, ccFile);
             }
             else{ //just the avFile
                 This.prepareToOpen(m_media_details_obj, avFile, currentSubtitleUrl);
             }
-
         }
-        else if(ccFile != currentSubtitleUrl){
+        else if(ccFile !== currentSubtitleUrl){
             
-            currentSubtitleUrl = ccFile
-            if(ccFile != null){ //get the file and parse it, turn on subs
-            //     var tt = ccFile.replace( 'media/', '' );
-            //     console.log("CC File "+ tt)
-            //     var video  = VideoManagerInstance.getCoreVideo()
-            //     video.addTimedTextTrack(tt, "Track01", "EN", "subtitles")
-            //     console.log ("TT "+ video.x +" "+video.y+" "+ video.width+" "+ video.height);
-            //     video.timedTextTrackSetPosAndDim(video.x, video.y, video.width, video.height)
-            //     This.notifyPlaybackReady()
-            //     track = video.textTracks[0];
-            // Logger.logObj( track );
-                //track.resumeTrack();
-                // AnalyticsManagerInstance.subTitleOnEvent(  );
-                // This.m_show_subtitles = true;
-                // m_crackle_video.setSubtitleContainer(m_subtitle_container)
-                if(previousSubUrl != ccFile){
-                    previousSubUrl = ccFile;
-                    m_crackle_video.loadSubtitles(ccFile);
-                    Logger.log("2NEW Subtitle URL: " + ccFile);
-                }
-                else{
-                    This.subsLoaded();
-                }
+            currentSubtitleUrl = ccFile;
 
+            if(ccFile !== null){
+                AnalyticsManagerInstance.subTitleOnEvent();
+                // if(previousSubUrl !== ccFile){
+                //     previousSubUrl = ccFile;
+                //     Logger.log("3NEW Subtitle URL: " + ccFile);
+                    m_crackle_video.loadSubtitles(ccFile);
+                // }
+                // else{
+                //     m_crackle_video.togglePause()
+                //     m_timeline_widget.setPauseStatus(false);
+                // }
             }
-            else{ //no file returned from chooser, shut them off
+            else{ //No URL turn them off
                 AnalyticsManagerInstance.subTitleOffEvent(  );
-                This.removeChooser()
                 if(m_crackle_video){
                     m_crackle_video.setSubtitleContainer(null)
-                    m_crackle_video.togglePause()
+                    //m_crackle_video.togglePause()
                 }
 
                 This.m_show_subtitles = false;
                 currentSubtitleUrl = null;
+                //subsLoaded = false
                 m_timeline_widget.setPauseStatus(false);
+                m_crackle_video.togglePause()
             }
         }
-        else{
-            This.removeChooser()
-            m_crackle_video.togglePause()
+        else{// if both the same
+            if(m_crackle_video.isPaused()){
+                m_crackle_video.togglePause();
+                return;
+            }
         }
     }
 
@@ -891,7 +858,7 @@ var VideoController = function( ParentControllerObj )
 
     this.notifyPlaybackEnded = function()
     {
-        subsLoaded = false
+            //subsLoaded = false
             closeNextVideoOverlay()
             closeNextVideoContinueOverlay();
         try

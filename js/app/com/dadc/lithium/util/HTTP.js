@@ -214,8 +214,8 @@ var Http = function(){
     }
 
     function onResponse( response ){
-        console.log("response: ");
-        console.dir(response)
+        // console.log("response: ");
+        // console.dir(response)
     }
 
 

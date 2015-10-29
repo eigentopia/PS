@@ -1003,14 +1003,6 @@ var ApplicationController = function( screenObj ){
                     
                     var mediaObj = json_data_args.MediaDetailsObj
 
-                    var cc = null;
-                    
-                    //Special for MX- load subs.
-                    if(StorageManagerInstance.get('lang') == 'es' || StorageManagerInstance.get('lang') == 'br' || LoggerConfig.CONFIG.SHOW_SUBTITLES === true){
-                        var closed_caption_files = mediaObj.getClosedCaptionFiles().slice(0);
-                        cc = (closed_caption_files.length>0)?closed_caption_files[0].Path:null
-                    }
-
                     //Keep the context if coming from a list so we can next video
                     if(m_controller_before_video_started.getControllerName() =='RecommendedWatchlistController' ||
                         m_controller_before_video_started.getControllerName() == "ShowDetailsController"||
@@ -1038,7 +1030,7 @@ var ApplicationController = function( screenObj ){
 
 
                         // NOTE: CALLING PREPARE AFTER OPEN, WHY?
-                        m_video_controller.prepareToOpen( mediaObj, null, cc);
+                        m_video_controller.prepareToOpen( mediaObj, null, null);
 
 
                     }
@@ -1076,7 +1068,7 @@ var ApplicationController = function( screenObj ){
                             screenObj.addChild( m_video_controller.getDisplayNode() );
 
                             // NOTE: CALLING PREPARE AFTER OPEN, WHY?
-                            m_video_controller.prepareToOpen( json_data_args.MediaDetailsObj, null, cc);
+                            m_video_controller.prepareToOpen( json_data_args.MediaDetailsObj, null, null);
                         })
                         
                         request.startRequest();

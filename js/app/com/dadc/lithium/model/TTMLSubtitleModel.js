@@ -94,8 +94,8 @@ var TTMLSubtitleModelRequest = function( subtitle_url, callback ){
             callback( null, status );
         }else {
             try{
-               Logger.log("FILE::: " + data);
-                               Logger.logObj(data);
+                //Logger.log("FILE::: " + data);
+                //Logger.logObj(data);
                 var subtitle_data = new TTMLSubtitleModel( data, format );
                 callback( subtitle_data, status );
             }catch( e ){
