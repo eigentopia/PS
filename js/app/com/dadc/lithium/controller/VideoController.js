@@ -120,6 +120,17 @@ var VideoController = function( ParentControllerObj )
 
     this.close = function( )
     {
+        currentAudioVideoUrl=null; 
+        currentSubtitleUrl=null;
+                totalVideosPlayed= 0;
+        currentVideoEndCreditMark= null;
+        nextVideoOverlay = null
+        nextVideoContinueOverlay = null
+        currentMediaList = null
+        currentMediaListIndex = 0;
+        startingMediaListIndex = 0;
+        continueCalled = false
+        userOptOut = false
         //subsLoaded = false
         if( m_root_node.contains( m_master_container ) )
             m_root_node.removeChild( m_master_container );
@@ -862,6 +873,10 @@ var VideoController = function( ParentControllerObj )
             //subsLoaded = false
             closeNextVideoOverlay()
             closeNextVideoContinueOverlay();
+            currentAudioVideoUrl=null; 
+            currentSubtitleUrl=null;
+            currentVideoEndCreditMark= null;
+
         try
         {
             VideoManagerInstance.stop();

@@ -212,6 +212,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             try{
                 Logger.log("will stop");
                 m_disposed = true;
+                currentSubtitleUrl = null
                 VideoManagerInstance.stop( );
                 VideoManagerInstance.close( );
                 // MILAN: ON CHANGE SUBTITLE AD FORGIVENESS
@@ -344,6 +345,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     this.onEnded = function(){
         Logger.log( 'CrackleVideo onEnded()' );
         m_video_ended = true;
+        currentSubtitleUrl = null
         //Comscore.sendEnd(m_current_time * 1000)
         // DO we have a postroll?
         if( m_playlists[ m_media_details_obj.getDurationInSeconds() ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
@@ -359,6 +361,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //ConvivaIntegration.cleanUpSession();
         VideoManagerInstance.stop();
         VideoManagerInstance.close();
+        currentSubtitleUrl = null
         notifyListeners( new PlaybackError( VideoManagerInstance.getPlaybackTimePTS() ) );
     };
 
@@ -610,6 +613,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     var currentSubtitleUrl = null
     this.loadSubtitles = function(url){
         Logger.log("loadSubtitles called");
+        m_marks_finalized = false
         if(currentSubtitleUrl !== url){
             // MILAN: MOVED SUBTITLE REQUEST TO TTMLSubtitleModel.js
             try{
@@ -669,6 +673,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 //PlaybackReadyListener.notifySubtitlesReady();
                 m_subtitle_widget.refreshWidget( data.getSubtitleLines );
                 PlaybackReadyListener.subtitlesLoaded();
+                m_marks_finalized = true
                 //PlaybackReadyListener.notifyPlaybackReady();
 
             }catch( e ){
