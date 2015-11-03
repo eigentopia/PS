@@ -258,6 +258,8 @@ var ApplicationController = function( screenObj ){
                 if(localStorage.userEmailAddress && localStorage.userId ){
                     crackleUser.email = localStorage.userEmailAddress
                     crackleUser.id =   localStorage.userId
+                    crackleUser.age = localStorage.userAge
+                    crackleUser.gender = localStorage.userGender
                     ApplicationController.getUserPauseResumeList(function(success){
                         if (success){
                             progressList = true;
@@ -2484,14 +2486,7 @@ var ApplicationController = function( screenObj ){
         }
 
         localStorage.age = (user.userAge)?user.userAge:user.age;
-
-        if(user.userGender && user.userGender.toString() == '0'){
-            localStorage.gender =user.userGender.toString()
-        } else if(user.gender&& user.gender.toString() == '0'){
-            localStorage.gender =user.gender.toString()
-        } else{
-            localStorage.gender = '0';
-        }
+        localStorage.gender = (user.userGender.toString() == '0')?user.userGender.toString():user.gender.toString();
         localStorage.userId = (user.CrackleUserId)?user.CrackleUserId:user.id;
         localStorage.name = (user.CrackleUserName)?user.CrackleUserName:user.name;
         ApplicationController.setCrackleUser(user, cb)

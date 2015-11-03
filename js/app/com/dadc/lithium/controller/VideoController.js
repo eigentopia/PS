@@ -53,7 +53,7 @@ var VideoController = function( ParentControllerObj )
     //For disabling the controls during Uplynk ad.
     this.inAd = false
     
-
+    this.audioVideoUrlSwitch = false;
         // INNOVID INTEGRATION: maintain a reference to any IG videos that are playing
     var m_current_ig_video = undefined;
 
@@ -120,7 +120,17 @@ var VideoController = function( ParentControllerObj )
 
     this.close = function( )
     {
-        subsLoaded = false
+        currentAudioVideoUrl=null; 
+        currentSubtitleUrl=null;
+        totalVideosPlayed= 0;
+        currentVideoEndCreditMark= null;
+        nextVideoOverlay = null
+        nextVideoContinueOverlay = null
+        currentMediaList = null
+        currentMediaListIndex = 0;
+        startingMediaListIndex = 0;
+        continueCalled = false
+        userOptOut = false
         if( m_root_node.contains( m_master_container ) )
             m_root_node.removeChild( m_master_container );
         if( m_crackle_video )
@@ -248,7 +258,7 @@ var VideoController = function( ParentControllerObj )
 
     var currentAudioVideoUrl=null; 
     var currentSubtitleUrl=null;
-    var subsLoaded = false
+    //var subsLoaded = false
 
     //should be called before prepareToOpen
     this.setMediaList = function (mediaList){
@@ -260,6 +270,7 @@ var VideoController = function( ParentControllerObj )
     this.prepareToOpen = function( MediaDetailsObj, audioVideoUrl, subtitleUrl )
     {
         userOptOut = false
+        This.audioVideoUrlSwitch = false;
         //Add stuff here for the video stream
         // console.log("1 prepareToOpen with")
         // console.log(audioVideoUrl)
@@ -288,62 +299,35 @@ var VideoController = function( ParentControllerObj )
         }
         //console.log("END CREDIT MARK "+currentVideoEndCreditMark)
 
-        if(currentSubtitleUrl != subtitleUrl){
-
-            currentSubtitleUrl = subtitleUrl
-            if(subtitleUrl != null){
-                if(!subsLoaded){
-                    subsLoaded = true;
-                    m_crackle_video.loadSubtitles(subtitleUrl);
-//                     var tt = url.replace( 'media/', '' );
-//                     var video  = VideoManagerInstance.getCoreVideo()
-//                     video.addTimedTextTrack(tt, "Track01", "EN", "caption")
-//                     video.timedTextTrackSetPosAndDim(video.x, video.y, video.width, video.height)
-//                     track = video.textTracks[0];
-// //            Logger.logObj( track );
-//                     track.resumeTrack();
-
-                }
-                Logger.log("1NEW Subtitle URL: " + subtitleUrl);
-                AnalyticsManagerInstance.subTitleOnEvent(  );
-                This.m_show_subtitles = true;
-
-            }
-            else{
-                if(m_crackle_video){
-                    m_crackle_video.setSubtitleContainer(null)
-                }
-                This.m_show_subtitles = false;
-            }
-
-            //Is the media url the same?
-            if(currentAudioVideoUrl == audioVideoUrl){
-                if(This.m_show_subtitles ){
-                    m_crackle_video.setSubtitleContainer(m_subtitle_container)
-                }
-                else{
-                     m_crackle_video.setSubtitleContainer(null)   
-                }
-                m_crackle_video.togglePause()
-                m_timeline_widget.setPauseStatus(false);
-                return;
-            }
-        }
 
         //have you given me a AVURL?
-        if(audioVideoUrl){
-            currentAudioVideoUrl = audioVideoUrl
+        var avUrlLanguage;
+        if (audioVideoUrl !== null){ //True if changed from overlay
+
+            if(audioVideoUrl !== currentAudioVideoUrl){
+                This.audioVideoUrlSwitch = true
+                currentAudioVideoUrl = audioVideoUrl
+            }
         }
-        else{
+        else{ //This is the path from App Controller
             var avUrls = MediaDetailsObj.getMediaURLs()
             if(avUrls != null){ //Make sure the media is there
                 currentAudioVideoUrl = MediaDetailsObj.getMediaURLs()[0].Path;
+                avUrlLanguage = MediaDetailsObj.getMediaURLs()[0].LocalizedLanguage
             }
             else{
                 ParentControllerObj.notifyPreparationStatus( m_unique_id, Controller.PREPARATION_STATUS.STATUS_ERROR );
                 return;
             }
         }
+        //Special for MX- load subs but only if english is the default stream
+        if(StorageManagerInstance.get('lang') == 'es' || StorageManagerInstance.get('lang') == 'br' || LoggerConfig.CONFIG.SHOW_SUBTITLES === true){
+            if(avUrlLanguage == "Inglés"){
+                var closed_caption_files = MediaDetailsObj.getClosedCaptionFiles().slice(0);
+                currentSubtitleUrl = (closed_caption_files.length>0)?closed_caption_files[0].Path:null
+            }
+        }
+
         
         //this is the default path
         
@@ -712,99 +696,99 @@ var VideoController = function( ParentControllerObj )
             m_current_ig_video.getIGLayer().trianglePressed();
         }
     }
-    var subtitleChooserController = null;
-
+       var subtitleChooserController= null;
     function openSubtitleChooser(){
         subtitleChooserController = new SubtitleChooserController( This );
         // subtitleDisplay.x=600
         // subtitleDisplay.y=600
         isFocused = false
-        subtitleChooserController.prepareToOpen(currentAudioVideoUrl, currentSubtitleUrl );
+        subtitleChooserController.prepareToOpen(m_media_details_obj, currentAudioVideoUrl, currentSubtitleUrl );
         var subtitleDisplay = subtitleChooserController.getDisplayNode()
         m_root_node.addChild(subtitleDisplay);
         subtitleChooserController.setFocus();
     }
 
-var previousSubUrl=""
+    var previousSubUrl=null
     this.closeSubtitleChooser = function(avFile, ccFile){
 
+        This.removeChooser()
         //Need new video if new AVUrl
-        if(avFile != currentAudioVideoUrl){
-            if(ccFile != currentSubtitleUrl){
+        if(avFile !== currentAudioVideoUrl){
+            totalVideosPlayed = totalVideosPlayed -1
+            if(ccFile !== currentSubtitleUrl){
                 //reset all of it
+                currentSubtitleUrl = ccFile
                 This.prepareToOpen(m_media_details_obj, avFile, ccFile);
             }
             else{ //just the avFile
                 This.prepareToOpen(m_media_details_obj, avFile, currentSubtitleUrl);
             }
-
         }
-        else if(ccFile != currentSubtitleUrl){
+        else if(ccFile !== currentSubtitleUrl){
             
-            currentSubtitleUrl = ccFile
-            if(ccFile != null){ //get the file and parse it, turn on subs
-            //     var tt = ccFile.replace( 'media/', '' );
-            //     console.log("CC File "+ tt)
-            //     var video  = VideoManagerInstance.getCoreVideo()
-            //     video.addTimedTextTrack(tt, "Track01", "EN", "subtitles")
-            //     console.log ("TT "+ video.x +" "+video.y+" "+ video.width+" "+ video.height);
-            //     video.timedTextTrackSetPosAndDim(video.x, video.y, video.width, video.height)
-            //     This.notifyPlaybackReady()
-            //     track = video.textTracks[0];
-            // Logger.logObj( track );
-                //track.resumeTrack();
-                // AnalyticsManagerInstance.subTitleOnEvent(  );
-                // This.m_show_subtitles = true;
-                // m_crackle_video.setSubtitleContainer(m_subtitle_container)
-                if(previousSubUrl != ccFile){
-                    previousSubUrl = ccFile;
-                    m_crackle_video.loadSubtitles(ccFile);
-                    Logger.log("2NEW Subtitle URL: " + ccFile);
-                }
-                else{
-                    This.subsLoaded();
-                }
+            currentSubtitleUrl = ccFile; 
 
+            if(ccFile !== null){
+                AnalyticsManagerInstance.subTitleOnEvent();
+                // if(previousSubUrl !== ccFile){
+                //     previousSubUrl = ccFile;
+                //     Logger.log("3NEW Subtitle URL: " + ccFile);
+                    m_crackle_video.loadSubtitles(ccFile);
+                // }
+                // else{
+                //     m_crackle_video.togglePause()
+                //     m_timeline_widget.setPauseStatus(false);
+                // }
             }
-            else{ //no file returned from chooser, shut them off
+            else{ //No URL turn them off
                 AnalyticsManagerInstance.subTitleOffEvent(  );
-                This.removeChooser()
                 if(m_crackle_video){
                     m_crackle_video.setSubtitleContainer(null)
-                    m_crackle_video.togglePause()
+                    //m_crackle_video.togglePause()
                 }
 
                 This.m_show_subtitles = false;
                 currentSubtitleUrl = null;
+                //subsLoaded = false
                 m_timeline_widget.setPauseStatus(false);
+                m_crackle_video.togglePause()
             }
         }
-        else{
-            This.removeChooser()
-            m_crackle_video.togglePause()
+        else{// if both the same
+            if(m_crackle_video.isPaused()){
+                m_crackle_video.togglePause();
+                return;
+            }
         }
     }
 
     this.removeChooser = function(){
-        m_root_node.removeChild( subtitleChooserController.getDisplayNode() );
-       
-        subtitleChooserController.unsetFocus();
-        subtitleChooserController.close();
-        // if( m_subtitle_chooser_controller.getDisplayNode() && m_content_container.contains( m_subtitle_chooser_controller.getDisplayNode() ) )
-        //     m_content_container.removeChild( m_subtitle_chooser_controller.getDisplayNode() );
-        subtitleChooserController.destroy();
-        subtitleChooserController = null;
+        if(subtitleChooserController !== null){
+            m_root_node.removeChild( subtitleChooserController.getDisplayNode() );
+           
+            subtitleChooserController.unsetFocus();
+            subtitleChooserController.close();
+            // if( m_subtitle_chooser_controller.getDisplayNode() && m_content_container.contains( m_subtitle_chooser_controller.getDisplayNode() ) )
+            //     m_content_container.removeChild( m_subtitle_chooser_controller.getDisplayNode() );
+            subtitleChooserController.destroy();
+            subtitleChooserController = null;
+        }
         isFocused = true;
     }
 
-    this.subsLoaded = function(){
-        This.removeChooser()
+    this.subtitlesLoaded = function(){
         AnalyticsManagerInstance.subTitleOnEvent(  );
         This.m_show_subtitles = true;
         m_crackle_video.setSubtitleContainer(m_subtitle_container)
-        m_crackle_video.togglePause()
-        m_timeline_widget.setPauseStatus(false);
-
+        Logger.log("paused and Unpausing")
+        if(m_crackle_video && m_crackle_video.isPaused()){
+            m_crackle_video.togglePause()
+            m_timeline_widget.setPauseStatus(false);   
+        }
+        else{
+            Logger.log("playback ready")
+            This.notifyPlaybackReady();
+        }
     }
 
     this.subsFailed = function(){
@@ -915,7 +899,7 @@ var previousSubUrl=""
 
     this.notifyPlaybackEnded = function()
     {
-        subsLoaded = false
+        //subsLoaded = false
             closeNextVideoOverlay()
             closeNextVideoContinueOverlay();
         try

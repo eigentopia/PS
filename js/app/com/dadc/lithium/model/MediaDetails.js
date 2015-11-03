@@ -247,6 +247,20 @@ var MediaDetails = function( json_data ){
 
         return ccFiles;
     };
+
+    this.getLanguage = function(urlToMatch){
+        var lLang = null
+        var allMediaUrls = self.getMediaURLs()
+
+        for (var i =0; i<allMediaUrls.length; i++){
+            if (allMediaUrls[i].Path == urlToMatch){
+                lLang = allMediaUrls[i].LocalizedLanguage;
+                break;
+            }
+        }
+
+        return lLang;
+    }
     //this.getThumbnailScourDetails       = function(){return mediaDetailsThumbnailScourDetailsObj;};
     this.getOmnitureTrackingVars        = function(){return mediaDetailsOmnitureTrackingVarsListObj;};
 

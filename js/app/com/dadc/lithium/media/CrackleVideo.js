@@ -178,10 +178,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         {
             Logger.log("subtitles are not required OR are already resolved");
             //Make sure we have an end mark for the next video overlay
-            currentVideoEndCreditMark = m_media_details_obj.data.EndCreditStartMarkInMilliSeconds/1000;
-            if(m_media_details_obj.data.EndCreditStartMarkInMilliSeconds == null){
-                currentVideoEndCreditMark = m_media_details_obj.data.DurationInSeconds - 10
-            }
+            // currentVideoEndCreditMark = m_media_details_obj.data.EndCreditStartMarkInMilliSeconds/1000;
+            // if(m_media_details_obj.data.EndCreditStartMarkInMilliSeconds == null){
+            //     currentVideoEndCreditMark = m_media_details_obj.data.DurationInSeconds - 10
+            // }
 
             playCrackleVideo()
         }
@@ -217,7 +217,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
     this.stop = function(){
         Logger.log("stop called in CrackleVideo");
-        if( VideoManagerInstance.getCurrentJSVideo() === this ){
+        if( VideoManagerInstance.getCurrentJSVideo() === This ){
             try{
                 Logger.log("will stop");
                 m_disposed = true;
@@ -481,29 +481,36 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             m_subtitle_widget.displayText( TextInfo );
         //}
     }
+    var currentSubtitleUrl = null
 
-    //this.stCallback = null
     this.loadSubtitles = function(url){
         Logger.log("loadSubtitles called");
-        //This.stCallback = cb
-        // MILAN: MOVED SUBTITLE REQUEST TO TTMLSubtitleModel.js
-        try{
-            //Clear them here. Reload conditions in VidController.
-            m_subtitle_start_marks = []
-            m_subtitle_end_marks = []
-            sub_marks_tc = []
+        m_marks_finalized = false
+        if(currentSubtitleUrl !== url){
+            // MILAN: MOVED SUBTITLE REQUEST TO TTMLSubtitleModel.js
+            try{
+                currentSubtitleUrl = url;
+                //Clear them here. Reload conditions in VidController.
+                m_subtitle_start_marks = []
+                m_subtitle_end_marks = []
+                sub_marks_tc = []
 
-            m_subtitle_url = url.replace( 'media/', '' );
-            Logger.log( 'closed_caption_path = ' + m_subtitle_url );
+                m_subtitle_url = url.replace( 'media/', '' );
+                Logger.log( 'closed_caption_path = ' + m_subtitle_url );
 
-            var subtitleModelRequest = new TTMLSubtitleModelRequest(m_subtitle_url, onSubtitlesCallback);
-            subtitleModelRequest.startRequest();
-        }catch( e ){
-            Logger.log( '!!! EXCEPTION loadSubtitles' );
-            Logger.logObj( e );
-            m_subtitle_widget.setSubtitlesFailed();
-            //PlaybackReadyListener.notifySubtitlesError();
-            PlaybackReadyListener.notifyPlaybackReady();
+                var subtitleModelRequest = new TTMLSubtitleModelRequest(m_subtitle_url, onSubtitlesCallback);
+                subtitleModelRequest.startRequest();
+            }catch( e ){
+                currentSubtitleUrl = null
+                Logger.log( '!!! EXCEPTION loadSubtitles' );
+                Logger.logObj( e );
+                m_subtitle_widget.setSubtitlesFailed();
+                //PlaybackReadyListener.notifySubtitlesError();
+                PlaybackReadyListener.notifyPlaybackReady();
+            }
+        }
+        else{
+            PlaybackReadyListener.subtitlesLoaded();
         }
     }
     function onSubtitlesCallback( data, status ){
