@@ -49,6 +49,8 @@ var VideoController = function( ParentControllerObj )
     var startingMediaListIndex = 0;
     var continueCalled = false
     var userOptOut = false
+    var currentAudioVideoUrl = null; 
+    var currentSubtitleUrl = null;
 
     //For disabling the controls during Uplynk ad.
     this.inAd = false
@@ -256,8 +258,6 @@ var VideoController = function( ParentControllerObj )
         }
     }    
 
-    var currentAudioVideoUrl=null; 
-    var currentSubtitleUrl=null;
     //var subsLoaded = false
 
     //should be called before prepareToOpen
