@@ -122,7 +122,7 @@ var VideoController = function( ParentControllerObj )
     {
         currentAudioVideoUrl=null; 
         currentSubtitleUrl=null;
-                totalVideosPlayed= 0;
+        totalVideosPlayed= 0;
         currentVideoEndCreditMark= null;
         nextVideoOverlay = null
         nextVideoContinueOverlay = null

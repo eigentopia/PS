@@ -141,6 +141,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             return 1080;
         }
     };
+
     this.play = function()
     {
         Logger.shout("CrackleVideo.play() called");
@@ -314,38 +315,11 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         }
     };
 
-    var sub_marks_tc = []
-    function doSubs(pt, ct){
-        for( var i = 0; i < sub_marks_tc.length; i++ ){
-        // MILAN: ADDED >= FOR FIRST TIMECHECK
-
-            if( sub_marks_tc[i] >= pt && 
-                sub_marks_tc[i] < ct && 
-                ( ( ct - 2 ) < sub_marks_tc[i] ) ){
-                var time_pos = sub_marks_tc[ i ];
-
-
-                // Subtitles end mark
-                if( m_subtitle_end_marks[ time_pos] ){
-                    //Logger.log( 'sub end_mark: ' +time_pos  );
-                    m_subtitle_widget.displaySubtitleLine( null );
-                }
-
-                // Subtitles start mark
-                if( m_subtitle_start_marks[ time_pos ] ){
-                    //Logger.log( 'sub start_mark: ' + time_pos   );
-                    m_subtitle_widget.displaySubtitleLine( m_subtitle_start_marks[ time_pos ] );
-                }
-
-                break;
-            }
-        }
-    }
-
     this.onEnded = function(){
         Logger.log( 'CrackleVideo onEnded()' );
         m_video_ended = true;
         currentSubtitleUrl = null
+        m_disposed = true;
         //Comscore.sendEnd(m_current_time * 1000)
         // DO we have a postroll?
         if( m_playlists[ m_media_details_obj.getDurationInSeconds() ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
@@ -672,8 +646,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
                 //PlaybackReadyListener.notifySubtitlesReady();
                 m_subtitle_widget.refreshWidget( data.getSubtitleLines );
-                PlaybackReadyListener.subtitlesLoaded();
                 m_marks_finalized = true
+                PlaybackReadyListener.subtitlesLoaded();
                 //PlaybackReadyListener.notifyPlaybackReady();
 
             }catch( e ){
@@ -686,6 +660,34 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         } else {
             m_subtitle_url = null
             Logger.log("disposed of subtitles");
+        }
+    }
+
+    var sub_marks_tc = []
+    function doSubs(pt, ct){
+        for( var i = 0; i < sub_marks_tc.length; i++ ){
+        // MILAN: ADDED >= FOR FIRST TIMECHECK
+
+            if( sub_marks_tc[i] >= pt && 
+                sub_marks_tc[i] < ct && 
+                ( ( ct - 2 ) < sub_marks_tc[i] ) ){
+                var time_pos = sub_marks_tc[ i ];
+
+
+                // Subtitles end mark
+                if( m_subtitle_end_marks[ time_pos] ){
+                    //Logger.log( 'sub end_mark: ' +time_pos  );
+                    m_subtitle_widget.displaySubtitleLine( null );
+                }
+
+                // Subtitles start mark
+                if( m_subtitle_start_marks[ time_pos ] ){
+                    //Logger.log( 'sub start_mark: ' + time_pos   );
+                    m_subtitle_widget.displaySubtitleLine( m_subtitle_start_marks[ time_pos ] );
+                }
+
+                break;
+            }
         }
     }
 
