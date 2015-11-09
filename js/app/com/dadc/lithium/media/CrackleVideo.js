@@ -569,6 +569,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
 
                 m_subtitle_widget.refreshWidget( data.getParsedSubtitleObj );
+                m_marks_finalized = true;
                 PlaybackReadyListener.subtitlesLoaded();
             }
         } else {
