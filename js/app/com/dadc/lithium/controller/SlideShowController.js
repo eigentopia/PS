@@ -67,7 +67,7 @@ var SlideShowController = function( ParentControllerObj )
                     m_slide_show_image_widgets[ i ] = new SlideShowImageWidget( slide_show_obj.getItemList().getItem(i).getSlideImage_1510x516(), true );
                     m_slide_show_promotional_message_widgets[ i ] = new SlideShowPromotionalMessageWidget( slide_show_obj.getItemList().getItem(i) );
                     var id = slide_show_obj.m_data.slideList.slideID;
-                    var url = 'http://23adc.v.fwmrm.net/ad/g/1?nw=146140&prof=146140:crackle_'+ApplicationController.PLATFORM+'_test&csid=crackle_ps_app_home&pvrn=23412341234;slide=6122;slid=_fw_form_adsponsorlogo6059&ptgt=s&w=120&h=60'
+                    var url = 'http://23adc.v.fwmrm.net/ad/g/1?nw=146140&prof=146140:crackle_'+ApplicationController.DEVICE_TYPE+'_test&csid=crackle_ps_app_home&pvrn=23412341234;slide=6122;slid=_fw_form_adsponsorlogo6059&ptgt=s&w=120&h=60'
        
                     //slide_show_promo_images[i] = new SlideShowImageWidget( url, true );
 

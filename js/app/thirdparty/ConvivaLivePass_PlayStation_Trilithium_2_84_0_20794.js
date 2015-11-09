@@ -694,7 +694,7 @@ if(_s==STAT_INIT)ConvivaContentInfo.FRAMEWORK_NAME_OSMF="OSMF";
 
 
 
-if(_s==STAT_INIT)ConvivaContentInfo.FRAMEWORK_NAME_THE_PLATFORM="thePlatform";
+if(_s==STAT_INIT)ConvivaContentInfo.FRAMEWORK_NAME_THE_DEVICE_TYPE="thePlatform";
 
 
 
@@ -958,7 +958,7 @@ defStatMeth(_s,ConvivaContentInfo,"FRAMEWORK_NAME_BRIGHTCOVE",ConvivaContentInfo
 defStatMeth(_s,ConvivaContentInfo,"FRAMEWORK_NAME_KALTURA",ConvivaContentInfo.FRAMEWORK_NAME_KALTURA);
 defStatMeth(_s,ConvivaContentInfo,"FRAMEWORK_NAME_OOYALA",ConvivaContentInfo.FRAMEWORK_NAME_OOYALA);
 defStatMeth(_s,ConvivaContentInfo,"FRAMEWORK_NAME_OSMF",ConvivaContentInfo.FRAMEWORK_NAME_OSMF);
-defStatMeth(_s,ConvivaContentInfo,"FRAMEWORK_NAME_THE_PLATFORM",ConvivaContentInfo.FRAMEWORK_NAME_THE_PLATFORM);
+defStatMeth(_s,ConvivaContentInfo,"FRAMEWORK_NAME_THE_DEVICE_TYPE",ConvivaContentInfo.FRAMEWORK_NAME_THE_DEVICE_TYPE);
 defStatMeth(_s,ConvivaContentInfo,"NO_RESOURCE",ConvivaContentInfo.NO_RESOURCE);
 defStatMeth(_s,ConvivaContentInfo,"PLUGIN_NAME_KALTURA",ConvivaContentInfo.PLUGIN_NAME_KALTURA);
 if(_s!=STAT_INIT)_constr.apply(_s,arguments);

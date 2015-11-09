@@ -68,7 +68,7 @@ var SlideShowPromotionalMessageWidget = function( SlideShowItemObj ) {
             m_image_container.y = 2;
             // image is at 1180px
             var id = m_slideshow_item_obj.getSlideID();
-            var url = 'http://23adc.v.fwmrm.net/ad/g/1?nw=146140&prof=146140:crackle_'+ApplicationController.PLATFORM+'_test&csid=crackle_ps_app_home&pvrn=23412341234;slide=6122;slid=_fw_form_adsponsorlogo6059&ptgt=s&w=120&h=60'
+            var url = 'http://23adc.v.fwmrm.net/ad/g/1?nw=146140&prof=146140:crackle_'+ApplicationController.DEVICE_TYPE+'_test&csid=crackle_ps_app_home&pvrn=23412341234;slide=6122;slid=_fw_form_adsponsorlogo6059&ptgt=s&w=120&h=60'
        
             loadImage( url );
             

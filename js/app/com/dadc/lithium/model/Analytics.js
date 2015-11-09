@@ -125,7 +125,7 @@ var AnalyticsRequest = function( AnalyticsModelObj, callback ){
 var Analytics = function( key_values ){
     var m_key_values = key_values;
     var omniConfig = OmnitureConfig.getConfig()
-    var platform = ApplicationController.PLATFORM.toUpperCase()
+    var platform = ApplicationController.DEVICE_TYPE.toUpperCase()
     var m_general_kvs = {
         'scXmlVer': '1.0',
         'reportSuiteID': omniConfig,

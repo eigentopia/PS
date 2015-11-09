@@ -696,13 +696,14 @@ var VideoController = function( ParentControllerObj )
             m_current_ig_video.getIGLayer().trianglePressed();
         }
     }
-       var subtitleChooserController= null;
+    
+    var subtitleChooserController= null;
     function openSubtitleChooser(){
         subtitleChooserController = new SubtitleChooserController( This );
         // subtitleDisplay.x=600
         // subtitleDisplay.y=600
         isFocused = false
-        subtitleChooserController.prepareToOpen(m_media_details_obj, currentAudioVideoUrl, currentSubtitleUrl );
+        subtitleChooserController.prepareToOpen(currentAudioVideoUrl, currentSubtitleUrl );
         var subtitleDisplay = subtitleChooserController.getDisplayNode()
         m_root_node.addChild(subtitleDisplay);
         subtitleChooserController.setFocus();

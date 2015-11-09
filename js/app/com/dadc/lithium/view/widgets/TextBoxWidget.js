@@ -74,7 +74,7 @@ var TextBoxWidget = function( caption, default_active, size) {
     function getCellSelectionContainer( ){
         //Right now this is weird
         //TODO:understand the shader problem.
-        if(ApplicationController.PLATFORM !== 'ps4'){
+        if(ApplicationController.DEVICE_TYPE !== 'ps4'){
             var tmp_container = engine.createContainer();
             var button_slate = engine.createSlate();
             button_slate.shader =  ShaderCreatorInstance.createBoxShader( 1, 13, RGBLibraryInstance.getDARKGRAY(1), 
@@ -118,7 +118,7 @@ var TextBoxWidget = function( caption, default_active, size) {
     }
 
     function getCellInactiveContainer(){
-        if(ApplicationController.PLATFORM !== 'ps4'){
+        if(ApplicationController.DEVICE_TYPE !== 'ps4'){
             var tmp_container = engine.createContainer();
             var button_slate = engine.createSlate();
             button_slate.shader =  ShaderCreatorInstance.createBoxShader( 1, 10, RGBLibraryInstance.getDARKGRAY(1), 

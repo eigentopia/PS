@@ -214,7 +214,7 @@ var InteractiveAdAnalyticConfig = function( jsonData )
     this.getRandomNumber = function() { return Math.floor( Math.random() * 10000000000000 ); }
     this.getImpressionID = function() { return m_impressionId; }
     this.getViewerID = function() { return m_viewerId; }
-    this.getWebsite = function() { return ApplicationController.PLATFORM.toUpperCase(); }
+    this.getWebsite = function() { return ApplicationController.DEVICE_TYPE.toUpperCase(); }
     this.getDomain = function() { return "http://s.innovid.com/1x1.gif?"; }
 }
 

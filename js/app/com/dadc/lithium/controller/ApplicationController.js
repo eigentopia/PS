@@ -73,7 +73,7 @@ include( "js/app/com/dadc/lithium/model/ChannelFolderList.js" );
 
 include( "js/app/com/dadc/lithium/model/ComScoreModel.js" );
 include( "js/app/com/dadc/lithium/model/Conviva.js" );
-include( "js/app/thirdparty/ConvivaLivePass_PlayStation_Trilithium_2_84_0_20794.js" );
+//include( "js/app/thirdparty/ConvivaLivePass_PlayStation_Trilithium_2_84_0_20794.js" );
 
 include( "js/app/com/dadc/lithium/media/InnovidVideo.js" );
 include( "js/app/com/dadc/lithium/media/InnovidInternalVideo.js" );
@@ -89,11 +89,12 @@ var ApplicationController = function( screenObj ){
 
     Logger.log( 'inside appcontroller' );
 
+    var This = this;
     VideoManagerInstance = new VideoManager();
-    var localStorage = engine.storage.local;
     
-    ApplicationController.PLATFORM = localStorage.platform;
-
+    var localStorage = engine.storage.local;
+    //console.dir(localStorage)
+    ApplicationController.DEVICE_TYPE = localStorage.platform;
     var m_focused_controller        = null;
     var m_present_menu_controllers  = new Array();
     var m_present_controllers       = [];
@@ -186,14 +187,12 @@ var ApplicationController = function( screenObj ){
     var m_last_video_pos = 0;
     var m_start_video_pos = 0;
 
-    var This = this;
 
     // LOADING SCREEN CONTROLLER IS CREATED ON CONSTRUCT
     screenObj.addChild( m_loading_screen_controller.getDisplayNode() ); // ADD TO THE SCREEN IMMEDIATELY, AT WORST IT'LL JUST BE AN EMPTY CONTAINER AT THIS POINT. AND WHEN THE ASSETS BECOME READY, THEY WILL BE ADDED TO THE CONTAINER AND THE SCREEN WILL BE UPDATED AS A RESULT
     m_loading_screen_controller.open();
 
     engine.onExit = onExit;
-
 
 //    m_loading_screen_controller.getDisplayNode().x = 1200;
 //    m_loading_screen_controller.getDisplayNode().y = 550;

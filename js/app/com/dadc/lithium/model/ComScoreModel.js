@@ -111,7 +111,7 @@ var Comscore = function(){
     //
     function sendStartup(){
         console.log("COMSCORE : START")
-        //streamsense = new ns_.StreamSense({}, "http://b.scorecardresearch.com/b?c1=19&c2=" + comscoreId + "&c4=crackle&c10=console&ns_ap_device="+ApplicationController.PLATFORM+"&c12=" + hashedDeviceID)
+        //streamsense = new ns_.StreamSense({}, "http://b.scorecardresearch.com/b?c1=19&c2=" + comscoreId + "&c4=crackle&c10=console&ns_ap_device="+ApplicationController.DEVICE_TYPE+"&c12=" + hashedDeviceID)
 
         Logger.log( "ComScoreModel.js - SendComScore() - called - hashed Device ID: " + hashedDeviceID );
         sendComscore( baseUrl+'&ns_st_ev=Start' );

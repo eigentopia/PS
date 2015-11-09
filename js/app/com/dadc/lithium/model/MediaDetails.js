@@ -270,7 +270,7 @@ var MediaDetails = function( json_data ){
         for( var i=0;i<list.length;i++ ){
             var video_urls = list[ i ];
             //Logger.logObj( video_urls );
-            if ( video_urls && video_urls.Type && video_urls.Type === ApplicationController.PLATFORM.toUpperCase()+'_Trilithium.m3u8' ){
+            if ( video_urls && video_urls.Type && video_urls.Type === ApplicationController.DEVICE_TYPE.toUpperCase()+'_Trilithium.m3u8' ){
                 return video_urls;
             }
         }

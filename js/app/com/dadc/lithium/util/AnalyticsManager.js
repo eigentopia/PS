@@ -35,7 +35,7 @@ var AnalyticsManager = function(){
             Logger.log("* * * IPADDRESS * * * " + StorageManagerInstance.get( StorageManager.STORAGE_KEYS.IPADDRESS ) );
             
             var to_encrypt = ip_address + Math.round( Math.random() * ( 10000 - 10 ) + 10 );
-            var encrypted_text = Crypto.HMAC( Crypto.SHA1, to_encrypt, ApplicationController.PLATFORM.toUpperCase()+"_Trilithium" );
+            var encrypted_text = Crypto.HMAC( Crypto.SHA1, to_encrypt, ApplicationController.DEVICE_TYPE.toUpperCase()+"_Trilithium" );
             //StorageManagerInstance.set( 'omnuid', encrypted_text );
             StorageManagerInstance.set( StorageManager.STORAGE_KEYS.OMNITURE_UNIQUE_ID, encrypted_text );
             return encrypted_text;
@@ -63,12 +63,12 @@ var AnalyticsManager = function(){
             'evar1': content0,
             'evar2': content0 + content1,
             'evar3': content0 + content1 + content2,
-            'evar16': ApplicationController.PLATFORM.toUpperCase()+' Trilithium App:'+ page_name,
+            'evar16': ApplicationController.DEVICE_TYPE.toUpperCase()+' Trilithium App:'+ page_name,
             'pagename': page_name } );
     }
     this.fireHomePageViewEvent = function( page_name ){
         Logger.log( 'firePageViewEvent' );
-        sendRequest({ 'events': 'event13', 'evar16': ApplicationController.PLATFORM.toUpperCase()+' Trilithium: Home' } );
+        sendRequest({ 'events': 'event13', 'evar16': ApplicationController.DEVICE_TYPE.toUpperCase()+' Trilithium: Home' } );
     }
     this.fireInstallationEvent = function(){
         Logger.log( 'fireInstallationEvent1' );

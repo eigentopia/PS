@@ -558,7 +558,6 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
                             }
                             else if( (startMark >= ad.start_time ) && (endMark <= ad.end_time ) ){
-                                console.log("inside")
                                 adOffsetTime += ad.end_time - ad.start_time;
                             }
                         }
@@ -570,7 +569,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
 
                 m_subtitle_widget.refreshWidget( data.getParsedSubtitleObj );
-                PlaybackReadyListener.subsLoaded();
+                PlaybackReadyListener.subtitlesLoaded();
             }
         } else {
             
@@ -800,7 +799,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         for( var i in list ){
             var video_urls = list[ i ];
             //Logger.logObj( video_urls );
-            if ( video_urls && video_urls.Type && video_urls.Type === ApplicationController.PLATFORM.toUpperCase()+'_Trilithium.m3u8' ){
+            if ( video_urls && video_urls.Type && video_urls.Type === ApplicationController.DEVICE_TYPE.toUpperCase()+'_Trilithium.m3u8' ){
                 return video_urls.Path;
             }
         }
