@@ -16,9 +16,8 @@ var SubtitleWidget = function( SubtitlesObj ) {
 //        if( LoggerConfig.CONFIG.UPDATE_DEBUG ) Logger.log( 'SubtitleWidget update() ' + engine_timer );
     };
 
-    this.subtitlesObjectReady = function(){
-        return m_subtitles_obj ? true : false;// !== undefined;
-    }
+    this.subtitlesObjectReady = false/// ? true : false;// !== undefined;
+
 
     this.setSubtitlesFailed = function(){
         m_subtitles_obj = null; //<-- setting to NULL, *NOT* undefined
@@ -27,7 +26,8 @@ var SubtitleWidget = function( SubtitlesObj ) {
     this.refreshWidget = function( SubtitlesObj ){
         if( SubtitlesObj ){
             m_subtitles_obj = SubtitlesObj;
-            initWidget();
+            subtitlesObjectReady = true
+           // initWidget();
         }
     };
     this.getDisplayNode = function(){

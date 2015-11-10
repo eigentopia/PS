@@ -168,7 +168,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         }
         // IF SUBS ARE NEEDED && SUBS ARE *NOT* RESOLVED YET RESOLVE THEM. onResoved: ACTUALLY PLAY
         Logger.log("SUBS URL: " + m_subtitle_url)
-        if( m_subtitle_url && ! m_subtitle_widget.subtitlesObjectReady() )
+        if( m_subtitle_url && !m_subtitle_widget.subtitlesObjectReady)
         {
             Logger.log("subtitles are required and not ready yet. will begin the loading process");
             This.loadSubtitles(m_subtitle_url);
@@ -569,6 +569,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
 
                 m_subtitle_widget.refreshWidget( data.getParsedSubtitleObj );
+                m_subtitle_widget.subtitlesObjectReady = true
                 m_marks_finalized = true;
                 PlaybackReadyListener.subtitlesLoaded();
             }
