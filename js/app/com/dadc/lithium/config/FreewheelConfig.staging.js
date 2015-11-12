@@ -50,7 +50,9 @@ var FreewheelConfig = function()
     	csid += (m_geoLocation === MRMLocation.UnitedStates || m_geoLocation === MRMLocation.Null) ? "" : "_";
     	csid += freewheelMediaType;
 
-	   Logger.log("getFreeWheelURL() | CSID: " + csid);
+        Logger.log("getFreeWheelURL() | CSID: " + csid);
+        var userId = StorageManagerInstance.get('userId')
+        var vcid = (userId)?userId:hashedDeviceID
 
     	// build the url
         var output =        CONFIG.FREEWHEEL_URL +
@@ -74,7 +76,7 @@ var FreewheelConfig = function()
 
        Logger.log("FreewheelConfig.getFreeWheelURL() - url: " + output);
 
-       return output;;
+       return output;
     };
 };
 
