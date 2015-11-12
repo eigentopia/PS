@@ -107,7 +107,7 @@ var AnalyticsRequest = function( AnalyticsModelObj, callback ){
 
         Http.request(_url, "POST", null, headers, function(data, status){
             console.log("AM responded with "+ status)
-        })
+        }), false
 
     }
 

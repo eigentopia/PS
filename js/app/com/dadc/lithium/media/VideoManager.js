@@ -177,7 +177,7 @@ VideoManager = function(){
     function onOpened(foo){
         Logger.log("core onOpened called " + foo);
         m_video_time_on_play_before_timeupdate = engine.getTimer();
-
+        m_core_video_obj.currentTextTrackType = "CAPTION_TYPE_NONE";
         m_core_video_obj.play();
 
         if( m_current_jsvideo != null ){

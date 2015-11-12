@@ -524,6 +524,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
     function playAd( adIndex ){
         Logger.log("play ad called: index " + adIndex);
+        //No ads.
+       // return false;
         if( typeof m_playlists[ adIndex ] !== "undefined" ){
             if(adIndex == 0){
                 //ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
