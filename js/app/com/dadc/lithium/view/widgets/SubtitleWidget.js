@@ -69,7 +69,7 @@ var SubtitleWidget = function( SubtitlesObj ) {
         this.removeSubtitleFromScreen();
                 //if ( SubtitleLineObj ){
                     //Logger.log("DISPLAY Subtitle: "+ TextInfo.text);
-                    m_subtitle_container.addChild( getTextContainer( TextInfo.text ));
+                    getTextContainer( TextInfo.text );
 
     }
 

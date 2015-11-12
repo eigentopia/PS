@@ -100,7 +100,7 @@ VideoManager = function(){
         m_core_video_obj.onPlaying = onPlaying;
         m_core_video_obj.onStalled = onStalled;
         m_core_video_obj.onTimeUpdate = onTimeUpdate;
-        //m_core_video_obj.onTextDisplay = onTextDisplay;
+        m_core_video_obj.onTextDisplay = onTextDisplay;
        
         // if(m_core_video_obj.streamType == "m3u8"){
         //     if(ConvivaIntegration.sessionId == null){
@@ -189,8 +189,15 @@ VideoManager = function(){
         var CCSettings = m_core_video_obj.getCCSystemSettings();
         engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
         console.log("GOT ME CC")
-        m_core_video_obj.currentTextTrackType = "CAPTION_TYPE_NONE";
+        //m_core_video_obj.currentTextTrackType = "CAPTION_TYPE_NONE";
         Logger.log("core play called");
+        // console.dir(m_core_video_obj.availableTextTracks)
+        m_core_video_obj.currentTextTrackType = "CAPTION_TYPE_CEA_608_CC01";
+        var at = m_core_video_obj.availableTextTracks
+        if (at.length ){
+            m_core_video_obj.currentTextTrackType = at[0];
+            
+        }
         m_core_video_obj.play();
 
         if( m_current_jsvideo != null ){
@@ -216,8 +223,6 @@ VideoManager = function(){
     
     function onPlaying(){
         Logger.log("core onPlaying called");
-        // console.dir(m_core_video_obj.availableTextTracks)
-        // m_core_video_obj.currentTextTrackType = "CAPTION_TYPE_CEA_608_CC01";
 
         if( m_current_jsvideo != null )
             m_current_jsvideo.onPlaying();
@@ -226,11 +231,6 @@ VideoManager = function(){
     function onTextDisplay(TextInfo){
         Logger.log("core onText called ");
         console.dir(TextInfo)
-        var at = m_core_video_obj.availableTextTracks
-        if (at.length ){
-            m_core_video_obj.currentTextTrackType = at[0];
-            
-        }
         if( m_current_jsvideo != null )
             m_current_jsvideo.onTextDisplay(TextInfo);
 

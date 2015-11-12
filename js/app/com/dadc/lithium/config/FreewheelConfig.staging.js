@@ -53,21 +53,28 @@ var FreewheelConfig = function()
 	   Logger.log("getFreeWheelURL() | CSID: " + csid);
 
     	// build the url
-    	var output =	    CONFIG.FREEWHEEL_URL +
-    	    "?nw="   +	    CONFIG.FREEWHEEL_NETWORK_ID +
+        var output =        CONFIG.FREEWHEEL_URL +
+            "?nw="   +      CONFIG.FREEWHEEL_NETWORK_ID +
             "&prof=" +      CONFIG.FREEWHEEL_NETWORK_ID + "%3a" + CONFIG.FREEWHEEL_PROFILE +
-    	    "&asnw=" +	    CONFIG.FREEWHEEL_NETWORK_ID +
-    	    "&ssnw=" +	    CONFIG.FREEWHEEL_NETWORK_ID +
-    	    "&resp=" +	    "smrx" +
-    	    "&csid=" +	    csid +
-    	    "&caid=" +	    media_id +
-    	    "&vprn=" +	    rand(0, 9999999999) +
-    	    "&pvrn=" +	    rand(0, 9999999999) +
-    	    "&flag=" +     "+exvt+qtcb+slcb+sltp&metr=1;k1=" +engine.storage.local.age +"&k2="+ engine.storage.local.gender +";";
+            "&asnw=" +      CONFIG.FREEWHEEL_NETWORK_ID +
+            "&ssnw=" +      CONFIG.FREEWHEEL_NETWORK_ID +
+            "&resp=" +      "smrx" +
+            "&csid=" +      csid +
+            "&caid=" +      media_id +
+            "&vprn=" +      rand(0, 9999999999) +
+            "&pvrn=" +      rand(0, 9999999999) +
+            "&vcid=" +      Crypto.HMAC( Crypto.SHA1, vcid, platformName ) +
+            "&flag=" +      "+exvt+qtcb+slcb+sltp+aeti" +
+            "&metr=1"+
+                ";k1=" +engine.storage.local.age + 
+                    "&k2="+ engine.storage.local.gender + 
+                ";comscore_platform=" + platformName +
+                    "&comscore_device=" + platformName+
+                    "&_fw_did_android_id=" + Crypto.HMAC( Crypto.SHA1, hashedDeviceID, platformName )
 
-	   Logger.log("FreewheelConfig.getFreeWheelURL() - url: " + output);
+       Logger.log("FreewheelConfig.getFreeWheelURL() - url: " + output);
 
-	   return output;
+       return output;;
     };
 };
 
