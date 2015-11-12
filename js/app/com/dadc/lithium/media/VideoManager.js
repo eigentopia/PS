@@ -189,7 +189,7 @@ VideoManager = function(){
         var CCSettings = m_core_video_obj.getCCSystemSettings();
         engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
         console.log("GOT ME CC")
-
+        m_core_video_obj.currentTextTrackType = "CAPTION_TYPE_NONE";
         Logger.log("core play called");
         m_core_video_obj.play();
 
