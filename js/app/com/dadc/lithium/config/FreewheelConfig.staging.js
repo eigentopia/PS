@@ -2,6 +2,7 @@ include( "js/app/com/dadc/lithium/config/LoggerConfig.js" );
 var FreewheelConfig = function()
 {
     var m_geoLocation = MRMLocation.Null;
+    var hashedDeviceID =  engine.stats.device.id;
     /**
      * get the Geo Location
      * @returns {MRMLocation}
@@ -42,13 +43,14 @@ var FreewheelConfig = function()
 	   Logger.log("getFreeWheelURL() - mediaType: " + freewheelMediaType + ", location: " + m_geoLocation.countryName);
 	
     	// build the site section value
-
-    	var csid = "crackle_ps_app_" + m_geoLocation.value;
+        var platformName = "PlayStation3"
+        var csid = "crackle_ps_app_" + m_geoLocation.value;
         if(engine.stats.device.platform == "ps4"){
-            csid = "crackle_playstation4_app_" + m_geoLocation.value;
+            csid = "crackle_playstation4_" + m_geoLocation.value;
+            platformName = "PlayStation4"
         }
-    	csid += (m_geoLocation === MRMLocation.UnitedStates || m_geoLocation === MRMLocation.Null) ? "" : "_";
-    	csid += freewheelMediaType;
+        csid += (m_geoLocation === MRMLocation.UnitedStates || m_geoLocation === MRMLocation.Null) ? "" : "_";
+        csid += freewheelMediaType;
 
         Logger.log("getFreeWheelURL() | CSID: " + csid);
         var userId = StorageManagerInstance.get('userId')
