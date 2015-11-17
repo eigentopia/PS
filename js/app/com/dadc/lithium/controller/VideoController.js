@@ -875,6 +875,8 @@ var VideoController = function( ParentControllerObj )
         m_last_time = 0;
         m_playback_ready = false;
         currentVideo = null;
+        currentAudioVideoUrl=null; 
+        currentSubtitleUrl=null;
         var media_details_request = new MediaDetailsRequest( currentMediaList[currentMediaListIndex].ID, StorageManagerInstance.get( 'geocode' ), function( MediaDetailsObj, status ){
             if ( status != 200 ){
                 // inform our parent controller our request failed
@@ -883,7 +885,7 @@ var VideoController = function( ParentControllerObj )
                 if(nextVideoOverlay){
                     closeNextVideoOverlay()
                 }
-                This.prepareToOpen(MediaDetailsObj);
+                This.prepareToOpen(MediaDetailsObj, null, null);
             }
         });
 
