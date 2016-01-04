@@ -692,6 +692,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
             //ConvivaIntegration.detachStreamer();
 
+            AnalyticsManagerInstance.fireAdStartEvent(m_media_details_obj);
+
             PlaybackReadyListener.notifyAdPlaybackStarting();
             //m_playlists[ adIndex ].play(adIndex);
             
