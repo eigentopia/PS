@@ -28,15 +28,15 @@ var Uplynk = (function(){
 
     function preProcessAds() {
         var ads = self.adsData.ad_info.ads;
-        
-    	var adsInSlot = Array();
-    	var slotIndex = 1;
-    	var slot = null;
+        var adSlots = self.adsData.ad_info.slots
+    	//var adsInSlot = Array();
+    	//var slotIndex = 1;
+    	//var slot = null;
         self.preRollDuration = 0;
 
     	for (var i = 0; i < ads.length; i++) {
     	    var ad = ads[i];
-            if(ad.slot = 'pre' && ad.start_time == 0){
+            if(ad.slot == 'pre' && ad.start_time == 0){
                 console.log('preSLot duration '+  ad.duration)
                 self.hasPreroll = true;
                 //weird condition- slot can be labeled as pre but have a later start time?
@@ -44,24 +44,17 @@ var Uplynk = (function(){
                     self.preRollDuration += ad.duration
                 }
             }
-    	    //console.log(JSON.stringify(ad))
-    		if (slot != ad.slot) {
-    			for (var j = 0; j < adsInSlot.length; j++) {
-    				adsInSlot[j]["slotCount"] = adsInSlot.length;
-    			}
 
-    			slot = ad.slot;
-    			slotIndex = 1;
-    			adsInSlot = Array();
-    		}
+            for (var z=0; z<adSlots.length; z++){
+                if(adSlots[z].slotAds == undefined){
+                    adSlots[z].slotAds = [];
+                }
+                if(adSlots[z].id == ad.slot){
+                    adSlots[z].slotAds.push(ad)
+                }
+            }
+        }
 
-    		ad["slotIndex"] = slotIndex++;
-    		adsInSlot.push(ad);
-    	}
-
-    	for (var j = 0; j < adsInSlot.length; j++) {
-    		adsInSlot[j]["slotCount"] = adsInSlot.length;
-    	}
 
     	self.receivedAds = true;
     }

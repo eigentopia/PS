@@ -298,7 +298,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     this.onTimeUpdate = function( currentTime, currentPTS ){
 
         // Logger.log("currentTime: " + currentTime );
-        // Logger.log("currentPTS: " + currentPTS );
+         //Logger.log("currentPTS: " + currentPTS );
         // Logger.log("m_current_time: " +m_current_time);
         // Logger.log( "-" );
         m_previous_time = m_current_time;
@@ -315,21 +315,41 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         if(This.inAd == true){
             //console.log("IN AD")
             m_is_playing = false
-            //for uplynk ads
-            if(playingAd != null && (playingAd.end_time && m_current_time >= playingAd.end_time)){
-               // console.log("After AD")
-                PlaybackReadyListener.inAd = false
-                This.inAd = false
-                playingAd = null
+            //is ad playing?
+            if(playingAd != null){
+                //Are we through with ads? 
+                if(playingAd.end_time && m_current_time >= playingAd.end_time){
+                   // console.log("After AD")
+                    PlaybackReadyListener.inAd = false
+                    This.inAd = false
+                    playingAd = null
 
-                if( m_subtitle_container ) addSubtitleContainer();
-                
-                if(adManager.hasPreroll && !This.preRollPlayed){
-                        // console.log("PreRoll not played")
-                    preRollEnded()
-                }
-                return
+                    if( m_subtitle_container ) addSubtitleContainer();
+                    
+                    if(adManager.hasPreroll && !This.preRollPlayed){
+                            // console.log("PreRoll not played")
+                        preRollEnded()
+                    }
+                    return
                 //VideoProgressManagerInstance.setProgress(m_media_details_obj.getID(), m_current_time)
+                }
+
+                if(currentAdSlots.length > 0){
+                    for(var t = 0; t<currentAdSlots.length; t++){
+                        var ca = currentAdSlots[t]
+/*                        console.log(" CT " + m_current_time)
+                        console.log("Ad start: "+ca.start_time)
+                        console.log("Ad end: "+ca.end_time)*/
+
+                        if(ca.start_time <= m_current_time && ca.end_time >= m_current_time){
+                            //call analytics
+                            AnalyticsManagerInstance.fireAdStartEvent(m_media_details_obj);
+                            currentAdSlots.splice(t, 1);
+                            
+                            //console.log("FIRE A")
+                        }
+                    }
+                }
             }
         }
         else{
@@ -674,37 +694,26 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
 
     var timeBeforeAd = 0;
+    var currentAdSlots = [];
 
     function playAd( adIndex ){
         //Uplynk- pause for innovid, hide timeline for everything else.
         Logger.log("play ad called: index " + adIndex);
         if( typeof m_playlists[ adIndex ] !== "undefined" ){
-            if(adIndex == 0){
-                //This.preRollPlayed = true;
-                //ConvivaIntegration.createSession(null, m_video_url, m_media_details_obj)
-                //ConvivaIntegration.adStart();
-
-            }
+            if( m_subtitle_container ) removeSubtitleContainer();
 
             This.inAd = true;
             playingAd = m_playlists[adIndex]
-            if( m_subtitle_container ) removeSubtitleContainer();
-
-            //ConvivaIntegration.detachStreamer();
-
-            AnalyticsManagerInstance.fireAdStartEvent(m_media_details_obj);
+            if(playingAd.slotAds && playingAd.slotAds.length >0){
+                currentAdSlots = playingAd.slotAds.slice(0);
+            }
 
             PlaybackReadyListener.notifyAdPlaybackStarting();
-            //m_playlists[ adIndex ].play(adIndex);
-            
-            
-            //return true;
         }
         else{
             Logger.log("CrackleVideo.playAd(" + adIndex + ") - index in m_playlists is undefined");
             This.inAd = false;
             playingAd = null
-            //return false;
         }
     }
 
@@ -747,7 +756,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         This.addPlaybackMark( duration * .95 );
     }
 
-    function processAdSlots(){
+/*    function processAdSlots(){
 
         //Uplynk - if an innovid go get the ad and put it in the slot.
         for( var i = 0; i < m_ad_manager.getTotalTemporaAdSlots(); i++ ){
@@ -760,7 +769,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 This.addPlaybackMark( time_position );
             }
         }
-    }
+    }*/
 
     function finalizePlaybackMarks(){
         m_playback_marks_tc.sort( function( a, b ){return a - b;} );

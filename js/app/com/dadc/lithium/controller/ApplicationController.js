@@ -66,14 +66,11 @@ include( "js/app/com/dadc/lithium/view/widgets/AuthScreen.js" );
 //include( "js/app/com/dadc/lithium/view/widgets/ScrollbarWidget.js" );
 include( "js/app/com/dadc/lithium/view/widgets/TabbedWidget.js" );
 
-include( "js/app/com/dadc/lithium/model/FreeWheel_SmartXML.js" );
 
 include( "js/app/com/dadc/lithium/model/EpisodeMenuItem.js" );
 include( "js/app/com/dadc/lithium/model/ChannelFolderList.js" );
 
 include( "js/app/com/dadc/lithium/model/ComScoreModel.js" );
-include( "js/app/com/dadc/lithium/model/Conviva.js" );
-//include( "js/app/thirdparty/ConvivaLivePass_PlayStation_Trilithium_2_84_0_20794.js" );
 
 include( "js/app/com/dadc/lithium/media/InnovidVideo.js" );
 include( "js/app/com/dadc/lithium/media/InnovidInternalVideo.js" );
@@ -83,6 +80,9 @@ include( "js/app/com/dadc/lithium/view/widgets/InteractiveAdWidget.js" );
 
 include("js/app/crackleApi.js")
 
+//include( "js/app/com/dadc/lithium/model/FreeWheel_SmartXML.js" );
+//include( "js/app/com/dadc/lithium/model/Conviva.js" );
+//include( "js/app/thirdparty/ConvivaLivePass_PlayStation_Trilithium_2_84_0_20794.js" );
 
 // THIS CONTROLLER WILL HANDLE THE FLOW OF THE APPLICATION
 var ApplicationController = function( screenObj ){
