@@ -69,6 +69,7 @@ var AnalyticsRequest = function( AnalyticsModelObj, callback ){
 
         // TL 1.3.3 UPDATE
         httpRequestObj = ModelConfig.httpClientObj.createRequest( "POST", url );
+        console.log("Omniture :"+m_analytics_obj.getXml())
         httpRequestObj.onComplete = This.onRequestComplete;
         httpRequestObj.onResponse = This.onResponse;
         httpRequestObj.sendBody( m_analytics_obj.getXml(), 'Application/xml'  );

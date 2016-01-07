@@ -240,46 +240,67 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
         m_is_playing = true;
 
+        var newTime = time_pos;
+
         m_subtitle_widget.displaySubtitleLine( null );
         //console.log("JS SETCURRENT "+ time_pos)
 
         //You've already seen the preroll?
         if( time_pos < adManager.preRollDuration){
             if(adManager.hasPreroll && This.preRollPlayed){
-                time_pos +=  adManager.preRollDuration
+                newTime +=  adManager.preRollDuration
             }
         }
 
-        if( time_pos >= m_media_details_obj.getDurationInSeconds() ){
+        if( newTime >= m_media_details_obj.getDurationInSeconds() ){
             PlaybackReadyListener.notifyPlaybackEnded();
             return;
         }
 
-        //Set the time to the begining of an ad break if you seek in to one?
+        //Deal with ads
         var adArray = adManager.adsData.ad_info.slots
         for(var i=0;i <adArray.length; i++){
             var ad = adArray[i]
-            if((ad.start_time && time_pos >= ad.start_time) && (ad.end_time && time_pos <= ad.end_time) ){
+            //Set the time to the begining of an ad break if you seek in to one?
+            if((ad.start_time && newTime >= ad.start_time) && (ad.end_time && newTime <= ad.end_time) ){
                 if( ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && 
                     m_current_time < currentVideoEndCreditMark){
                     //m_is_playing = false
-                    timeBeforeAd = m_current_time
-                    time_pos = ad.start_time
+                    timeBeforeAd = time_pos
+                    newTime = ad.start_time
                 }
                 else{
                     //m_is_playing = true
-                    time_pos = ad.end_time +0.01
+                    newTime = ad.end_time +0.01
                 }
                 
                 break
             }
 
+            //Deal with a seek over an ad break
+            else if( ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() )){
+                console.log("SCURBBED PAST AD BUT WE HAVE TO PLAY ONE")
+                var lastAdBeforeTime;
+                timeBeforeAd = time_pos;
+                var adIndex;
+                for(var i=0;i <adArray.length; i++){
+                    var ad = adArray[i];
+                    
+                    if(ad.end_time > m_current_time && ad.end_time < newTime){
+                        console.log("SCURBBED PAST AD FOUND A QUALIFIER "+ i)
+                        lastAdBeforeTime = ad
+                        newTime = ad.start_time
+                        adIndex = i
+                    }
+                }
+                playAd(m_playback_marks_tc[adIndex])
+            }
         }
 
-        m_current_time = time_pos;
+        m_current_time = newTime;
         VideoManagerInstance.setCurrentTime( m_current_time );
 
-        Logger.log( 'CrackleVideo.setCurrentTime ' +time_pos);
+        Logger.log( 'CrackleVideo.setCurrentTime ' +newTime);
         Logger.log( 'CrackleVideo.DURATION' +m_media_details_obj.getDurationInSeconds());
 
     };
@@ -330,6 +351,12 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                             // console.log("PreRoll not played")
                         preRollEnded()
                     }
+
+                    else if (timeBeforeAd>0){
+                        m_current_time = timeBeforeAd
+                        This.setCurrentTime(timeBeforeAd)
+                        timeBeforeAd=0
+                    }
                     return
                 //VideoProgressManagerInstance.setProgress(m_media_details_obj.getID(), m_current_time)
                 }
@@ -361,7 +388,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         for( var i = 0; i < m_playback_marks_tc.length; i++ ){
             // MILAN: ADDED >= FOR FIRST TIMECHECK
 
-            if( m_playback_marks_tc[i] >= m_previous_time && m_playback_marks_tc[i] < m_current_time && ( ( m_current_time - 2 ) < m_playback_marks_tc[i] ) ){
+            if( m_playback_marks_tc[i] >= m_previous_time && m_playback_marks_tc[i] <= m_current_time && ( ( m_current_time - 2 ) < m_playback_marks_tc[i] ) ){
                 var mark_number = m_playback_marks_map[ m_playback_marks_tc[ i ] ];
                 var time_pos = m_playback_marks_tc[ i ];
 
