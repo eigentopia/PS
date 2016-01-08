@@ -25,8 +25,8 @@ var ADForgiveness = function()
     {
 
     	//DAN: now that crackleVideo calls this, don't actually start counting unless an advertisement has played
-    	if( m_adHasPlayed === false ) return;
-    	if( m_isCounting === true ) return;
+    	// if( m_adHasPlayed === false ) return;
+    	// if( m_isCounting === true ) return;
 
         m_timer = engine.getTimer();
 	    m_isCounting = true;

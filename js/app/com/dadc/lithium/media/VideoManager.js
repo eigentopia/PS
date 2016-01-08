@@ -38,16 +38,7 @@ VideoManager = function(){
         
         // WILL BE USED FOR STALL DETECTION
     }
-    
-    /** will create and return a video. if video is already created, will return previous instance */
-    // this.getVideo = function( video_url ){
-    //     if( m_videos[ video_url ] == null ){
-    //         Logger.log("video not created yet. creating w/ url: " + video_url );
-    //         m_videos[ video_url ] = new JSVideo( video_url, this );
-    //     }
-    //     return m_videos[ video_url ];
-    // }
-    
+
     
     this.play = function( JSVideoObj ){
         Logger.log("play called in VideoManager");
@@ -184,11 +175,11 @@ VideoManager = function(){
     }
 
     function onOpened(foo){
-        Logger.log("core onOpened called " + foo);
+        //Logger.log("core onOpened called " + foo);
         m_video_time_on_play_before_timeupdate = engine.getTimer();
         var CCSettings = m_core_video_obj.getCCSystemSettings();
         engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
-        console.log("GOT ME CC")
+        //console.log("GOT ME CC")
         m_core_video_obj.currentTextTrackType = "CAPTION_TYPE_NONE";
         Logger.log("core play called");
         // console.dir(m_core_video_obj.availableTextTracks)
@@ -203,7 +194,7 @@ VideoManager = function(){
         if( m_current_jsvideo != null ){
             //var CCSettings = m_core_video_obj.getCCSystemSettings();
             //engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
-            console.log("GOT ME CC in JSVID")
+            //console.log("GOT ME CC in JSVID")
             m_current_jsvideo.onOpened(); 
         }
     }

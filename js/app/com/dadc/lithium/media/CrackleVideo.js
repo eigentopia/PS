@@ -158,10 +158,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     this.play = function()
     {
         Logger.shout("CrackleVideo.play() called");
+        
         // For Event52
         AnalyticsManagerInstance.resetTime();
-        //Comscore.clearPlaylist()
-        //Comscore.startPlaylist(m_media_details_obj)
 
         if( ! m_marks_finalized ){
             finalizePlaybackMarks();
@@ -173,15 +172,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             Logger.log("subtitles are required and not ready yet. will begin the loading process");
             This.loadSubtitles(m_subtitle_url);
         }
-            // ELSE PLAYBACK CAN HAPPEN NOW.
+        // ELSE PLAYBACK CAN HAPPEN NOW.
         else
         {
             Logger.log("subtitles are not required OR are already resolved");
-            //Make sure we have an end mark for the next video overlay
-            // currentVideoEndCreditMark = m_media_details_obj.data.EndCreditStartMarkInMilliSeconds/1000;
-            // if(m_media_details_obj.data.EndCreditStartMarkInMilliSeconds == null){
-            //     currentVideoEndCreditMark = m_media_details_obj.data.DurationInSeconds - 10
-            // }
 
             playCrackleVideo()
         }
@@ -208,6 +202,17 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         VideoManagerInstance.play( This )
 
     };
+
+    function preRollEnded(){
+        console.log("PreRoll ended")
+        This.preRollPlayed = true
+        if(timeBeforeAd>0){
+            m_current_time = timeBeforeAd
+            ADForgivenessInstance.startTimer();
+            This.setCurrentTime(timeBeforeAd)
+            timeBeforeAd=0
+        }
+    }
 
     this.pause = function( state ){
         VideoManagerInstance.pause( state );
@@ -256,16 +261,31 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             PlaybackReadyListener.notifyPlaybackEnded();
             return;
         }
-
         //Deal with ads
         var adArray = adManager.adsData.ad_info.slots
+
+        if(ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() )){
+            console.log("SCURBBED PAST AD BUT WE HAVE TO PLAY ONE")
+
+            for(var i=0;i <adArray.length; i++){
+                var ad = adArray[i]
+                if(ad.end_time > m_current_time && ad.end_time < newTime){
+                    console.log("SCURBBED PAST AD FOUND A QUALIFIER "+ i)
+                    timeBeforeAd = time_pos;
+                    newTime = ad.start_time
+                }
+            }
+            m_current_time = newTime;
+            VideoManagerInstance.setCurrentTime( m_current_time );
+            return
+        }
+
+        //Set the time to the begining of an ad break if you seek in to one?
         for(var i=0;i <adArray.length; i++){
             var ad = adArray[i]
-            //Set the time to the begining of an ad break if you seek in to one?
             if((ad.start_time && newTime >= ad.start_time) && (ad.end_time && newTime <= ad.end_time) ){
                 if( ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && 
                     m_current_time < currentVideoEndCreditMark){
-                    //m_is_playing = false
                     timeBeforeAd = time_pos
                     newTime = ad.start_time
                 }
@@ -273,53 +293,23 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                     //m_is_playing = true
                     newTime = ad.end_time +0.01
                 }
-                
+ 
                 break
-            }
-
-            //Deal with a seek over an ad break
-            else if( ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() )){
-                console.log("SCURBBED PAST AD BUT WE HAVE TO PLAY ONE")
-                var lastAdBeforeTime;
-                timeBeforeAd = time_pos;
-                var adIndex;
-                for(var i=0;i <adArray.length; i++){
-                    var ad = adArray[i];
-                    
-                    if(ad.end_time > m_current_time && ad.end_time < newTime){
-                        console.log("SCURBBED PAST AD FOUND A QUALIFIER "+ i)
-                        lastAdBeforeTime = ad
-                        newTime = ad.start_time
-                        adIndex = i
-                    }
-                }
-                playAd(m_playback_marks_tc[adIndex])
             }
         }
 
-        m_current_time = newTime;
-        VideoManagerInstance.setCurrentTime( m_current_time );
-
+            m_current_time = newTime;
+            VideoManagerInstance.setCurrentTime( m_current_time );
         Logger.log( 'CrackleVideo.setCurrentTime ' +newTime);
         Logger.log( 'CrackleVideo.DURATION' +m_media_details_obj.getDurationInSeconds());
 
     };
 
-    function preRollEnded(){
-        console.log("PreRoll ended")
-        This.preRollPlayed = true
-        if(timeBeforeAd>0){
-            m_current_time = timeBeforeAd
-            This.setCurrentTime(timeBeforeAd)
-            timeBeforeAd=0
-        }
-    }
 
     // DETECT MARK REACHED EVENTS AND DISPATCH
     this.onTimeUpdate = function( currentTime, currentPTS ){
-
-        // Logger.log("currentTime: " + currentTime );
-         //Logger.log("currentPTS: " + currentPTS );
+        //Logger.log("currentTime: " + currentTime );
+        //Logger.log("currentPTS: " + currentPTS );
         // Logger.log("m_current_time: " +m_current_time);
         // Logger.log( "-" );
         m_previous_time = m_current_time;
@@ -339,26 +329,28 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             //is ad playing?
             if(playingAd != null){
                 //Are we through with ads? 
-                if(playingAd.end_time && m_current_time >= playingAd.end_time){
+                //console.log("TIMES "+ m_current_time+ " "+ playingAd.end_time)
+                if(playingAd.end_time && m_current_time >= playingAd.end_time -2){
                    // console.log("After AD")
+                    if( m_subtitle_container ) addSubtitleContainer();
                     PlaybackReadyListener.inAd = false
                     This.inAd = false
                     playingAd = null
 
-                    if( m_subtitle_container ) addSubtitleContainer();
                     
                     if(adManager.hasPreroll && !This.preRollPlayed){
                             // console.log("PreRoll not played")
                         preRollEnded()
                     }
-
-                    else if (timeBeforeAd>0){
-                        m_current_time = timeBeforeAd
+//                    VideoProgressManagerInstance.setProgress(m_media_details_obj.getID(), m_current_time)
+                    if (timeBeforeAd>0){
+                        //m_current_time = timeBeforeAd
+                        ADForgivenessInstance.startTimer();
                         This.setCurrentTime(timeBeforeAd)
-                        timeBeforeAd=0
+                        //return;
+                        //m_is_playing = true;
                     }
                     return
-                //VideoProgressManagerInstance.setProgress(m_media_details_obj.getID(), m_current_time)
                 }
 
                 if(currentAdSlots.length > 0){
@@ -388,7 +380,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         for( var i = 0; i < m_playback_marks_tc.length; i++ ){
             // MILAN: ADDED >= FOR FIRST TIMECHECK
 
-            if( m_playback_marks_tc[i] >= m_previous_time && m_playback_marks_tc[i] <= m_current_time && ( ( m_current_time - 2 ) < m_playback_marks_tc[i] ) ){
+            if( m_playback_marks_tc[i] >= m_previous_time && m_playback_marks_tc[i] < m_current_time && ( ( m_current_time - 2 ) < m_playback_marks_tc[i] ) ){
                 var mark_number = m_playback_marks_map[ m_playback_marks_tc[ i ] ];
                 var time_pos = m_playback_marks_tc[ i ];
 
@@ -396,7 +388,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 Logger.log("------------- mark number is: " +  mark_number );
 
                 // Playlist mark?
-                if ( m_playlists[ time_pos ] && ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) ){
+                if ( m_playlists[ time_pos ] && (ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness()) || timeBeforeAd>0) ){
 
                     //figure out which type of ad
                     //if( m_current_timem_playlists[ time_pos ].start_time + m_playlists[ time_pos ].durtation && This.inAd == false){

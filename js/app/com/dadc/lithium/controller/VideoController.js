@@ -361,7 +361,7 @@ var VideoController = function( ParentControllerObj )
                 currentMediaList = MediaDetailsObj.videoContextList
                 for (var i=0; i<MediaDetailsObj.videoContextList.length;i++){
                     if (MediaDetailsObj.data.ID == MediaDetailsObj.videoContextList[i].ID){
-                        console.log("FOUND "+ MediaDetailsObj.data.ID+ " AT "+ i)
+                        //console.log("FOUND "+ MediaDetailsObj.data.ID+ " AT "+ i)
                         startingMediaListIndex = i
                         currentMediaListIndex = i;
                     }
@@ -372,7 +372,7 @@ var VideoController = function( ParentControllerObj )
 
             totalVideosPlayed ++
             continueCalled = false;
-            console.log("prepareToOpen is setting CrackleVideo to "+ m_last_time)
+            //console.log("prepareToOpen is setting CrackleVideo to "+ m_last_time)
             m_crackle_video = new CrackleVideo( MediaDetailsObj, currentAudioVideoUrl, currentSubtitleUrl, This, This );
             m_crackle_video.setSubtitleContainer(m_subtitle_container)
 
@@ -437,7 +437,7 @@ var VideoController = function( ParentControllerObj )
 
             
             if(m_last_time>0){
-                console.log("Prepare to open time:"+m_last_time)
+                //console.log("Prepare to open time:"+m_last_time)
                 m_crackle_video.setCurrentTime(m_last_time)
                 if(m_crackle_video.isPaused()){
                     m_crackle_video.togglePause();
@@ -481,7 +481,7 @@ var VideoController = function( ParentControllerObj )
 //        m_crackle_video.forward();
         Logger.log('VideoController navRight' );
 
-        Logger.log( 'VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ' + ( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ) );
+        //Logger.log( 'VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ' + ( VideoManagerInstance.getCurrentJSVideo() == m_crackle_video ) );
         if(nextVideoContinueOverlay){
             nextVideoContinueOverlay.navRight();
             return;
@@ -948,6 +948,7 @@ var VideoController = function( ParentControllerObj )
     };
 
     this.notifyAdEnd = function(){
+        ADForgivenessInstance.startTimer();
         This.inAd = false;
     }
     this.notifyAdPlaybackStalling = function(){
