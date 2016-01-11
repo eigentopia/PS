@@ -90,7 +90,7 @@ var Uplynk = (function(){
                     ",_fw_did_android_id,"  + Crypto.HMAC( Crypto.SHA1, deviceID, platformName )
 
                     //DEBUG
-                    +"&ad._debug=crackle_test"
+                    //+"&ad._debug=crackle_test"
 
         //HLS Version 4 has best support
     	return "http://" + newUrl +"&hlsver=4" + adKV
