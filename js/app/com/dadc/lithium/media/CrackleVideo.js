@@ -339,7 +339,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
                     
                     if(adManager.hasPreroll && !This.preRollPlayed){
-                            // console.log("PreRoll not played")
+                        // console.log("PreRoll not played")
                         preRollEnded()
                     }
 //                    VideoProgressManagerInstance.setProgress(m_media_details_obj.getID(), m_current_time)
@@ -356,9 +356,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 if(currentAdSlots.length > 0){
                     for(var t = 0; t<currentAdSlots.length; t++){
                         var ca = currentAdSlots[t]
-/*                        console.log(" CT " + m_current_time)
-                        console.log("Ad start: "+ca.start_time)
-                        console.log("Ad end: "+ca.end_time)*/
+                        //console.log(" CT " + m_current_time)
+                        //console.log("Ad start: "+ca.start_time)
+                        //console.log("Ad end: "+ca.end_time)
 
                         if(ca.start_time <= m_current_time && ca.end_time >= m_current_time){
                             //call analytics
