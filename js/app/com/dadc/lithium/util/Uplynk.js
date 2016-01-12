@@ -75,6 +75,9 @@ var Uplynk = (function(){
         var platformName = engine.stats.device.platform
         var userId = StorageManagerInstance.get('userId')
         var vcid = (userId)?userId:Crypto.HMAC( Crypto.SHA1, deviceID, platformName )
+        var age = (engine.storage.local.age)?engine.storage.local.age:33;
+        var gender = (engine.storage.local.gender)?engine.storage.local.gender:0
+
 
         var platformName = "PlayStation3"
         
@@ -83,8 +86,8 @@ var Uplynk = (function(){
         }
 
         var adKV =  "&ad.vcid="             + vcid +
-                    "&ad.kv=k1,"            + engine.storage.local.age + 
-                    ",k2,"                  + engine.storage.local.gender + 
+                    "&ad.kv=k1,"            + age + 
+                    ",k2,"                  + gender + 
                     ",comscore_platform,"   + platformName +
                     ",comscore_device,"     + platformName +
                     ",_fw_did_android_id,"  + Crypto.HMAC( Crypto.SHA1, deviceID, platformName )
