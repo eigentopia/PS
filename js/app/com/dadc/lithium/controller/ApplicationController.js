@@ -2472,6 +2472,8 @@ var ApplicationController = function( screenObj ){
     }
 
     ApplicationController.setUserInfo= function(user, cb){
+        console.log("User Data: ")
+        console.dir(user)
         if(user == null){
             crackleUser.id = null
             crackleUser.name = null;
@@ -2485,7 +2487,7 @@ var ApplicationController = function( screenObj ){
         }
 
         localStorage.age = (user.userAge)?user.userAge:user.age;
-        localStorage.gender = (user.userGender.toString() == '0')?user.userGender.toString():user.gender.toString();
+        localStorage.gender = (user.userGender.toString() == '0')?user.userGender.toString():'0';
         localStorage.userId = (user.CrackleUserId)?user.CrackleUserId:user.id;
         localStorage.name = (user.CrackleUserName)?user.CrackleUserName:user.name;
         ApplicationController.setCrackleUser(user, cb)
