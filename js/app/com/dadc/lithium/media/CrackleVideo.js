@@ -308,7 +308,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
     // DETECT MARK REACHED EVENTS AND DISPATCH
     this.onTimeUpdate = function( currentTime, currentPTS ){
-        //Logger.log("currentTime: " + currentTime );
+        Logger.log("currentTime: " + currentTime );
         //Logger.log("currentPTS: " + currentPTS );
         // Logger.log("m_current_time: " +m_current_time);
         // Logger.log( "-" );
@@ -356,16 +356,11 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 if(currentAdSlots.length > 0){
                     for(var t = 0; t<currentAdSlots.length; t++){
                         var ca = currentAdSlots[t]
-                        //console.log(" CT " + m_current_time)
-                        //console.log("Ad start: "+ca.start_time)
-                        //console.log("Ad end: "+ca.end_time)
-
+                        
                         if(ca.start_time <= m_current_time && ca.end_time >= m_current_time){
                             //call analytics
                             AnalyticsManagerInstance.fireAdStartEvent(m_media_details_obj);
                             currentAdSlots.splice(t, 1);
-                            
-                            //console.log("FIRE A")
                         }
                     }
                 }
@@ -388,19 +383,18 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 Logger.log("------------- mark number is: " +  mark_number );
 
                 // Playlist mark?
-                if ( m_playlists[ time_pos ] && (ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness()) || timeBeforeAd>0) ){
+                if ( m_playlists[ time_pos ]){
+                    if(time_pos == 0 && !This.preRollPlayed ){
+                        playAd(time_pos)
+                    }
+                    else if ( (ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness()) || timeBeforeAd>0) ){
 
-                    //figure out which type of ad
-                    //if( m_current_timem_playlists[ time_pos ].start_time + m_playlists[ time_pos ].durtation && This.inAd == false){
-                        //This.inAd = true
-                    //}
-                    Logger.log( 'playlist AD mark' );
-                   //if(time_pos < 0.1  && )
-                    //VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_current_time)
-                    //if(time_pos >= 0 && time_pos < 0.1){
-                    //VideoProgressManagerInstance.setProgress( m_media_details_obj.getID(), m_current_time + m_playlists[ time_pos ].end_time )
-                    playAd( time_pos );
-                    return
+                        Logger.log( 'playlist AD mark' );
+                        
+                        playAd( time_pos );
+                        return
+
+                    } 
                 }
 
                 // Omniture mark?
