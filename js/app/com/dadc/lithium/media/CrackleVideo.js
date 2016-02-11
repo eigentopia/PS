@@ -68,14 +68,15 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         Logger.log( 'Uplynk parse status = ' + status );
         if(data !== null && status == 200){
             
-            if(data.ad_info.slots){
-                var slots = data.ad_info.slots
+            if(data.ad_info.offsets){
+                var slots = data.ad_info.offsets
+                var ads = data.ad_info.slots
                 //Uplynk - if an innovid go get the ad and put it in the slot.
                 for( var i = 0; i < slots.length; i++ ){
-                    var slot = slots[i]
-                    var time_position = parseInt(slot.start_time );
+                    var offset = slots[i]
+                    var time_position = parseInt(offset );
 
-                    m_playlists[ time_position ] = slot
+                    m_playlists[ time_position ] = ads[i]
                     //Logger.log( 'creating ad slot at ' + time_position );
                     if( time_position >= 0 && time_position <= parseInt( m_media_details_obj.getDurationInSeconds() ) ){
                         This.addPlaybackMark( time_position );
@@ -239,6 +240,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
 
     this.setCurrentTime = function( time_pos ){
+        // time_pos is a time as relates to timeline
+        // NOT REAL time
         var prev_time = m_current_time;
         var last_diff = 99999999;
         var last_ad = -1;
@@ -248,72 +251,98 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         var newTime = time_pos;
 
         m_subtitle_widget.displaySubtitleLine( null );
-        //console.log("JS SETCURRENT "+ time_pos)
+        console.log("JS SETCURRENT "+ time_pos)
 
         //You've already seen the preroll?
-        if( time_pos < adManager.preRollDuration){
-            if(adManager.hasPreroll && This.preRollPlayed){
-                newTime +=  adManager.preRollDuration
-            }
-        }
-
-        if( newTime >= m_media_details_obj.getDurationInSeconds() ){
-            PlaybackReadyListener.notifyPlaybackEnded();
-            return;
-        }
+        // if( time_pos < adManager.preRollDuration){
+        //     if(adManager.hasPreroll && This.preRollPlayed){
+        //         newTime +=  adManager.preRollDuration
+        //     }
+        // }
         //Deal with ads
+        
+        var conditionedNewTime = newTime + adTimeOffset(newTime)
         var adArray = adManager.adsData.ad_info.slots
-
+        
+        //If we scrub past ad, do we need to play?
         if(ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() )){
-            console.log("SCURBBED PAST AD BUT WE HAVE TO PLAY ONE")
-
+            var offsets = adManager.adsData.ad_info.offsets
+            console.log("SCURBBED, We should play ad if you missed one")
+            //Condition the NOT REAL time
+            var conditionedCurrent = m_current_time + adTimeOffset(newTime)
+            
             for(var i=0;i <adArray.length; i++){
                 var ad = adArray[i]
-                if(ad.end_time > m_current_time && ad.end_time < newTime){
+                if(ad.end_time > conditionedCurrent && ad.end_time < conditionedNewTime){
                     console.log("SCURBBED PAST AD FOUND A QUALIFIER "+ i)
-                    timeBeforeAd = time_pos;
-                    newTime = ad.start_time
+                    timeBeforeAd = newTime; //+ adTimeOffset(time_pos)
+                    newTime = offsets[i]
                 }
             }
             m_current_time = newTime;
-            VideoManagerInstance.setCurrentTime( m_current_time );
+            VideoManagerInstance.setCurrentTime( m_current_time + adTimeOffset(m_current_time));
             return
+        }
+        //Newtime = newTime - adTimeOffset
+        if( newTime >= m_media_details_obj.getDurationInSeconds() ){
+            PlaybackReadyListener.notifyPlaybackEnded();
+            return;
         }
 
         //Set the time to the begining of an ad break if you seek in to one?
         for(var i=0;i <adArray.length; i++){
             var ad = adArray[i]
-            if((ad.start_time && newTime >= ad.start_time) && (ad.end_time && newTime <= ad.end_time) ){
+            if((ad.start_time && conditionedNewTime >= ad.start_time) && (ad.end_time && conditionedNewTime <= ad.end_time) ){
                 if( ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() ) && 
                     m_current_time < currentVideoEndCreditMark){
-                    timeBeforeAd = time_pos
-                    newTime = ad.start_time
+                    timeBeforeAd = newTime
+                    VideoManagerInstance.setCurrentTime( conditionedNewTime);
+                    return
                 }
                 else{
                     //m_is_playing = true
-                    newTime = ad.end_time +0.01
+                    conditionedNewTime = ad.end_time +0.01
                 }
  
                 break
             }
         }
-
-            m_current_time = newTime;
-            VideoManagerInstance.setCurrentTime( m_current_time );
+        //set LOCAL time
+        m_current_time = newTime;
+        //Send REAL time
+        VideoManagerInstance.setCurrentTime(conditionedNewTime);
         Logger.log( 'CrackleVideo.setCurrentTime ' +newTime);
+        Logger.log( 'CrackleVideo.setRealTime ' +conditionedNewTime);
         Logger.log( 'CrackleVideo.DURATION' +m_media_details_obj.getDurationInSeconds());
 
     };
+    
+    function adTimeOffset(time){
+        var offsets = adManager.adsData.ad_info.offsets
+        var slots = adManager.adsData.ad_info.slots
+        var adOffsetTime =0;
+        if(offsets.length){
+            for (var i= 0 ; i<offsets.length; i++){
+                var ad = slots[i]
+                if(time > ad.end_time){
+                    adOffsetTime += ad.end_time - ad.start_time;
+
+                }
+            }
+        } 
+        console.log("AdOffSetTime: "+ adOffsetTime)
+        return adOffsetTime;     
+    }
 
 
     // DETECT MARK REACHED EVENTS AND DISPATCH
     this.onTimeUpdate = function( currentTime, currentPTS ){
+        // currentTime is REAL time
+        var adOffset = adTimeOffset(currentTime)
         Logger.log("currentTime: " + currentTime );
         //Logger.log("currentPTS: " + currentPTS );
         // Logger.log("m_current_time: " +m_current_time);
         // Logger.log( "-" );
-        m_previous_time = m_current_time;
-        m_current_time = currentTime
         //m_is_playing = false
         // Check if we have fired video started omniture event
         // If not, fire it
@@ -330,7 +359,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             if(playingAd != null){
                 //Are we through with ads? 
                 //console.log("TIMES "+ m_current_time+ " "+ playingAd.end_time)
-                if(playingAd.end_time && m_current_time >= playingAd.end_time -2){
+                if(playingAd.end_time && currentTime >= playingAd.end_time){
                    // console.log("After AD")
                     if( m_subtitle_container ) addSubtitleContainer();
                     PlaybackReadyListener.inAd = false
@@ -357,7 +386,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                     for(var t = 0; t<currentAdSlots.length; t++){
                         var ca = currentAdSlots[t]
                         
-                        if(ca.start_time <= m_current_time && ca.end_time >= m_current_time){
+                        if(ca.start_time <= currentTime && ca.end_time >= currentTime){
                             //call analytics
                             AnalyticsManagerInstance.fireAdStartEvent(m_media_details_obj);
                             currentAdSlots.splice(t, 1);
@@ -371,11 +400,13 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 m_is_playing = true;
             //}
         }
+        m_previous_time = m_current_time;
+        m_current_time = currentTime - adOffset
 
         for( var i = 0; i < m_playback_marks_tc.length; i++ ){
             // MILAN: ADDED >= FOR FIRST TIMECHECK
 
-            if( m_playback_marks_tc[i] >= m_previous_time && m_playback_marks_tc[i] < m_current_time && ( ( m_current_time - 2 ) < m_playback_marks_tc[i] ) ){
+            if( m_playback_marks_tc[i] >= m_previous_time && m_playback_marks_tc[i] <= m_current_time ){
                 var mark_number = m_playback_marks_map[ m_playback_marks_tc[ i ] ];
                 var time_pos = m_playback_marks_tc[ i ];
 

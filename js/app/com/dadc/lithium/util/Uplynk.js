@@ -36,14 +36,6 @@ var Uplynk = (function(){
 
     	for (var i = 0; i < ads.length; i++) {
     	    var ad = ads[i];
-            if(ad.slot == 'pre' && ad.start_time == 0){
-                console.log('preSLot duration '+  ad.duration)
-                self.hasPreroll = true;
-                //weird condition- slot can be labeled as pre but have a later start time?
-                if(ad.start_time == self.preRollDuration){
-                    self.preRollDuration += ad.duration
-                }
-            }
 
             for (var z=0; z<adSlots.length; z++){
                 if(adSlots[z].slotAds == undefined){
@@ -51,6 +43,15 @@ var Uplynk = (function(){
                 }
                 if(adSlots[z].id == ad.slot){
                     adSlots[z].slotAds.push(ad)
+                }
+            }
+            if(ad.slot == 'pre' && ad.start_time == 0){
+                console.log('preSlot duration '+  ad.duration)
+                self.hasPreroll = true;
+                self.adsData.ad_info.offsets.unshift('0')
+                //weird condition- slot can be labeled as pre but have a later start time?
+                if(ad.start_time == self.preRollDuration){
+                    self.preRollDuration += ad.duration
                 }
             }
         }
