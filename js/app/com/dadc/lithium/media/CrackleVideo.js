@@ -251,7 +251,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         var newTime = time_pos;
 
         m_subtitle_widget.displaySubtitleLine( null );
-        console.log("JS SETCURRENT "+ time_pos)
+        //console.log("JS SETCURRENT "+ time_pos)
 
         //You've already seen the preroll?
         // if( time_pos < adManager.preRollDuration){
@@ -311,9 +311,9 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         m_current_time = newTime;
         //Send REAL time
         VideoManagerInstance.setCurrentTime(conditionedNewTime);
-        Logger.log( 'CrackleVideo.setCurrentTime ' +newTime);
-        Logger.log( 'CrackleVideo.setRealTime ' +conditionedNewTime);
-        Logger.log( 'CrackleVideo.DURATION' +m_media_details_obj.getDurationInSeconds());
+        // Logger.log( 'CrackleVideo.setCurrentTime ' +newTime);
+        // Logger.log( 'CrackleVideo.setRealTime ' +conditionedNewTime);
+        // Logger.log( 'CrackleVideo.DURATION' +m_media_details_obj.getDurationInSeconds());
 
     };
     
@@ -330,7 +330,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 }
             }
         } 
-        console.log("AdOffSetTime: "+ adOffsetTime)
+        //console.log("AdOffSetTime: "+ adOffsetTime)
         return adOffsetTime;     
     }
 
@@ -339,7 +339,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     this.onTimeUpdate = function( currentTime, currentPTS ){
         // currentTime is REAL time
         var adOffset = adTimeOffset(currentTime)
-        Logger.log("currentTime: " + currentTime );
+        //Logger.log("currentTime: " + currentTime );
         //Logger.log("currentPTS: " + currentPTS );
         // Logger.log("m_current_time: " +m_current_time);
         // Logger.log( "-" );
@@ -614,21 +614,21 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                     var subtitle = subtitle_lines[ subidx ];
                     var startMark = subtitle.getBegin.seconds
                     var endMark = subtitle.getEnd.seconds
-                    if(adArray.length){
-                        for (var i= 0 ; i<adArray.length; i++){
-                            var ad = adArray[i]
-                            if(endMark > ad.end_time){
-                                adOffsetTime += ad.end_time - ad.start_time;
+                    // if(adArray.length){
+                    //     for (var i= 0 ; i<adArray.length; i++){
+                    //         var ad = adArray[i]
+                    //         if(endMark > ad.end_time){
+                    //             adOffsetTime += ad.end_time - ad.start_time;
 
-                            }
-                            else if( (startMark >= ad.start_time ) && (endMark <= ad.end_time ) ){
-                                adOffsetTime += ad.end_time - ad.start_time;
-                            }
-                        }
-                    }
-                    m_subtitle_start_marks[ startMark + adOffsetTime ] = subtitle;
-                    m_subtitle_end_marks[ endMark + adOffsetTime ] = subtitle;
-                    This.addSubsMark( startMark + adOffsetTime, endMark+adOffsetTime );
+                    //         }
+                    //         else if( (startMark >= ad.start_time ) && (endMark <= ad.end_time ) ){
+                    //             adOffsetTime += ad.end_time - ad.start_time;
+                    //         }
+                    //     }
+                    // }
+                    m_subtitle_start_marks[ startMark ] = subtitle;
+                    m_subtitle_end_marks[ endMark ] = subtitle;
+                    This.addSubsMark( startMark, endMark );
                 }
 
 

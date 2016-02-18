@@ -208,8 +208,8 @@ var TimelineWidget = function( current_time, total_video_length, ad_breaks ) {
             var ad_slate = getAdBreakSlate();
             
             m_time_container.addChild( ad_slate );
-            var offset = time_pos / m_total_video_length;
-            ad_slate.x = 1188 * ( offset === undefined ? 0 : offset );
+            var offset = (time_pos / m_total_video_length)
+            ad_slate.x = 1188 * ( offset === undefined ? 0 : offset ) -10;
             ad_slate.y = 3;
         }
     }
