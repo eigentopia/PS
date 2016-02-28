@@ -912,7 +912,7 @@ var VideoController = function( ParentControllerObj )
 
             //Is there more in the list?
             var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length-1)?currentMediaListIndex+1:0 //Loop back if you need to
-            if(nextIndex !== startingMediaListIndex && totalVideosPlayed<5){
+            if(nextIndex !== startingMediaListIndex){
 
                 This.playNext();
             }

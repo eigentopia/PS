@@ -267,7 +267,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         //If we scrub past ad, do we need to play?
         if(ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness() )){
             var offsets = adManager.adsData.ad_info.offsets
-            console.log("SCURBBED, We should play ad if you missed one")
+            console.log("SCRUBBED, We should play ad if you missed one")
             //Condition the NOT REAL time
             var conditionedCurrent = m_current_time + adTimeOffset(newTime)
             
@@ -280,7 +280,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 }
             }
             m_current_time = newTime;
-            VideoManagerInstance.setCurrentTime( m_current_time + adTimeOffset(m_current_time));
+            VideoManagerInstance.setCurrentTime( m_current_time);// To the start of an ad break
             return
         }
         //Newtime = newTime - adTimeOffset
@@ -400,8 +400,10 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 m_is_playing = true;
             //}
         }
+        
+        //Conditioned time
         m_previous_time = m_current_time;
-        m_current_time = currentTime - adOffset
+        m_current_time = currentTime - adOffset 
 
         for( var i = 0; i < m_playback_marks_tc.length; i++ ){
             // MILAN: ADDED >= FOR FIRST TIMECHECK
@@ -413,19 +415,25 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 Logger.log("------------- mark hit! " +  time_pos );
                 Logger.log("------------- mark number is: " +  mark_number );
 
-                // Playlist mark?
+                // Ad Playlist mark? This is a mark on the conditioned timeline
                 if ( m_playlists[ time_pos ]){
                     if(time_pos == 0 && !This.preRollPlayed ){
                         playAd(time_pos)
+                        return
                     }
-                    else if ( (ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness()) || timeBeforeAd>0) ){
+                    
+                    if ( (ADForgivenessInstance.shouldPlayAds( m_media_details_obj.getScrubbingForgiveness()) || timeBeforeAd>0) ){
 
                         Logger.log( 'playlist AD mark' );
                         
                         playAd( time_pos );
                         return
-
+                    }
+                    else{
+                        //Set time to after mark
+                        moveAfterAd(time_pos)
                     } 
+                    
                 }
 
                 // Omniture mark?
@@ -759,6 +767,15 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             This.inAd = false;
             playingAd = null
         }
+    }
+
+    function moveAfterAd( adIndex ){
+        var adToSkip = m_playlists[adIndex]
+        //var timeToMove = m_current_time;//conditioned time
+        if(adToSkip.slotAds && adToSkip.slotAds.length >0){
+            var timeToMove = adToSkip.slotAds[length-1].end_time
+            VideoManagerInstance.setCurrentTime(timeToMove)
+        }   
     }
 
     function removeSubtitleContainer(){
