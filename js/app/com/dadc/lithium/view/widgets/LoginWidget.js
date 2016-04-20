@@ -52,6 +52,12 @@ var LoginWidget = function( widgController) {
         var userName = user.name
 
         CrackleApi.User.sso(function (ssoResponse) {
+            if(ssoResponse == null){
+
+                widgController.getParentController().notifyPreparationStatus( "LoginInWidge", Controller.PREPARATION_STATUS.STATUS_ERROR );
+                done = true;
+                return;
+            }
             if (ssoResponse.ActivationCode) {
                 if (ssoResponse.ActivationCode != authCode) {
                     ApplicationController.setUserInfo(null)
@@ -158,13 +164,13 @@ var LoginWidget = function( widgController) {
         var numberTwo =engine.loadImage("Artwork/number-button_2.png", function(img){
             img.x = 150
             img.y  = (1080)/2 - 160 
-            rootNode.addChild(img)
-        })
+            rootNode.addChild(img);
+        });
 
 
-        var nowWithTextFont = FontLibraryInstance.AUTHYOU
+        var nowWithTextFont = FontLibraryInstance.AUTHYOU;
         if(CrackleApi.lang == 'es' || CrackleApi.lang == 'pt'){
-            nowWithTextFont = FontLibraryInstance.AUTHYOUES
+            nowWithTextFont = FontLibraryInstance.AUTHYOUES;
         }
 
         var nowWithText = engine.createTextBlock(Dictionary.getText( Dictionary.TEXT.NOW_WITH ),  nowWithTextFont, 1200 )
@@ -206,6 +212,11 @@ var LoginWidget = function( widgController) {
     function pollActivation() {
         var done = false;
         CrackleApi.User.sso(function (ssoResponse) {
+            if(ssoResponse == null){
+                widgController.getParentController().notifyPreparationStatus( "LoginInWidge", Controller.PREPARATION_STATUS.STATUS_ERROR );
+                done = true;
+                return;
+            }
             if (ssoResponse.ActivationCode) {
                 if (ssoResponse.ActivationCode != authCode) {
                     authCode = ssoResponse.ActivationCode

@@ -13,7 +13,7 @@ var StorageManager = function( localObj )
             case 'es_ES':
             case 'es_LA':
                 lang = "ES"
-                break
+                break;
             case 'pt_BR':
             case 'pt_PT':
                 lang = "PT"

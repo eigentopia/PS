@@ -271,7 +271,7 @@ var MovieDetailsController = function ( ParentControllerObj ){
 
         if ( m_is_focussed ) {
             if (m_movie_detail_text_widget.getScrollbarVisibility() && m_movie_detail_text_widget.getScrollbarFocus() ){
-                m_movie_detail_text_widget.scrollDown();
+                m_movie_detail_text_widget.scrollUp();
                 return;
             }
             

@@ -1447,11 +1447,11 @@ var ApplicationController = function( screenObj ){
     }
     function onDisclaimerClosed(){
         if( m_geo_country_controller.isInvalidRegion() ){
-            m_disclaimer_controller.close();
+            //m_disclaimer_controller.close();
             openErrorDialog( Dictionary.getText( Dictionary.TEXT.INVALID_REGION ), function(){
-                m_disclaimer_controller.open();
-                m_error_controller.close();
-                m_focused_controller = m_disclaimer_controller;
+                m_disclaimer_controller.onDisclaimerClosed();
+                //m_error_controller.close();
+                //m_focused_controller = m_disclaimer_controller;
             }, true, ErrorWidget.BUTTON_CAPTION.CONTINUE );
         }else{
             if(m_disclaimer_controller !== null){
@@ -1564,10 +1564,11 @@ var ApplicationController = function( screenObj ){
 
         }
 
-        m_disclaimer_controller.prepareToOpen();
-        m_disclaimer_controller.open();
-        screenObj.addChild( m_disclaimer_controller.getDisplayNode(), 0 );
-        m_focused_controller = m_disclaimer_controller;
+        // m_disclaimer_controller.prepareToOpen();
+        // m_disclaimer_controller.open();
+        // screenObj.addChild( m_disclaimer_controller.getDisplayNode(), 0 );
+        // m_focused_controller = m_disclaimer_controller;
+        onDisclaimerClosed()
 
         m_app_ready = true;
     }

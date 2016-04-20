@@ -304,7 +304,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                     conditionedNewTime = ad.end_time +0.01
                 }
  
-                break
+                break   
             }
         }
         //set LOCAL time
@@ -324,9 +324,8 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
         if(offsets.length){
             for (var i= 0 ; i<offsets.length; i++){
                 var ad = slots[i]
-                if(time > ad.end_time){
+                if(ad && time > ad.end_time){
                     adOffsetTime += ad.end_time - ad.start_time;
-
                 }
             }
         } 
@@ -356,15 +355,15 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             //console.log("IN AD")
             m_is_playing = false
             //is ad playing?
-            if(playingAd != null){
+            if(playingAd !== null){
                 //Are we through with ads? 
                 //console.log("TIMES "+ m_current_time+ " "+ playingAd.end_time)
                 if(playingAd.end_time && currentTime >= playingAd.end_time){
                    // console.log("After AD")
                     if( m_subtitle_container ) addSubtitleContainer();
-                    PlaybackReadyListener.inAd = false
-                    This.inAd = false
-                    playingAd = null
+                    PlaybackReadyListener.inAd = false;
+                    This.inAd = false;
+                    playingAd = null;
 
                     
                     if(adManager.hasPreroll && !This.preRollPlayed){

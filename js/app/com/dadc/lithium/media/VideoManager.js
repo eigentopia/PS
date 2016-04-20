@@ -101,6 +101,8 @@ VideoManager = function(){
         //     ConvivaIntegration.attachStreamer(m_core_video_obj)
         // }
         // add the video to the screen
+        //THis is a tester URL for SmoothStream/PlayReady
+        var stubUrl = "http://ottusns-s.akamaihd.net/ondemand/1/m/wm/urfyb_OTT_SmoothStreaming.ism/urfyb_OTT_SmoothStreaming.ism/Manifest"
         m_root_node.addChild( m_core_video_obj );
             Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
             Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime());
