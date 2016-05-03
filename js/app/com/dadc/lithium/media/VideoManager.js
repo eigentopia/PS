@@ -102,7 +102,8 @@ VideoManager = function(){
         // }
         // add the video to the screen
         //THis is a tester URL for SmoothStream/PlayReady
-        var stubUrl = "http://ottusns-s.akamaihd.net/ondemand/1/m/wm/urfyb_OTT_SmoothStreaming.ism/urfyb_OTT_SmoothStreaming.ism/Manifest"
+        var stubUrl = "http://ottusns-s.akamaihd.net/ondemand/1/m/wm/urfyb_OTT_SmoothStreaming.ism/Manifest"
+        //http://ottusns-s.akamaihd.net/ondemand/1/o/km/58eyb_OTT_SmoothStreaming.ism/Manifest
         m_root_node.addChild( m_core_video_obj );
             Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
             Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime());

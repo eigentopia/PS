@@ -43,12 +43,21 @@ var Uplynk = (function(){
                 }
                 if(adSlots[z].id == ad.slot){
                     adSlots[z].slotAds.push(ad)
+                    if(adSlots[z].offset == undefined){
+                        if(ad.slot == "pre"){
+                            adSlots[z].offset = 0;
+                        }
+                        else{
+                            adSlots[z].offset=self.adsData.ad_info.offsets[z+1]
+                        }
+                    }
                 }
             }
             if(ad.slot == 'pre' && ad.start_time == 0){
                 console.log('preSlot duration '+  ad.duration)
                 self.hasPreroll = true;
-                self.adsData.ad_info.offsets.unshift('0')
+                self.adsData.ad_info.offsets.unshift('0');
+
                 //weird condition- slot can be labeled as pre but have a later start time?
                 if(ad.start_time == self.preRollDuration){
                     self.preRollDuration += ad.duration

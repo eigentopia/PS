@@ -276,7 +276,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
                 if(ad.end_time > conditionedCurrent && ad.end_time < conditionedNewTime){
                     console.log("SCURBBED PAST AD FOUND A QUALIFIER "+ i)
                     timeBeforeAd = newTime; //+ adTimeOffset(time_pos)
-                    newTime = offsets[i]
+                    newTime = adArray[i].offset
                 }
             }
             m_current_time = newTime;
@@ -318,11 +318,11 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
     
     function adTimeOffset(time){
-        var offsets = adManager.adsData.ad_info.offsets
+        //var offsets = adManager.adsData.ad_info.offsets
         var slots = adManager.adsData.ad_info.slots
         var adOffsetTime =0;
-        if(offsets.length){
-            for (var i= 0 ; i<offsets.length; i++){
+        if(slots.length && slots.length> 0){
+            for (var i= 0 ; i<slots.length; i++){
                 var ad = slots[i]
                 if(ad && time > ad.end_time){
                     adOffsetTime += ad.end_time - ad.start_time;
