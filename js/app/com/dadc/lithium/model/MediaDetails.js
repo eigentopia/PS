@@ -188,35 +188,37 @@ var MediaDetails = function( json_data ){
     this.getMediaURLs = function(){
         var mediaUrls =[]
         //LL must be here for text display
-        try{
-            var defaultMediaUrl = getVideoURLFromList(this.m_data.MediaURLs);
-            defaultMediaUrl.LocalizedLanguage = this.m_data.LocalizedLanguage;
+        mediaUrls.push({Path:"http://ottusns-s.akamaihd.net/ondemand/1/m/wm/urfyb_OTT_SmoothStreaming.ism/Manifest",LocalizedLanguage:"en"})
+        return mediaUrls;
+        // try{
+        //     var defaultMediaUrl = getVideoURLFromList(this.m_data.MediaURLs);
+        //     defaultMediaUrl.LocalizedLanguage = this.m_data.LocalizedLanguage;
 
-            mediaUrls.push(defaultMediaUrl)
-            // console.log("URLS")
-            // console.dir(mediaUrls)
-            // console.dir(this.m_data.MediaURLs)
+        //     mediaUrls.push("http://ottusns-s.akamaihd.net/ondemand/1/m/wm/urfyb_OTT_SmoothStreaming.ism/Manifest")
+        //     // console.log("URLS")
+        //     // console.dir(mediaUrls)
+        //     // console.dir(this.m_data.MediaURLs)
 
-            //So this is where related things are hidden
-            //m_data.RelatedItemsByMPM[ofObjects].LocalizedLanguage - for display in Row
-            //m_data.RelatedItemsByMPM[ofObjects].MediaUrls[ofObjects].Path
-            if(this.m_data.RelatedItemsByMPM && this.m_data.RelatedItemsByMPM.length > 0){
-                var relatedItems = this.m_data.RelatedItemsByMPM;
-                for(var item = 0; item< relatedItems.length;item++){
-                    if(relatedItems[item].MediaURLs && relatedItems[item].MediaURLs.length > 0){
-                        var url = getVideoURLFromList( relatedItems[item].MediaURLs);
-                        //LL must be here for text display
-                        url.LocalizedLanguage = relatedItems[item].LocalizedLanguage
-                        mediaUrls.push(url);
-                    }
-                }
-            }
+        //     //So this is where related things are hidden
+        //     //m_data.RelatedItemsByMPM[ofObjects].LocalizedLanguage - for display in Row
+        //     //m_data.RelatedItemsByMPM[ofObjects].MediaUrls[ofObjects].Path
+        //     if(this.m_data.RelatedItemsByMPM && this.m_data.RelatedItemsByMPM.length > 0){
+        //         var relatedItems = this.m_data.RelatedItemsByMPM;
+        //         for(var item = 0; item< relatedItems.length;item++){
+        //             if(relatedItems[item].MediaURLs && relatedItems[item].MediaURLs.length > 0){
+        //                 var url = getVideoURLFromList( relatedItems[item].MediaURLs);
+        //                 //LL must be here for text display
+        //                 url.LocalizedLanguage = relatedItems[item].LocalizedLanguage
+        //                 mediaUrls.push(url);
+        //             }
+        //         }
+        //     }
                 
-            return mediaUrls;
-        }
-        catch(e){
-            return null
-        }
+        //     return mediaUrls;
+        // }
+        // catch(e){
+        //     return null
+        // }
     };
 
     this.getClosedCaptionFiles = function(){

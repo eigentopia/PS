@@ -1,6 +1,8 @@
 VideoManager = function(){
     
     Logger.log("VideoManger created");
+
+    var self = this
     
     var m_root_node = engine.createContainer();
     var m_core_video_obj = null;
@@ -81,10 +83,9 @@ VideoManager = function(){
                 Logger.log( 'mp4' );
                 break;
             default:
-                m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.TYPE_PROGRESSIVE );
-                m_core_video_obj.streamType = "m3u8"
+                m_core_video_obj = engine.createVideo( JSVideo.VIDEOCONFIG.SS );
                 m_core_video_obj.resetMemoryContainer()
-                Logger.log( 'm3u8' );
+                Logger.log( 'SS' );
                 break;
         }
 
@@ -109,9 +110,14 @@ VideoManager = function(){
         //     ConvivaIntegration.attachStreamer(m_core_video_obj)
         // }
         // add the video to the screen
+        //var SSFILE  = "http://ottusns-s.akamaihd.net/ondemand/1/m/wm/urfyb_OTT_SmoothStreaming.ism/Manifest"
         m_root_node.addChild( m_core_video_obj );
-        m_core_video_obj.open( m_current_jsvideo.getVideoURL(), 
-            {"video-starttimeoffset": m_current_jsvideo.getResumeTime()} 
+        m_core_video_obj.open(  m_current_jsvideo.getVideoURL(), 
+            {
+                //"video-starttimeoffset": m_current_jsvideo.getResumeTime(),
+                "laurl":"http://drm-pr-us.crackle.com/License/PlayReady/Get"
+
+            } 
         );
         Logger.log( 'url = ' + m_current_jsvideo.getVideoURL() );
         Logger.log("~~~~~~~~~~~~resume time is: " + m_current_jsvideo.getResumeTime());
@@ -180,10 +186,14 @@ VideoManager = function(){
         m_core_video_obj.currentTextTrackType = "CAPTION_TYPE_NONE";
         m_core_video_obj.play();
 
-        if( m_current_jsvideo != null ){
+        if( m_current_jsvideo !== null ){
             var CCSettings = m_core_video_obj.getCCSystemSettings();
             engine.storage.local.subFontConfig = JSON.stringify(CCSettings);
             console.log("GOT ME CC")
+            console.log(m_current_jsvideo.getResumeTime())
+            if(m_current_jsvideo.getResumeTime()> 0 ){
+                self.setCurrentTime(m_current_jsvideo.getResumeTime());
+            }
             m_current_jsvideo.onOpened();  
         }
     }
@@ -229,5 +239,10 @@ VideoManager.VIDEOCONFIG = {
         "encryption-type":"none"
     },
     TYPE_PROGRESSIVE: {
+    },
+        SS:{
+        "content-type": "video/ss",
+        "debug-level": "3",
+        "default-language": "eng"
     }
 }

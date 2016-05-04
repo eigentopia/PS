@@ -17,7 +17,7 @@ var FreewheelVideo = function( adHeaderObj, FreewheelEventCallbackHelperObj, Fre
     var m_marks_finalized       = false;
     //var m_previous_time           = 0;
     var m_current_time          = 0;  
-    var m_video_config          = VideoManager.VIDEOCONFIG.TYPE_MP4;
+    var m_video_config          = VideoManager.VIDEOCONFIG.SS;
     var m_stalling_start_time       = null;
     
     var m_0hasFired         = false;

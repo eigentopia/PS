@@ -340,6 +340,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
     };
 
     this.onOpened = function(){
+
         // if(ConvivaIntegration.sessionId == null){
         //     ConvivaIntegration.createSession(parentVideo, m_video_url, m_media_details_obj)
         // }
@@ -406,7 +407,7 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
 
     // generates a config for the engine.createVideo calls
     this.getVideoConfig = function(){
-        return VideoManager.VIDEOCONFIG.TYPE_PROGRESSIVE;
+        return VideoManager.VIDEOCONFIG.SS;
     };
     this.forward = function(){
         var current_time = VideoManagerInstance.getCurrentVideoTime();
@@ -749,13 +750,15 @@ var CrackleVideo = function( MediaDetailsObj, audioVideoUrl, subtitle_url, Playb
             var video_urls = list[ i ];
             //Logger.logObj( video_urls );
             if ( video_urls && video_urls.Type && video_urls.Type === ApplicationController.PLATFORM.toUpperCase()+'_Trilithium.m3u8' ){
-                return video_urls.Path;
+                //return video_urls.Path;
+                return "http://ottusns-s.akamaihd.net/ondemand/1/m/wm/urfyb_OTT_SmoothStreaming.ism/Manifest"
             }
         }
         for( var i in list ){
             var video_urls = list[ i ];
             if ( video_urls && video_urls.Type && video_urls.Type === 'iPad_Wifi.m3u8' ){
-                return video_urls.Path;
+                //return video_urls.Path;
+                return "http://ottusns-s.akamaihd.net/ondemand/1/m/wm/urfyb_OTT_SmoothStreaming.ism/Manifest"
             }
         }
         return null;

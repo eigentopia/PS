@@ -23,6 +23,8 @@ var PSN = function( )
     // DO this to WEbGL
     if(platform !== 'html'){
         var npPlugin = engine.loadPlugin("LithiumNetworkPlatform.sprx");
+        var plugin = engine.loadPlugin("sceAvPlayerPlugin.sprx");
+    console.log("end Load sceAvPlayerPlugin.sprx");
     
         this.getNPPlugin = function() { return npPlugin; }
     }

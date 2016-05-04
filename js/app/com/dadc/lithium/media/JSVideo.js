@@ -8,7 +8,7 @@ var JSVideo = function( video_url, videoManagerObj ){
     var m_marks_finalized = false;
     var m_previous_time = 0;
     var m_current_time = 0;  
-    var m_video_config = JSVideo.VIDEOCONFIG.TYPE_PROGRESSIVE;
+    var m_video_config = JSVideo.VIDEOCONFIG.SS;
      
     
     this.addPlaybackListener = function( playbackListener ){
@@ -131,7 +131,12 @@ JSVideo.VIDEOCONFIG = {
         "encryption-type":"none"
     },
     TYPE_PROGRESSIVE: {
-    }   
+    },
+    SS:{
+        "content-type": "video/ss",
+        "debug-level": "3",
+        "default-language": "eng"
+    }
 }
 
 var PlaybackEvent = function( ){ };
