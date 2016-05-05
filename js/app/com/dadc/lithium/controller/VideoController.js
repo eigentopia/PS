@@ -207,8 +207,13 @@ var VideoController = function( ParentControllerObj )
                     return;
                 }
 
-                if((!nextVideoOverlay&& userOptOut == false) && totalVideosPlayed < 5){//} && userOptOut == false){ //More to play? If the tvp hasn't been reset we skip this part.
+                if(!nextVideoOverlay&& userOptOut == false){// && totalVideosPlayed < 5){//} && userOptOut == false){ //More to play? If the tvp hasn't been reset we skip this part.
                     openNextVideoOverlay();       
+                }
+            }
+            if(m_crackle_video.getCurrentTime() >= dur -1){
+                if(nextVideoOverlay){
+                    closeNextVideoOverlay()
                 }
             }
          }
@@ -886,7 +891,7 @@ var VideoController = function( ParentControllerObj )
 
             //Is there more in the list?
             var nextIndex = (currentMediaListIndex + 1 <= currentMediaList.length-1)?currentMediaListIndex+1:0 //Loop back if you need to
-            if(nextIndex !== startingMediaListIndex && totalVideosPlayed<5){
+            if(nextIndex !== startingMediaListIndex){//} && totalVideosPlayed<5){
 
                 this.playNext();
             }

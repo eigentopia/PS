@@ -253,7 +253,7 @@ var ApplicationController = function( screenObj ){
                 m_geo_country_controller.prepareToOpen();
                 m_present_controllers.push( m_geo_country_controller );
 
-                PlaystationConfig.setConfig(function(thing){console.log(thing)})
+//                PlaystationConfig.setConfig(function(thing){console.log(thing)})
 
                 if(localStorage.userEmailAddress && localStorage.userId ){
                     crackleUser.email = localStorage.userEmailAddress
@@ -281,6 +281,7 @@ var ApplicationController = function( screenObj ){
 
         });
         geo_request.startRequest();
+                        PlaystationConfig.setConfig(function(thing){console.log(thing)})
     };
     function loadingError(){
         unsetFocusAllControllers()
@@ -1452,11 +1453,11 @@ var ApplicationController = function( screenObj ){
     }
     function onDisclaimerClosed(){
         if( m_geo_country_controller.isInvalidRegion() ){
-            m_disclaimer_controller.close();
+            //m_disclaimer_controller.close();
             openErrorDialog( Dictionary.getText( Dictionary.TEXT.INVALID_REGION ), function(){
-                m_disclaimer_controller.open();
-                m_error_controller.close();
-                m_focused_controller = m_disclaimer_controller;
+                m_disclaimer_controller.onDisclaimerClosed();
+                //m_error_controller.close();
+                //m_focused_controller = m_disclaimer_controller;
             }, true, ErrorWidget.BUTTON_CAPTION.CONTINUE );
         }else{
             if(m_disclaimer_controller !== null){
@@ -1482,6 +1483,9 @@ var ApplicationController = function( screenObj ){
             var usrid = localStorage.userId
             var deviceAuth = localStorage.deviceAuth            
 
+            // var ssReq = new SSAuth(function(data){
+            //     console.log("SSO WORKED: ")
+            //     console.dir(data)
             CrackleApi.User.sso(function(data){
                 if(data && (data.ActivationCode !=null || data.ActivationCode !=undefined)){
                     ApplicationController.setUserInfo(null)
@@ -1569,10 +1573,11 @@ var ApplicationController = function( screenObj ){
 
         }
 
-        m_disclaimer_controller.prepareToOpen();
-        m_disclaimer_controller.open();
-        screenObj.addChild( m_disclaimer_controller.getDisplayNode(), 0 );
-        m_focused_controller = m_disclaimer_controller;
+        // m_disclaimer_controller.prepareToOpen();
+        // m_disclaimer_controller.open();
+        // screenObj.addChild( m_disclaimer_controller.getDisplayNode(), 0 );
+        // m_focused_controller = m_disclaimer_controller;
+        onDisclaimerClosed();
 
         m_app_ready = true;
     }
@@ -2490,7 +2495,7 @@ var ApplicationController = function( screenObj ){
         }
 
         localStorage.age = (user.userAge)?user.userAge:user.age;
-        localStorage.gender = (user.userGender.toString() == '0')?user.userGender.toString():user.gender.toString();
+        localStorage.gender = (user.userGender.toString() == '0')?user.userGender.toString():'0';
         localStorage.userId = (user.CrackleUserId)?user.CrackleUserId:user.id;
         localStorage.name = (user.CrackleUserName)?user.CrackleUserName:user.name;
         ApplicationController.setCrackleUser(user, cb)
@@ -2555,7 +2560,7 @@ var ApplicationController = function( screenObj ){
     ApplicationController.addToUserWatchlist = function (id, type, callback){
         if(id){
             var url =  ModelConfig.getServerURLRoot() + "queue/queue/add/member/"+ crackleUser.id +"/"+type+"/"+id+"?format=json";;
-            Http.request(url, "GET", null, null,function(data, status){
+            Http.requestJSON(url, "GET", null, null,function(data, status){
                 if(data != null && status ==200){
                     CrackleApi.User.watchlist(crackleUser, function(data, status){
                         callback && callback(true)

@@ -19,7 +19,7 @@ var CrackleApi = {
             })
         },
         app: function(cb){
-            var url = "https://api.crackle.com/Service.svc/appconfig?format=json";
+            var url = "http://api.crackle.com/Service.svc/appconfig?format=json";
                
             Http.requestJSON(url, "GET", null, null, function(data, status){
                 if(data != null && status == 200){
@@ -28,7 +28,7 @@ var CrackleApi = {
                 else{
                     cb && cb(null, status)
                 }
-            })
+            }, true)
        },
        regionApp: function(apiUrl, cb){
             var url = "https://"+ apiUrl+"/Service.svc/appconfig?format=json";
@@ -66,9 +66,9 @@ var CrackleApi = {
             var url = CrackleApi.apiUrl + "queue/queue/list/member/"+crackleUser.id+"/"+StorageManagerInstance.get( 'geocode' ) +"?format=json";
             if(crackleUser.id != null){
                 var d = new Date();
-                var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
+                //var ord = "&ord=" + (d.getTime() + Math.floor((Math.random()*100)+1)).toString();
             
-                Http.requestJSON(url+ord, "GET", null, null, function(data, status){
+                Http.requestJSON(url, "GET", null, null, function(data, status){
                     if(data != null && status == 200){
                         crackleUser.watchlist = [];
                         var items = data.Items;
@@ -101,7 +101,7 @@ var CrackleApi = {
         },
         addToWatchlist: function (id, type, cb){
             var url =  CrackleApi.apiUrl + "queue/queue/add/member/"+ crackleUser.id +"/"+type+"/"+id;
-            Http.request(url, "GET", null, null, function(data, status){
+            Http.requestJSON(url, "GET", null, null, function(data, status){
                 if(data != null && status ==200){
                     ApplicationController.getUserWatchList(function(data, status){
                         cb && cb(true)
@@ -114,7 +114,7 @@ var CrackleApi = {
         },
         removeFromWatchlist : function(id, type, callback){
             var url =  CrackleApi.apiUrl + "queue/queue/remove/member/"+ crackleUser.id +"/"+type+"/"+id;
-            Http.request(url, "GET", null, null, function(data, status){
+            Http.requestJSON(url, "GET", null, null, function(data, status){
                 if(data != null && status ==200){
                     ApplicationController.getUserWatchList(function(data, status){
                         callback && callback(true)
@@ -150,7 +150,7 @@ var CrackleApi = {
             var authUrl = "externaluser/sso?format=json";
             var returnData = null;
             var id = (PlaystationConfig.hashedDeviceID !== null)?PlaystationConfig.hashedDeviceID:"testeridforplaystation"
-            var body = { data:JSON.stringify({"AffiliateUserId": PlaystationConfig.hashedDeviceID}), dataType:"Application/Json" }
+            var body = { data:JSON.stringify({"AffiliateUserId": id}) }
             //console.log(self.apiUrl + authUrl)
             //HTTP.request(self.apiUrl + authUrl, "POST", body,
             Http.requestJSON(CrackleApi.apiUrl + authUrl, "POST", body, null, function(data, status){
@@ -165,7 +165,7 @@ var CrackleApi = {
                 }
                 
                 cb && cb(returnData)
-            })
+            }, true)
         },
 
         silentAuth: function (id, cb) {
@@ -196,7 +196,7 @@ var CrackleApi = {
 
             var deactivateUrl = "externaluser/deactivate?format=json"
             var userId = (usrId) ? usrId : id;
-            var body = { data: JSON.stringify({"AffiliateUserId": PlaystationConfig.hashedDeviceID, "CrackleUserId": parseInt(userId) }), dataType:"Application/text"}
+            var body = { data: JSON.stringify({"AffiliateUserId": PlaystationConfig.hashedDeviceID, "CrackleUserId": parseInt(userId) })}
             //console.log(self.apiUrl + deactivateUrl)
             Http.requestJSON(CrackleApi.apiUrl + deactivateUrl, "POST", body, null, function(data, status){
                 if (data !== null) {
@@ -346,6 +346,9 @@ var PlaystationConfig = {
         setConfig:function(cb){
             //First, where are you?
             CrackleApi.Config.geo(function(data, status){
+                console.log("GOT API GEO CONFIG")
+                console.log(status)
+                console.dir(data)
                 if(data !== null){
                     var id = data.ID
                     var cc = data.CountryCode
@@ -383,8 +386,9 @@ var PlaystationConfig = {
                             }
 
 
-                            StorageManagerInstance.set( 'api_hostname', apiUrl );
+                            //StorageManagerInstance.set( 'api_hostname', apiUrl );
                             CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
+                            //CrackleApi.apiUrl = ModelConfig.getServerURLRoot()
                             
                             //CrackleApi.apiUrl = "https://staging-v1-api-us.crackle.com/Service.svc/"
                             //CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
@@ -418,6 +422,62 @@ var PlaystationConfig = {
                 }
             })
         },
-        hashedDeviceID: null,
+        hashedDeviceID: Crypto.HMAC( Crypto.SHA1, engine.stats.device.id, engine.stats.device.platform ),
         forcedRegistration: false
+}
+
+var SSAuth = function( callback ){
+    //SAMPLE URL        sso: function(cb) {
+    var authUrl ="https://" + CrackleApi.Config.getApiUrl() +"/externaluser/sso?format=json";
+    var id = (PlaystationConfig.hashedDeviceID !== null)?PlaystationConfig.hashedDeviceID:"testeridforplaystation"
+    var body = { data:JSON.stringify({"AffiliateUserId": id}) }
+
+    //http://api.crackle.com/Service.svc/recent/movies/all/us/30?format=json
+//    var url = "http://localhost/crackle/crackle.php";
+    Logger.log( "URL - SSO: " + authUrl );
+
+    var httpRequestObj;
+    var This = this;
+    var http_retries;
+
+//     var extra_headers =
+//           {
+// //            'Keep-Alive': 'timeout=15',
+//               'Connection': 'Close',
+//               'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.162 Safari/535.19',
+//               //'X-Forwarded-For': StorageManagerInstance.get( 'IPADDRESS' )
+//               'X-Forwarded-For': StorageManagerInstance.get( StorageManager.STORAGE_KEYS.IPADDRESS )
+//           };
+
+    this.startRequest = function(){
+        http_retries = 0;
+        initHttpRequest();
+        httpRequestObj.start();
+    }
+
+    this.onRequestComplete = function( data, status ){
+        if ( status != 200 && http_retries < ModelConfig.CONFIG.NETWORK_ERROR_RETRY ){
+            http_retries++;
+            initHttpRequest();
+            httpRequestObj.start();
+        } else{
+            Logger.log( 'onRequestComplete SSO' );
+            Logger.log( data );
+
+            callback(data)
+        }
+    }
+
+    function initHttpRequest(){
+        ModelConfig.httpClientObj.disableCertValidation( false );
+        ModelConfig.httpClientObj.disablePipelining();
+
+        // TL 1.3.3 UPDATE
+        httpRequestObj = ModelConfig.httpClientObj.createRequest( "POST", authUrl,  { headers:{"Authorization":AuthenticationInstance.getAuthorizationHeader( authUrl ),
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.162 Safari/535.19',
+                    'Contet-Type':'application/json'} }, null );
+        httpRequestObj.onComplete = This.onRequestComplete;
+        httpRequestObj.onResponse = This.onResponse;
+        httpRequestObj.sendBody( body.data );
+    }
 }

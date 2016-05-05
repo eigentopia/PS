@@ -2,6 +2,27 @@ include( "js/app/com/dadc/lithium/util/SHA1.js" );
 include( "js/app/com/dadc/lithium/util/DateFormat.js" );
 //Because- come on. One request method to rule them all.
 var Http = function(){
+
+    function authorizationHeader (url) {
+
+        var date            = new Date();
+        var timestamp       = date.format('yyyyMMddHHmm');
+        var encrypt_url     = url + "|" + timestamp;
+        var hmac            = Crypto.HMAC( Crypto.SHA1, encrypt_url, PARTNER_KEYWORD );
+        
+        var authorization   = hmac + "|" + timestamp + "|" + PARTNER_ID + "|1";
+        var resp            = {'Authorization': authorization.toUpperCase() };
+
+        Logger.log( "HTTP ********" );
+        Logger.log( "Authorization: " + authorization.toUpperCase() );
+
+        Logger.log( '*** BEGIN OF ' + url );
+        Logger.log( encrypt_url );
+        Logger.logObj( resp );
+        Logger.log( '*** END OF ' + url );
+        
+        return resp;
+    }
     var staging = false
     var httpRequestObj = null;
     var api_retries = 0;
@@ -82,39 +103,25 @@ var Http = function(){
         console.log("requestJSON " + me.url)
         me.method = method;
         me.callback = callback;
-        if(sendbody){
+        if(sendbody !== null){
             me.sendbody = sendbody
         }
-        if(headers){
+        
+        if(headers!==null){
             me.config.headers = headers;
         }
+        else{
+            me.config.headers = {}
+        }
+
+        me.config.headers["Authorization"] = authorizationHeader(url).Authorization
+        me.config.headers['Content-Type'] = "application/json";
         queue.push(me)
         if(queue.length === 1 && !busy){
             startRequest();
         }
     }
 
-
-    function authorizationHeader (url) {
-
-        var date            = new Date();
-        var timestamp       = date.format('yyyyMMddHHmm');
-        var encrypt_url     = url + "|" + timestamp;
-        var hmac            = Crypto.HMAC( Crypto.SHA1, encrypt_url, PARTNER_KEYWORD );
-        
-        var authorization   = hmac + "|" + timestamp + "|" + PARTNER_ID + "|1";
-        var resp            = {'Authorization': authorization.toUpperCase() };
-
-        Logger.log( "HTTP ********" );
-        Logger.log( "Authorization: " + authorization.toUpperCase() );
-
-        Logger.log( '*** BEGIN OF ' + url );
-        Logger.log( encrypt_url );
-        Logger.logObj( resp );
-        Logger.log( '*** END OF ' + url );
-        
-        return resp;
-    }
 
     function startRequest(convert){
         busy = true
@@ -130,22 +137,24 @@ var Http = function(){
     }
 
     function initHttpRequest(){
-        if( Config.DISABLE_CERT_VALIDATION ){
+        //if( Config.DISABLE_CERT_VALIDATION ){
             httpClientObj.disableCertValidation( true );
-        }
-        else if( Config.CERT_VALIDATION ){
-            httpClientObj.setCertificateAuthority( Config.CERT_VALIDATION );
-        }
+        //}
+      //  else if( Config.CERT_VALIDATION ){
+       //     httpClientObj.setCertificateAuthority( Config.CERT_VALIDATION );
+       // }
 
-        if(!currentRequest.config.headers && currentRequest.doAuth){
-            currentRequest.config ={ headers: authorizationHeader( currentRequest.url ) }
-        }
+        // if(!currentRequest.config.headers && currentRequest.doAuth){
+        //     currentRequest.config ={ headers: authorizationHeader( currentRequest.url ) }
+        // }
 
         httpRequestObj = httpClientObj.createRequest( currentRequest.method, currentRequest.url, currentRequest.config, null );
         if(currentRequest.sendbody){
-            httpRequestObj.sendBody(currentRequest.sendbody.data, currentRequest.sendbody.dataType);
+            httpRequestObj.sendBody(currentRequest.sendbody.data);
         
         }
+        console.log("HTTP REQUEST")
+        console.dir(currentRequest)
         httpRequestObj.onComplete = onRequestComplete;
         httpRequestObj.onResponse = onResponse
     }
@@ -179,6 +188,8 @@ var Http = function(){
             
             try{
                 var dataObj = data
+                console.log("HTTP RESP")
+                console.dir(data)
 
                 if ( ( (dataObj.messageCode && dataObj.messageCode != 0) //because inexpicably, status messages aren't always in the same place
                     || (dataObj.status && dataObj.status.messageCode != 0))
