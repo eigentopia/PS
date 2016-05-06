@@ -2553,7 +2553,7 @@ var ApplicationController = function( screenObj ){
     ApplicationController.addToUserWatchlist = function (id, type, callback){
         if(id){
             var url =  ModelConfig.getServerURLRoot() + "queue/queue/add/member/"+ crackleUser.id +"/"+type+"/"+id+"?format=json";;
-            Http.request(url, "GET", null, null,function(data, status){
+            Http.requestJSON(url, "GET", null, null,function(data, status){
                 if(data != null && status ==200){
                     CrackleApi.User.watchlist(crackleUser, function(data, status){
                         callback && callback(true)
