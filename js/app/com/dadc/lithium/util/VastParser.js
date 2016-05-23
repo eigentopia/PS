@@ -3,7 +3,7 @@
 var VastParser = function( ADHeaderObj, wrapper_url )
 {
     var This = this;
-    var MAX_VAST_RECURSION = 2;
+    var MAX_VAST_RECURSION = 5;
     var m_impression_urls = [];
     var m_tracking_url_objs = [];
     var m_video_url = null;
