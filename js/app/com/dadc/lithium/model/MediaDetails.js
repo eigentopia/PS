@@ -266,6 +266,10 @@ var MediaDetails = function( json_data ){
             var video_urls = list[ i ];
             //Logger.logObj( video_urls );
             if ( video_urls && video_urls.Type && video_urls.Type ==='OTTSmoothStreaming.ism' ){
+                if(video_urls.UseDRM == "True"){
+                    video_urls.Path = video_urls.DRMPath;
+                }
+                
                 return video_urls;
             }
         }
