@@ -194,7 +194,7 @@ var MediaDetails = function( json_data ){
             var defaultMediaUrl = getVideoURLFromList(this.m_data.MediaURLs);
             defaultMediaUrl.LocalizedLanguage = this.m_data.LocalizedLanguage;
 
-            //mediaUrls.push("http://ottusns-s.akamaihd.net/ondemand/1/m/wm/urfyb_OTT_SmoothStreaming.ism/Manifest")
+            mediaUrls.push(defaultMediaUrl)
             // console.log("URLS")
             // console.dir(mediaUrls)
             // console.dir(this.m_data.MediaURLs)
