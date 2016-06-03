@@ -388,10 +388,7 @@ var PlaystationConfig = {
 
                             //StorageManagerInstance.set( 'api_hostname', apiUrl );
                             CrackleApi.apiUrl = "https://"+apiUrl+"/Service.svc/"
-                            //CrackleApi.apiUrl = ModelConfig.getServerURLRoot()
-                            
                             //CrackleApi.apiUrl = "https://staging-v1-api-us.crackle.com/Service.svc/"
-                            //CrackleApi.apiUrl = "https://staging-api-us.crackle.com/Service.svc/"
                             //ES
                             // StorageManagerInstance.set( 'geocode', 'MX');
                             // CrackleApi.apiUrl = "https://ps3-api-es.crackle.com/Service.svc/"

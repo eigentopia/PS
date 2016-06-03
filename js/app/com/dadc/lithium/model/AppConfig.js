@@ -6,7 +6,7 @@
 var AppConfigRequest = function( callback ){
     //SAMPLE URL
     //http://api.crackle.com/Service.svc/browse/movies/all/Crime/date/us?format=json
-    //var url = "https://staging-api-us.crackle.com/Service.svc/appconfig?format=json";
+    //var url = "http://staging-v1-api-us.crackle.com/Service.svc/appconfig?format=json";
     var url = "http://api.crackle.com/Service.svc/appconfig?format=json";
     Logger.log( url );
     var httpRequestObj;
