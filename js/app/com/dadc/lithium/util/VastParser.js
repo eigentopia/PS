@@ -210,7 +210,23 @@ var VastParser = function( ADHeaderObj, wrapper_url )
 
             if ( is_wrapper === true ){
                 Logger.shout("I FOUND A WRAPPER")
-                processVastUrl( vastObj, recursive_counter + 1 );
+                
+                var newURL = '';
+                var adList = vastObj.getAdList()
+                if (adList.getTotalAds() > 0){
+                    var _ad = adList.getAd(0)
+                    newURL = _ad.getWrapper().getVASTAdTagURI()
+                }
+                //var cdata = vastObj.m_adList[0].m_jsonData.VastAdTagURI['#cdatasection']
+                if(newURL != ''){
+                    recursive_counter += 1
+                    processVastUrl( newURL, recursive_counter );
+                    return;
+                }
+                else{
+                    //no more useable stuff, break
+                    ADHeaderObj.notifyAdParserDone( This );
+                }
 
             }
         }

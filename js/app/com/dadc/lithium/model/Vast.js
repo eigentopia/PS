@@ -1,7 +1,3 @@
-                                                                     
-                                                                     
-                                                                     
-                                             
 include( "js/app/com/dadc/lithium/parsers/XMLParser.js" );
 
 

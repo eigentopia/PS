@@ -127,14 +127,24 @@ ADManager.AdHeader = function( adHeaderNode )
                                     if( rendition.getCreativeRenditionId() === renditionID )
                                     {
                                         asset = rendition.getAsset();
-                                        if( isValid( asset ) === true && asset.getUrl() !== null )
+                                        if( isValid( asset ) === true)
                                         {
-                                            Logger.log("Found Asset object: ");
-                                            Logger.logObj( asset );
-                                            asset.debugLog();
-                                            url = asset.getUrl();
-                                            found = true;
-                                            break;
+                                            if(asset.getUrl() !== null){
+                                                Logger.log("Found Asset object: ");
+                                                Logger.logObj( asset );
+                                                asset.debugLog();
+                                                url = asset.getUrl();
+                                                found = true;
+                                                break;
+                                            }
+                                            else if(This.getVideoUrl() !==  null){
+                                                Logger.log("use VideoURL: ");
+                                                Logger.logObj( asset );
+                                                asset.debugLog();
+                                                url = This.getVideoUrl()
+                                                found = true;
+                                                break;
+                                            }
                                         }
                                         else Logger.log("ADHeader.getVideoUrl() - unable to get asset or URL from rendition");
                                     }
